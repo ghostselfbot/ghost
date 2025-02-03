@@ -109,6 +109,10 @@ async def on_connect():
     await ghost.add_cog(ghost_events.NitroSniper(ghost))
     await ghost.add_cog(ghost_events.PrivnoteSniper(ghost))
 
+    if sys.platform in ["darwin", "linux"]:
+        os.environ["PYTHONWARNINGS"] = "ignore:IMKClient_Legacy"
+        os.environ["PYTHONWARNINGS"] = "ignore:IMKInputSession_Legacy"
+
     text = f"Logged in as {ghost.user.name}"
     if str(ghost.user.discriminator) != "0":
         text += f"#{ghost.user.discriminator}"
