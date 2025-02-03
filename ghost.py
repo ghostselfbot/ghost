@@ -80,7 +80,7 @@ if presence.enabled:
         rpc = Presence(int(presence.client_id))
         rpc.connect()
         rpc.update(**presence.to_dict())
-    
+
         rpc_log = "Rich Presence connected succesfully!"
     except Exception as e:
         rpc_log = e
@@ -119,6 +119,10 @@ async def on_connect():
     console.print_info(text)
     console.print_info(f"You can now use commands with {cfg.get('prefix')}")
     print()
+
+    if sys.platform in ["darwin", "linux"]:
+        os.environ["PYTHONWARNINGS"] = "ignore:IMKClient_Legacy"
+        os.environ["PYTHONWARNINGS"] = "ignore:IMKInputSession_Legacy"
 
     if cfg.get_rich_presence().enabled:
         console.print_rpc(rpc_log)
