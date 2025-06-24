@@ -12,7 +12,7 @@ import utils.console as logging
 from utils.files import resource_path
 from utils import uninstall_fonts
 
-from gui.pages import HomePage, LoadingPage, SettingsPage, OnboardingPage, ScriptsPage
+from gui.pages import HomePage, LoadingPage, SettingsPage, OnboardingPage, ScriptsPage, ToolsPage
 from gui.components import Sidebar, Console
 from gui.helpers import Images, Layout
 
@@ -20,9 +20,6 @@ class GhostGUI:
     def __init__(self, bot_controller):
         self.size = (600, 530)
         self.bot_controller = bot_controller
-
-        if bot_controller:
-            self.bot_controller.set_gui(self)
             
         enable_high_dpi_awareness()
         
@@ -67,8 +64,12 @@ class GhostGUI:
         self.home_page       = HomePage(self.root, self.bot_controller, self._restart_bot)
         self.settings_page   = SettingsPage(self.root, self.bot_controller)
         self.scripts_page    = ScriptsPage(self, self.bot_controller, self.images)
+        self.tools_page      = ToolsPage(self.root, self.bot_controller, self.images, self.layout)
         
         logging.set_gui(self)
+        
+        if bot_controller:
+            self.bot_controller.set_gui(self)
 
     def _show_window(self):
         self.root.deiconify()
@@ -101,6 +102,7 @@ class GhostGUI:
         self.sidebar.set_current_page("tools")
         self.layout.clear()
         main = self.layout.main()
+        self.tools_page.draw(main)
         
     # def draw_loading(self):
     #     self.layout.hide_titlebar()
@@ -142,8 +144,8 @@ class GhostGUI:
                 self.layout.resize(600, 530)
                 self.layout.center_window(600, 530)
 
-        self.draw_home()
-        self.notifier.send("Ghost", "Ghost has successfully started!")
+        self.root.after(50, lambda: self.notifier.send("Ghost", "Ghost has successfully started!"))
+        self.root.after(50, lambda: self.draw_home())
 
     def _check_bot_started(self):
         if self.bot_controller.bot_running:

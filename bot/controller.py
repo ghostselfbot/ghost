@@ -15,7 +15,7 @@ from utils.config import Config
 from bot.helpers import cmdhelper, imgembed
 import utils.webhook as webhook_client
 from gui.helpers.images import resize_and_sharpen
-from pypresence import Presence, ActivityType
+from bot.tools import SpyPet
 
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(sys.executable))
@@ -31,12 +31,42 @@ class BotController:
         self.bot_running = False
         self.startup_scripts = []
         self.presence = self.cfg.get_rich_presence()
+        self.spypet = SpyPet(self)
+
+    def start_spypet(self):
+        if not self.spypet.bot:
+            self.spypet.set_bot(self.bot)
+            console.success("SpyPet bot set successfully.")
+        else:
+            console.warning("SpyPet bot is already set.")
+        
+        if not self.spypet.member_id:
+            console.error("SpyPet member ID is not set. Please set it in the settings.")
+            return
+
+        asyncio.run_coroutine_threadsafe(self.spypet.start(), self.loop)
+        console.success("SpyPet started successfully!")
+
+    def stop_spypet(self):
+        if self.spypet.running:
+            asyncio.run_coroutine_threadsafe(self.spypet.stop(), self.loop)
+            console.success("SpyPet stopped successfully!")
+        else:
+            console.warning("SpyPet is not running.")
+            
+    def get_mutual_guilds_spypet(self):
+        if self.spypet.running:
+            return asyncio.run_coroutine_threadsafe(self.spypet.get_mutual_guilds(), self.loop).result()
+        else:
+            console.warning("SpyPet is not running. Cannot get mutual guilds.")
+            return []
 
     def add_startup_script(self, script):
         self.startup_scripts.append(script)
 
     def set_gui(self, gui):
         self.gui = gui
+        self.spypet.set_gui(gui.tools_page.spypet_page)
         
     def check_token(self):
         resp = requests.get("https://discord.com/api/v9/users/@me", headers={"Authorization": self.cfg.get("token")})
@@ -212,6 +242,18 @@ class BotController:
         
     def set_prefix(self, prefix):
         self.bot.command_prefix = prefix
+
+
+    async def get_user_from_id_async(self, user_id):
+        print(f"[BotController] Getting user from ID: {user_id}")
+        try:
+            return await self.bot.fetch_user(user_id) if self.bot else None
+        except Exception as e:
+            console.print_error(f"Error getting user from ID {user_id}: {e}")
+            return None
+
+    def get_user_from_id(self, user_id):
+        return asyncio.run_coroutine_threadsafe(self.get_user_from_id_async(user_id), self.loop).result()
 
     get_user    = lambda self: self.bot.user if self.bot else None
     get_friends = lambda self: self.bot.friends if self.bot else None

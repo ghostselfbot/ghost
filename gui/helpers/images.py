@@ -2,10 +2,20 @@ from PIL import Image, ImageTk, ImageFilter, ImageEnhance
 import os
 import threading
 from utils.files import resource_path
+import requests
+from io import BytesIO
+from collections import Counter
 
 def resize_and_sharpen(image, size):
-    resized_image = image.resize(size, Image.LANCZOS)
-    sharpened_image = ImageEnhance.Sharpness(resized_image).enhance(2.0)
+    try:
+        resized_image = image.resize(size, Image.LANCZOS)
+    except Exception as e:
+        print("error resizing image:", e)
+    try:
+        sharpened_image = ImageEnhance.Sharpness(resized_image).enhance(2.0)
+    except Exception as e:
+        print("error sharpening image:", e)
+        sharpened_image = resized_image
     return sharpened_image
 
 class Images:
@@ -54,7 +64,7 @@ class Images:
             "bigger": ["scripts"],
             "small": ["trash", "github", "restart", "checkmark", "left-chevron", "file-signature", "trash-white"],
             "tiny": ["submit", "max", "min", "search"],
-            "smaller": ["folder-open", "plus"],
+            "smaller": ["folder-open", "plus", "reset", "play", "stop"],
             "logo": ["ghost-logo"],
         }
 
@@ -84,6 +94,9 @@ class Images:
             "file-signature": "data/icons/file-signature-solid.png",
             "left-chevron": "data/icons/chevron-left-solid.png",
             "tools": "data/icons/screwdriver-wrench-solid.png",
+            "reset": "data/icons/rotate-left-solid.png",
+            "play": "data/icons/play-solid.png",
+            "stop": "data/icons/stop-solid.png",
         }
 
         for key, path in ICON_PATHS.items():
@@ -131,3 +144,35 @@ class Images:
             return ImageTk.PhotoImage(image)
 
         return self.images.get(key)
+
+    def get_majority_color_from_url(self, image_url: str) -> str:
+        response = requests.get(image_url)
+        image = Image.open(BytesIO(response.content)).convert("RGB")
+
+        # Crop center to focus on subject
+        w, h = image.size
+        crop_margin = 0.2
+        image = image.crop((
+            int(w * crop_margin),
+            int(h * crop_margin),
+            int(w * (1 - crop_margin)),
+            int(h * (1 - crop_margin))
+        ))
+
+        # Slight blur to reduce texture noise
+        image = image.filter(ImageFilter.GaussianBlur(radius=1))
+        image = image.resize((50, 50))  # reduce size for performance
+
+        pixels = list(image.getdata())
+
+        # Filter out very dark pixels (likely shadows)
+        filtered_pixels = [rgb for rgb in pixels if sum(rgb) > 60]  # brightness threshold
+
+        if not filtered_pixels:
+            # fallback to original pixels if all were filtered
+            filtered_pixels = pixels
+
+        counter = Counter(filtered_pixels)
+        most_common = counter.most_common(1)[0][0]
+        
+        return '#{:02x}{:02x}{:02x}'.format(*most_common)

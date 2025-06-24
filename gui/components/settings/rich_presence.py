@@ -11,7 +11,7 @@ class RichPresencePanel(SettingsPanel):
         self.rpc_entries = {
             "enabled": "Enabled",
             "client_id": "Client ID",
-            # "name": "Name",
+            "name": "Name",
             "details": "Details",
             "state": "State",
             "large_image": "Large Image Key",
