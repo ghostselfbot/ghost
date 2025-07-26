@@ -56,6 +56,7 @@ def main():
     startup_check.check()
     cfg = Config()
     cfg.check()
+    console.info("Running as admin: " + str(startup_check.is_admin()))
 
     if HEADLESS:
         console.info("Running in headless (CLI) mode.")
