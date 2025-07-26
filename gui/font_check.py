@@ -3,9 +3,10 @@ import ttkbootstrap as ttk
 
 from gui.helpers import layout
 from gui.components import RoundedFrame, RoundedButton
-from utils.files import resource_path
+from utils.files import resource_path, get_application_support
 from utils.fonts import load_fonts, get_fonts
 from utils.config import Config
+from utils import startup_check, console
 
 class FontCheckGUI:
     def __init__(self):
@@ -25,8 +26,18 @@ class FontCheckGUI:
         self._draw_font_check()
         
     def _install_fonts(self, _):
-        load_fonts()
-        os.execl(sys.executable, sys.executable, *sys.argv)
+        if os.name == "nt":
+            if startup_check.is_admin():
+                load_fonts()
+                os.execl(sys.executable, sys.executable, *sys.argv)
+            else:
+                install_fonts_path = os.path.join(get_application_support(), "INSTALL_FONTS_NO_GUI")
+                console.info("Admin privilages needed, restarting with admin perms. Fonts will be installed without GUI. Restarting...")
+                self.cfg.set_skip_fonts(True)
+                os.execl(sys.executable, sys.executable, *sys.argv)
+        else:
+            load_fonts()
+            os.execl(sys.executable, sys.executable, *sys.argv)
         
     def _skip(self, _):
         self.cfg.set_skip_fonts()

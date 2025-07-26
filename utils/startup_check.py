@@ -1,4 +1,4 @@
-import os
+import os, sys, ctypes, subprocess
 import json
 from utils.defaults import DEFAULT_CONFIG, DEFAULT_THEME
 from utils import files
@@ -23,6 +23,34 @@ REQUIRED_FILES = {
     "config.json": DEFAULT_CONFIG,
     # "ghost.log": ""
 }
+
+def is_admin():
+    try:
+        is_admin = os.getuid() == 0
+    except AttributeError:
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+    return is_admin
+
+def restart_as_admin():
+    if is_admin():
+        return
+    
+    if sys.platform == "win32":
+        ctypes.windll.shell32.ShellExecuteW(
+            None, "runas", sys.executable, " ".join(sys.argv), None, 1
+        )
+    elif sys.platform == "darwin":  # macOS
+        script = f'do shell script "sudo {sys.executable} {" ".join(sys.argv)}" with administrator privileges'
+        subprocess.run(['osascript', '-e', script])
+    else:  # Linux and other Unix-like systems
+        try:
+            subprocess.run(['pkexec', sys.executable] + sys.argv)
+        except FileNotFoundError:
+            # Fallback to sudo if pkexec is not available
+            subprocess.run(['sudo', sys.executable] + sys.argv)
+    
+    sys.exit(0)
 
 def create_directories():
     for directory in REQUIRED_DIRS:
