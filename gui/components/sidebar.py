@@ -41,6 +41,12 @@ class Sidebar:
         
         self.tk_buttons.append(button)
         
+    def set_button_command(self, page_name, command):
+        if page_name in self.button_cmds:
+            self.button_cmds[page_name] = command
+        else:
+            raise ValueError(f"Button '{page_name}' not found in sidebar.")
+        
     def _quit(self):
         if str(Messagebox.yesno("Are you sure you want to quit?", title="Ghost")).lower() == "yes":
             if os.name == "nt":
@@ -68,7 +74,7 @@ class Sidebar:
             "console": self._create_button(self.images.get("console"), "console", self.button_cmds["console"], 1),
             "settings": self._create_button(self.images.get("settings"), "settings", self.button_cmds["settings"], 2),
             "scripts": self._create_button(self.images.get("scripts"), "scripts", self.button_cmds["scripts"], 3),
-            # "tools": self._create_button(self.images.get("tools"), "tools", self.button_cmds["tools"], 4),
+            "tools": self._create_button(self.images.get("tools"), "tools", self.button_cmds["tools"], 4),
         }
             
         logout_btn = ttk.Label(self.sidebar, image=self.images.get("logout"), background=self.root.style.colors.get("dark"), anchor="center")
