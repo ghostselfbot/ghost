@@ -96,7 +96,7 @@ class Console:
         clear_btn.configure(background=self.root.style.colors.get("secondary"))
         clear_btn.bind("<Button-1>", lambda e: self.clear())
         clear_btn.grid(row=0, column=3, padx=(10, 8), pady=5, sticky="e")
-    
+
     def _draw_main(self, parent):
         wrapper = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
         wrapper.pack(side="top", fill="both", expand=True)
@@ -112,12 +112,11 @@ class Console:
             highlightbackground=self.root.style.colors.get("dark"),
             state="normal"
         )
-        
-        # Disable insert/delete actions
-        self.textarea.bind("<Key>", lambda e: "break")
-        self.textarea.bind("<Button-2>", lambda e: "break")  # Middle-click paste (Linux)
-        self.textarea.bind("<Control-v>", lambda e: "break")
-        self.textarea.bind("<Control-V>", lambda e: "break")
+
+        self.textarea.bind_all(
+            "<Control-c>" if sys.platform != "darwin" else "<Command-c>", 
+            lambda _: self.textarea.event_generate("<<Copy>>")
+        )
 
         self.textarea.pack(fill="both", expand=True, padx=5, pady=5)
         self._load_tags()

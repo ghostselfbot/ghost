@@ -285,7 +285,10 @@ class Embed:
     def save(self):
         path = f"embed-{random.randint(1000, 9999)}.png"  # comment this out if youre running the script directly
         # path = "embed.png" # uncomment this if youre running the script directly
-        self.draw().save(path)
+        final = self.draw()
+        final.thumbnail((self.width // 2, self.height // 2), Image.LANCZOS)
+        # final = final.resize((self.width // 2, self.height // 2), Image.LANCZOS)
+        final.save(path, optimize=True, quality=20)
         return path
 
 

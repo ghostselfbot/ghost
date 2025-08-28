@@ -4,7 +4,12 @@ import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.dialogs import Messagebox
 from gui.components import RoundedFrame
+
+# Uncomment the below to enable the dedicated script page.
+# Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
+
 # from gui.pages.script import ScriptPage
+
 from utils.config import Config
 from utils.files import open_path_in_explorer, get_application_support
 from utils.defaults import DEFAULT_SCRIPT
@@ -19,11 +24,18 @@ class ScriptsPage:
         self.script_frames = []
     
     def _open_editor(self, script):
+        # Uncomment the below to enable the dedicated script page.
+        # Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
+        
         # self.gui.sidebar.set_current_page("scripts")
         # self.gui.layout.clear()
         # main = self.gui.layout.main()
         # script_page = ScriptPage(self.gui, script)
         # script_page.draw(main)
+        
+        
+        # Please comment out the below to enable the dedicated script page!
+        # Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
         
         if sys.platform == "darwin":
             try:
