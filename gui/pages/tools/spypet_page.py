@@ -182,6 +182,8 @@ class SpyPetPage(ToolPage):
         self.clear_messages()
         self._check_spypet_running()
         self._update_progress_labels(0, 0)
+        
+        self.root.after(150, self._disable_reset_button)
 
     def _draw_start_stop_button(self, parent):
         def _hover_enter(_):
