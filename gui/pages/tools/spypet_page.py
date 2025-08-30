@@ -32,6 +32,10 @@ class SpyPetPage(ToolPage):
         self.messages_displayed = []
         self.total_messages = 0
         self.user_total_messages = 0
+        self.focused_textarea = None
+        
+    def _set_focused_textarea(self, widget):
+        self.focused_textarea = widget
 
     def _redraw_user_wrapper(self):
         if self.user_wrapper:
@@ -333,12 +337,6 @@ class SpyPetPage(ToolPage):
             highlightbackground=self.root.style.colors.get("dark"),
             state="normal"
         )
-        
-        # Disable insert/delete actions
-        self.textarea.bind("<Key>", lambda e: "break")
-        self.textarea.bind("<Button-2>", lambda e: "break")  # Middle-click paste (Linux)
-        self.textarea.bind("<Control-v>", lambda e: "break")
-        self.textarea.bind("<Control-V>", lambda e: "break")
 
         self.textarea.pack(fill="both", expand=True, padx=5, pady=5)
         self._load_tags()
@@ -511,12 +509,6 @@ class SpyPetPage(ToolPage):
             highlightbackground=self.root.style.colors.get("dark"),
             state="normal"
         )
-        
-        # Disable insert/delete actions
-        self.messages_textarea.bind("<Key>", lambda e: "break")
-        self.messages_textarea.bind("<Button-2>", lambda e: "break")  # Middle-click paste (Linux)
-        self.messages_textarea.bind("<Control-v>", lambda e: "break")
-        self.messages_textarea.bind("<Control-V>", lambda e: "break")
 
         self.messages_textarea.pack(fill="both", expand=True, padx=5, pady=5)
         
@@ -585,3 +577,11 @@ class SpyPetPage(ToolPage):
             self._disable_reset_button()
         else:
             self._enable_reset_button()
+
+        self.messages_textarea.bind("<Button-1>", lambda e: self._set_focused_textarea(self.messages_textarea))
+        self.messages_textarea.bind("<FocusIn>", lambda e: self.textarea.tag_remove("sel", "1.0", "end"))
+
+        self.textarea.bind("<Button-1>", lambda e: self._set_focused_textarea(self.textarea))
+        self.textarea.bind("<FocusIn>", lambda e: self.messages_textarea.tag_remove("sel", "1.0", "end"))
+
+        self.root.bind_all("<Command-c>", lambda e: self.focused_textarea.event_generate("<<Copy>>") if self.focused_textarea else None)
