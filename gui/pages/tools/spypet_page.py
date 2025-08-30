@@ -439,10 +439,10 @@ class SpyPetPage(ToolPage):
         self._apply_message_filter()
 
     def _apply_message_filter(self):
+        if not self.messages_textarea or len(self.messages_all) == 0:
+            return
+
         try:
-            if not self.messages_textarea:
-                return
-                
             self.messages_textarea.delete("1.0", "end")
             self.messages_displayed = []
 
@@ -453,8 +453,8 @@ class SpyPetPage(ToolPage):
                     self.messages_textarea.insert("end", f"{formatted}\n")
 
             self.messages_textarea.update_idletasks()
-        except Exception as e:
-            print(f"Error applying message filter: {e}")
+        except:
+            pass
     
     def update_messages(self):
         if self.messages_textarea_updating and self.messages_textarea:
