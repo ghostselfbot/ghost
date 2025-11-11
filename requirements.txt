@@ -7,7 +7,7 @@ pillow
 pystyle
 psutil
 pycryptodome
-ttkbootstrap
+ttkbootstrap==1.14.2
 pyinstaller
 # git+https://github.com/tomlin7/cupcake.git
 cupcake-editor
