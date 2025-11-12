@@ -49,6 +49,8 @@ def get_theme_path(theme_name):
     return os.path.join(get_themes_path(), f"{theme_name}.json")
 
 def open_path_in_explorer(path):
+    path += "/"
+    
     if sys.platform == "darwin":
         os.system(f"open '{path}'")
     elif sys.platform == "win32":
