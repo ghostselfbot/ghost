@@ -49,11 +49,10 @@ def get_theme_path(theme_name):
     return os.path.join(get_themes_path(), f"{theme_name}.json")
 
 def open_path_in_explorer(path):
-    path = os.path.abspath(path)
-    
     if sys.platform == "darwin":
         os.system(f"open '{path}'")
     elif sys.platform == "win32":
+        path = path.replace('/', '\\')
         os.system(f'start "" "{path}"')
     else:
         os.system(f"xdg-open '{path}'")
