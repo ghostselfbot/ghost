@@ -80,6 +80,9 @@ class Config:
         self.save()
 
     def save(self, notify=True):
+        token = self.get("token")
+        self.config["token"] = token.strip()
+        
         if isinstance(self.config["theme"], dict):
             self.save_theme_file(self.config["theme_name"], self.config["theme"])
             self.config["theme"] = self.config["theme_name"]
@@ -98,8 +101,9 @@ class Config:
         subkey = None
         if "." in key:
             key, subkey = key.split(".")
-
-        return self.config[key][subkey] if subkey else self.config[key]
+            
+        value = self.config[key][subkey] if subkey else self.config[key]
+        return value.strip() if "token" in key and isinstance(value, str) else value
 
     def set(self, key, value, save=True):
         subkey = None
