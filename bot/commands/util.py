@@ -350,7 +350,7 @@ class Util(commands.Cog):
         mutual_guilds = [guild for guild in self.bot.guilds if guild.get_member(member_id)]
         data = {}
         tasks = []
-        sem = asyncio.Semaphore(15)
+        sem = asyncio.Semaphore(10)
         stop_event = asyncio.Event()
         last_saved_count = 0
 
@@ -363,6 +363,7 @@ class Util(commands.Cog):
             if current_count == last_saved_count:
                 return
             last_saved_count = current_count
+            
             with open(files.get_application_support() + "/data/spypet.json", "w") as f:
                 json.dump(data, f, indent=4)
             console.print_info(f"Auto-saved {current_count} messages.")
@@ -399,15 +400,18 @@ class Util(commands.Cog):
                 latest_msg = [msg async for msg in channel.history(limit=1)][0]
                 context = await self.bot.get_context(latest_msg)
                 
+                console.success(f"Got context for {channel.guild.name} - {channel.name}")
+                
                 return context.channel
             except Exception as e:
                 if "429" in str(e):
+                    console.error(f"Rate limited while fetching context for {channel.guild.name} - {channel.name}")
                     await asyncio.sleep(5)
                     return await _fetch_context_channel(channel)
                 
                 return None
 
-        async def _get_messages(channel, delay=0.25):
+        async def _get_messages(channel, delay=0.25, oldest_first=False):
             async with sem:
                 try:
                     await asyncio.sleep(delay)
@@ -418,7 +422,8 @@ class Util(commands.Cog):
                     messages = []
 
                     try:
-                        async for msg in channel.history(limit=999999999, oldest_first=False):
+                        async for msg in channel.history(limit=None, oldest_first=oldest_first):
+                            print(channel.name, msg.author.id, msg.content)
                             if msg.author.id == member_id:
                                 if len(msg.attachments) > 0:
                                     attachments = "\n".join([f"Attachment: {attachment.url}" for attachment in msg.attachments])
@@ -427,13 +432,20 @@ class Util(commands.Cog):
                                     msg_string = f"[{msg.created_at.strftime('%Y-%m-%d %H:%M:%S')}] {msg.content}"
                                 messages.append(msg_string)
                                 _add_message(guild, channel, msg_string)
+                                console.print_info(f"Found message in {channel.guild.name} - {channel.name}")
                                 
                         if len(messages) > 0: 
                             console.print_success(f"Found messages in {channel.guild.name} - {channel.name}")
                         else:
                             console.print_error(f"Found no messages in {channel.guild.name} - {channel.name}")
-                    except:
-                        console.print_error(f"Failed to fetch messages in {channel.guild.name} - {channel.name}")
+                    except Exception as e:
+                        if "429" in str(e).lower():
+                            console.print_error("Rate limited! Waiting for 5 seconds...")
+                            await asyncio.sleep(5)
+                            return await _get_messages(channel, delay)
+                        else:
+                            console.print_error(f"Error in {channel.guild.name} - {channel.name}: {e}")
+                            return
 
                     _save_data()
                 except asyncio.CancelledError:
@@ -446,14 +458,33 @@ class Util(commands.Cog):
                 finally:
                     _save_data()
 
-        delay = 0.5
+        async def _attempt_scrape(guild, delay):
+            tasks = []
+            console.info(f"Attempting to scrape {guild.name} - {guild.id}")
+            
+            for channel in guild.channels:
+                if isinstance(channel, discord.TextChannel) and _get_permissions(channel):
+                    tasks.append(_get_messages(channel, delay, oldest_first=True))
+                    delay += 2
+                    
+            if len(tasks) == 0:
+                console.print_error(f"No valid channels in {guild.name} - {guild.id}")
+                return
+            
+            try:
+                await asyncio.gather(*tasks)
+            except asyncio.CancelledError:
+                console.print_warning("Process was cancelled! Saving progress...")
+                stop_event.set()
+                _save_data()
+                raise
+
+        delay = 1
         autosave_task = asyncio.create_task(_autosave(5))
         
         for guild in mutual_guilds:
-            for channel in guild.text_channels:
-                if _get_permissions(channel):
-                    tasks.append(asyncio.create_task(_get_messages(channel, delay)))
-                    delay += 0.5
+            tasks.append(_attempt_scrape(guild, delay))
+            delay += 1.5
 
         await asyncio.gather(*tasks)
         stop_event.set()
@@ -464,7 +495,7 @@ class Util(commands.Cog):
         console.print_info(f"Total messages: {_count_messages()}")
         console.print_info(f"Total guilds: {len(data)}")
         console.print_info(f"Total channels: {sum(len(channels) for channels in data.values())}")
-        await ctx.send(file=discord.File("data/spypet.json"), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+        await ctx.send(file=discord.File(files.get_application_support() + "/data/spypet.json"), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
 
 def setup(bot):
     bot.add_cog(Util(bot))
