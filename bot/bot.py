@@ -123,6 +123,7 @@ class Ghost(commands.Bot):
                 await self.add_cog(ScriptCog(self))
                 
                 console.print_info(f"Loaded script: {script_name}")
+                self.controller.add_startup_script(script)
 
             except Exception as e:
                 console.print_error(f"Error loading script: {script_name} - {e}")
