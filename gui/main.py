@@ -178,14 +178,16 @@ class GhostGUI:
         self.root.mainloop()
         
     def quit(self):
-        if str(Messagebox.yesno("Are you sure you want to quit?", title="Ghost")).lower() == "yes":
-            # uninstall_fonts()
-            # if os.name == "nt":
-            #     os.kill(os.getpid(), 9)
-            # else:
-            #     os._exit(0)
-            self.root.destroy()
-            sys.exit(0)
+        # if str(Messagebox.yesno("Are you sure you want to quit?", title="Ghost")).lower() == "yes":
+        #     # uninstall_fonts()
+        #     # if os.name == "nt":
+        #     #     os.kill(os.getpid(), 9)
+        #     # else:
+        #     #     os._exit(0)
+        #     self.root.destroy()
+        #     sys.exit(0)
+        self.root.destroy()
+        sys.exit(0)
                 
     def run_on_main_thread(self, func, *args, **kwargs):
         self.root.after(0, lambda: func(*args, **kwargs))

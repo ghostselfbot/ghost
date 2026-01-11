@@ -1,4 +1,4 @@
-import os
+import os, sys
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from gui.helpers import Images
@@ -48,11 +48,13 @@ class Sidebar:
             raise ValueError(f"Button '{page_name}' not found in sidebar.")
         
     def _quit(self):
-        if str(Messagebox.yesno("Are you sure you want to quit?", title="Ghost")).lower() == "yes":
-            if os.name == "nt":
-                os.kill(os.getpid(), 9)
-            else:
-                os._exit(0)
+        # if str(Messagebox.yesno("Are you sure you want to quit?", title="Ghost")).lower() == "yes":
+        #     if os.name == "nt":
+        #         os.kill(os.getpid(), 9)
+        #     else:
+        #         os._exit(0)
+        self.root.destroy()
+        sys.exit(0)
                 
     def disable(self):
         allowed = ["home", "console"]
