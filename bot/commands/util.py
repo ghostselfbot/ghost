@@ -497,5 +497,22 @@ class Util(commands.Cog):
         console.print_info(f"Total channels: {sum(len(channels) for channels in data.values())}")
         await ctx.send(file=discord.File(files.get_application_support() + "/data/spypet.json"), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
 
+    @commands.command(name="latency", description="Check the bot's latency", usage="")
+    async def latency(self, ctx):
+        msg = await cmdhelper.send_message(ctx, {
+            "title": "Latency",
+            "description": "Calculating latency..."
+        })
+        
+        latency = (msg.created_at - ctx.message.created_at).total_seconds() * 1000
+        websocket_latency = self.bot.latency * 1000
+        
+        await msg.delete()
+        
+        await cmdhelper.send_message(ctx, {
+            "title": "Latency",
+            "description": f"Message latency: {round(latency)}ms\nWebSocket latency: {round(websocket_latency)}ms"
+        })
+
 def setup(bot):
     bot.add_cog(Util(bot))
