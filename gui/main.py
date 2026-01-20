@@ -3,28 +3,22 @@ import os, sys
 
 os.environ["SSL_CERT_FILE"] = certifi.where()
 import ttkbootstrap as ttk
-from ttkbootstrap.dialogs import Messagebox
-from ttkbootstrap.utility import enable_high_dpi_awareness
 
 from utils.notifier import Notifier
 from utils.config import Config
 import utils.console as logging
 from utils.files import resource_path
-from utils import uninstall_fonts
 
 from gui.pages import HomePage, LoadingPage, SettingsPage, OnboardingPage, ScriptsPage, ToolsPage
 from gui.components import Sidebar, Console, Titlebar, RoundedFrame
-from gui.helpers import Images, Layout
+from gui.helpers import Images, Layout, Style
 
 class GhostGUI:
     def __init__(self, bot_controller):
         self.resize_grip_size = 5
         self.size = (650, 530)
-        self.border_color = "#171616"
         self.bot_controller = bot_controller
         self.resize_grips = {}
-            
-        enable_high_dpi_awareness()
         
         self.root = ttk.tk.Tk()
         self.root.size = self.size
@@ -43,13 +37,13 @@ class GhostGUI:
         # self.root.style.theme_use("darkly")
         self.root.style.load_user_themes(resource_path("data/gui_theme.json"))
         self.root.style.theme_use("ghost")
-        self.root.style.configure("TEntry", background=self.root.style.colors.get("dark"), fieldbackground=self.root.style.colors.get("secondary"))
+        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=self.root.style.colors.get("secondary"))
         self.root.style.configure("TCheckbutton", background=self.root.style.colors.get("dark"))
-        self.root.style.configure("TMenubutton", font=("Host Grotesk",))
+        self.root.style.configure("TMenubutton",  font=("Host Grotesk",))
         self.root.style.configure("TCheckbutton", font=("Host Grotesk",))
-        self.root.style.configure("TEntry", font=("Host Grotesk",))
-        self.root.style.configure("TLabel", font=("Host Grotesk",))
-        self.root.style.configure("TButton", font=("Host Grotesk",))
+        self.root.style.configure("TEntry",       font=("Host Grotesk",))
+        self.root.style.configure("TLabel",       font=("Host Grotesk",))
+        self.root.style.configure("TButton",      font=("Host Grotesk",))
         
         if sys.platform == "darwin":
             self.root.attributes("-transparent", True)
@@ -65,12 +59,12 @@ class GhostGUI:
         self.images   = Images()
         self.sidebar  = Sidebar(self.root)
         
-        self.sidebar.add_button("home", self.draw_home)
+        self.sidebar.add_button("home",     self.draw_home)
         # self.sidebar.add_button("console", self.draw_console)
         self.sidebar.add_button("settings", self.draw_settings)
-        self.sidebar.add_button("scripts", self.draw_scripts)
-        self.sidebar.add_button("tools", self.draw_tools)
-        self.sidebar.add_button("logout", self.quit)
+        self.sidebar.add_button("scripts",  self.draw_scripts)
+        self.sidebar.add_button("tools",    self.draw_tools)
+        self.sidebar.add_button("logout",   self.quit)
         
         if self.cfg.get("token") != "":
             self._create_resize_grips()
@@ -118,7 +112,7 @@ class GhostGUI:
         bottom = RoundedFrame(
             self.root,
             radius=(0, 0, 25, 25),
-            background=self.border_color
+            background=Style.WINDOW_BORDER.value
         )
         bottom.bind("<B1-Motion>", self._resize_window)
         bottom.bind("<Enter>", lambda e: self.root.config(cursor="sb_v_double_arrow"))
@@ -129,7 +123,7 @@ class GhostGUI:
         right = RoundedFrame(
             self.root,
             radius=(0, 25, 25, 0),
-            background=self.border_color
+            background=Style.WINDOW_BORDER.value
         )
         right.bind("<B1-Motion>", self._resize_window)
         right.bind("<Enter>", lambda e: self.root.config(cursor="sb_h_double_arrow"))

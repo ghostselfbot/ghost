@@ -1,6 +1,8 @@
+from logging import root
 import sys
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame
+from gui.helpers.style import Style
 
 class Titlebar:
     def __init__(self, root, images):
@@ -9,7 +11,6 @@ class Titlebar:
         self._offset_x = 0
         self._offset_y = 0
         self._dragging = False
-        self.bg_color = "#171616"
 
     def _on_press(self, event):
         self._dragging = True
@@ -74,10 +75,10 @@ class Titlebar:
         titlebar = RoundedFrame(
             self.root,
             radius=(25, 25, 0, 0),
-            background=self.bg_color
+            background=Style.WINDOW_BORDER.value
         )
 
-        inner_wrapper = RoundedFrame(titlebar, background=self.bg_color, radius=0)
+        inner_wrapper = RoundedFrame(titlebar, background=Style.WINDOW_BORDER.value, radius=0)
         padx = 8
         pady = 8
 
@@ -91,44 +92,42 @@ class Titlebar:
             pady = 0
 
             close_btn = ttk.Label(inner_wrapper, text="●", foreground="#FF5F57", font=("Arial", 25))
-            close_btn.configure(background=self.bg_color)
+            close_btn.configure(background=Style.WINDOW_BORDER.value)
             close_btn.pack(side=ttk.LEFT, padx=(0, 0))
             close_btn.bind("<Button-1>", lambda e: self.root.quit())
             close_btn.bind("<Enter>", lambda e: close_btn.configure(foreground="#CC4940"))
             close_btn.bind("<Leave>", lambda e: close_btn.configure(foreground="#FF5F57"))
             
             minimize_btn = ttk.Label(inner_wrapper, text="●", foreground="#FFBD2E", font=("Arial", 25))
-            minimize_btn.configure(background=self.bg_color)
+            minimize_btn.configure(background=Style.WINDOW_BORDER.value)
             minimize_btn.pack(side=ttk.LEFT, padx=(0, 0))
             minimize_btn.bind("<Button-1>", lambda e: self._minimize())
             minimize_btn.bind("<Enter>", lambda e: minimize_btn.configure(foreground="#CC9A26"))
             minimize_btn.bind("<Leave>", lambda e: minimize_btn.configure(foreground="#FFBD2E"))
             
             maximize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 25))
-            maximize_btn.configure(background=self.bg_color)
+            maximize_btn.configure(background=Style.WINDOW_BORDER.value)
             maximize_btn.pack(side=ttk.LEFT, padx=(0, 5))
             # maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#20A833"))
             # maximize_btn.bind("<Leave>", lambda e: maximize_btn.configure(foreground="#28C940"))
-            maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#3b3a3a"))
-            maximize_btn.bind("<Leave>", lambda e: maximize_btn.configure(foreground="#4f4c4c"))
             # maximize_btn.bind("<Button-1>", lambda e: self._maximize())
             
         else:
             ico = ttk.Label(inner_wrapper, image=self.images.images["titlebar-ico"])
-            ico.configure(background=self.bg_color)
+            ico.configure(background=Style.WINDOW_BORDER.value)
             ico.pack(side=ttk.LEFT, padx=(5, 0))
 
             title = ttk.Label(inner_wrapper, text="Ghost", font=("Host Grotesk", 10))
-            title.configure(background=self.bg_color)
+            title.configure(background=Style.WINDOW_BORDER.value)
             title.pack(side=ttk.LEFT, padx=(5, 0))
             
             close_btn = ttk.Label(inner_wrapper, text="✕", font=("Host Grotesk", 10))
-            close_btn.configure(background=self.bg_color)
+            close_btn.configure(background=Style.WINDOW_BORDER.value)
             close_btn.pack(side=ttk.RIGHT, padx=(0, 5))
             close_btn.bind("<Button-1>", lambda e: self.root.quit())
             
             minimize_btn = ttk.Label(inner_wrapper, text="—", font=("Host Grotesk", 10))
-            minimize_btn.configure(background=self.bg_color)
+            minimize_btn.configure(background=Style.WINDOW_BORDER.value)
             minimize_btn.pack(side=ttk.RIGHT, padx=(0, 7))
             minimize_btn.bind("<Button-1>", lambda e: self._minimize())
 

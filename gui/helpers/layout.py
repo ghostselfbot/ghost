@@ -2,6 +2,7 @@ import sys
 import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
 from gui.components import RoundedFrame
+from gui.helpers.style import Style
 
 def resize(root, width, height):
     root.minsize(width, height)
@@ -26,7 +27,6 @@ class Layout:
         self.sidebar = sidebar
         self.titlebar = titlebar
         self.resize_grips = resize_grips
-        self.border_color = "#171616"
         
     def main(self, scrollable=False, padx=10, pady=10):
         width = self.width - (self.width // 100)
@@ -34,7 +34,7 @@ class Layout:
         border = RoundedFrame(
             self.root,
             radius=(0, 0, 25, 0),  # ALL corners here
-            background=self.border_color
+            background=Style.WINDOW_BORDER.value
         )
         border.pack(fill=ttk.BOTH, expand=True)
 
