@@ -1,6 +1,7 @@
 import sys
 import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
+from gui.components import RoundedFrame
 
 def resize(root, width, height):
     root.minsize(width, height)
@@ -24,22 +25,64 @@ class Layout:
         self.height = root.winfo_height()
         self.sidebar = sidebar
         self.titlebar = titlebar
+        self.border_color = "#171616"
         
-    def main(self, scrollable=False, padx=25, pady=25):
+    def main(self, scrollable=False, padx=10, pady=10):
         width = self.width - (self.width // 100)
-        wrapper = self.root
-        
-        if scrollable:
-            wrapper = ScrolledFrame(self.root, width=width, height=self.height)
-            wrapper.pack(fill=ttk.BOTH, expand=True)
-            
-            # main = ttk.Frame(wrapper)
-            # main.pack(fill=ttk.BOTH, expand=True, padx=23, pady=23)
 
-        main = ttk.Frame(wrapper, width=width, height=self.height)
-        main.pack(fill=ttk.BOTH, expand=True, padx=(23, 32) if scrollable else padx, pady=23 if scrollable else pady)
+        border = RoundedFrame(
+            self.root,
+            radius=(0, 0, 25, 0),  # ALL corners here
+            background=self.border_color
+        )
+        border.pack(fill=ttk.BOTH, expand=True)
+
+        outer = RoundedFrame(
+            border,
+            radius=(25, 25, 25, 25),  # only internal shaping
+            background=self.root.style.colors.get("bg")
+        )
+        outer.pack(
+            fill=ttk.BOTH,
+            expand=True,
+            padx=(0, 8),
+            pady=(0, 8)
+        )
+
+        # SAFE ZONE: keeps native widgets away from rounded corners
+        safe = ttk.Frame(
+            outer,
+            style="TFrame"
+        )
+        safe.pack(fill=ttk.BOTH, expand=True, padx=15, pady=15)
+
+        # INNER: scrolling container (optional)
+        if scrollable:
+            inner = ScrolledFrame(
+                safe,
+                width=width,
+                height=self.height
+            )
+            inner.pack(fill=ttk.BOTH, expand=True)
+            content_parent = inner
+        else:
+            content_parent = safe
+
+        # CONTENT FRAME
+        main = ttk.Frame(
+            content_parent,
+            width=width,
+            height=self.height
+        )
+        main.pack(
+            fill=ttk.BOTH,
+            expand=True,
+            padx=(8, 22) if scrollable else padx,
+            pady=8 if scrollable else pady
+        )
 
         return main
+
     
     def clear_everything(self):
         for widget in self.root.winfo_children():
@@ -47,7 +90,7 @@ class Layout:
     
     def clear(self):
         for widget in self.root.winfo_children():
-            if isinstance(widget, ttk.Frame):
+            if isinstance(widget, ttk.Frame) or isinstance(widget, ScrolledFrame) or isinstance(widget, ttk.Canvas) or isinstance(widget, RoundedFrame):
                 widget.destroy()
 
         titlebar = self.titlebar.draw()
