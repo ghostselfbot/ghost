@@ -26,6 +26,10 @@ class GhostGUI:
         enable_high_dpi_awareness()
         
         self.root = ttk.tk.Tk()
+        
+        # hide the window until ready
+        self.root.withdraw()
+        
         self.root.size = self.size
         self.root.title("Ghost")
         # self.root.resizable(False, False)
@@ -56,7 +60,7 @@ class GhostGUI:
             self.root.configure(bg="#ff00ff")
             self.root.attributes("-transparentcolor", "#ff00ff")
         else:
-            self.root.attributes("-alpha", 0)
+            self.root.attributes("-alpha", 1)
         
         self.root.focus()
         
@@ -96,6 +100,10 @@ class GhostGUI:
 
             # When restored, remove decorations again
             self.root.after(10, lambda: self.root.overrideredirect(True))
+            
+        self.root.update_idletasks()
+        # bring window to front
+        self.root.after(500, lambda: self.root.deiconify())
 
     def _create_resize_grips(self):
         self.resize_grips = {}
