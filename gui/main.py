@@ -49,8 +49,12 @@ class GhostGUI:
         self.root.style.configure("TButton", font=("Host Grotesk",))
         
         self.root.overrideredirect(True)
-        self.root.attributes("-transparent", True)
-        self.root.configure(bg="systemTransparent")
+        if sys.platform == "darwin":
+            self.root.attributes("-transparent", True)
+            self.root.configure(bg="systemTransparent")
+        else:
+            self.root.configure(bg="#ff00ff")
+            self.root.attributes("-transparentcolor", "#ff00ff")
         
         self.root.focus()
         
@@ -66,7 +70,7 @@ class GhostGUI:
         self.sidebar.add_button("tools", self.draw_tools)
         self.sidebar.add_button("logout", self.quit)
         
-        self.titlebar        = Titlebar(self.root)
+        self.titlebar        = Titlebar(self.root, self.images)
         self.layout          = Layout(self.root, self.sidebar, self.titlebar)
         self.loading_page    = LoadingPage(self.root)
         self.onboarding_page = OnboardingPage(self.root, self.run, self.bot_controller)
@@ -81,12 +85,13 @@ class GhostGUI:
         if bot_controller:
             self.bot_controller.set_gui(self)
             
-        self.root.overrideredirect(False)
-        self.layout.center_window(self.size[0], self.size[1])
-        self.root.update_idletasks()
+        if sys.platform == "darwin":
+            self.root.overrideredirect(False)
+            self.layout.center_window(self.size[0], self.size[1])
+            self.root.update_idletasks()
 
-        # When restored, remove decorations again
-        self.root.after(10, lambda: self.root.overrideredirect(True))
+            # When restored, remove decorations again
+            self.root.after(10, lambda: self.root.overrideredirect(True))
 
     def _add_resize_grips(self):
         bottom_resize_zone = RoundedFrame(self.root, radius=(0, 0, 25, 25), background=self.border_color)
