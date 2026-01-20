@@ -95,11 +95,11 @@ class GhostGUI:
         main = self.layout.main()
         self.home_page.draw(main, restart=restart, start=start)
     
-    def draw_console(self):
-        self.sidebar.set_current_page("console")
-        self.layout.clear()
-        main = self.layout.main()
-        self.console.draw(main)
+    # def draw_console(self):
+    #     self.sidebar.set_current_page("console")
+    #     self.layout.clear()
+    #     main = self.layout.main()
+    #     self.console.draw(main)
         
     def draw_settings(self):
         self.sidebar.set_current_page("settings")
@@ -110,7 +110,7 @@ class GhostGUI:
     def draw_scripts(self):
         self.sidebar.set_current_page("scripts")
         self.layout.clear()
-        main = self.layout.main(padx=(23, 24))
+        main = self.layout.main()
         self.scripts_page.draw(main)
         
     def draw_tools(self):

@@ -73,7 +73,7 @@ class Sidebar:
     
         self.buttons = {
             "home": self._create_button(self.images.get("home"), "home", self.button_cmds["home"], 0),
-            "console": self._create_button(self.images.get("console"), "console", self.button_cmds["console"], 1),
+            # "console": self._create_button(self.images.get("console"), "console", self.button_cmds["console"], 1),
             "settings": self._create_button(self.images.get("settings"), "settings", self.button_cmds["settings"], 2),
             "scripts": self._create_button(self.images.get("scripts"), "scripts", self.button_cmds["scripts"], 3),
             "tools": self._create_button(self.images.get("tools"), "tools", self.button_cmds["tools"], 4),

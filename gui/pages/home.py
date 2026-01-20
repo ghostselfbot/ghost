@@ -7,10 +7,11 @@ from gui.helpers import Images
 from utils.config import VERSION, CHANGELOG, MOTD, Config
 
 class HomePage:
-    def __init__(self, root, bot_controller, _restart_bot):
+    def __init__(self, root, bot_controller, _restart_bot, console):
         self.root = root
         self.bot_controller = bot_controller
         self._restart_bot = _restart_bot
+        self.console = console
         self.width = root.winfo_width()
         self.height = root.winfo_height()
         self.restart = False
@@ -90,7 +91,7 @@ class HomePage:
         
     def _draw_header(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="secondary.TFrame")
-        wrapper.pack(fill=ttk.BOTH, expand=False)
+        wrapper.pack(fill=ttk.BOTH, expand=False, pady=(0, 10))
         
         if self.avatar and not self.restart:
             avatar = ttk.Label(wrapper, image=self.avatar)
@@ -189,9 +190,11 @@ class HomePage:
         self.avatar = self.bot_controller.get_avatar()
         self._draw_header(parent)
         
-        self.details_wrapper = self._draw_details_wrapper(parent)
-        self._draw_account_details(self.details_wrapper)
-        self._draw_bot_details(self.details_wrapper)
+        # self.details_wrapper = self._draw_details_wrapper(parent)
+        # self._draw_account_details(self.details_wrapper)
+        # self._draw_bot_details(self.details_wrapper)
         
-        self._update_bot_details()
-        self._update_account_details()
+        # self._update_bot_details()
+        # self._update_account_details()
+        
+        self.console.draw(parent)
