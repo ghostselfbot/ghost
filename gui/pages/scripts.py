@@ -60,7 +60,7 @@ class ScriptsPage:
         if current_scripts != previous_scripts:
             try:
                 if not self.restart_warning.winfo_ismapped():
-                    self.restart_warning.pack(fill=ttk.X, padx=2, side=ttk.TOP, pady=(10, 0))
+                    self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
             except:
                 pass
         else:
@@ -314,11 +314,11 @@ class ScriptsPage:
     
     def draw(self, parent):
         self.restart_warning = self._draw_restart_warning(parent)
-        self.restart_warning.pack(fill=ttk.X, padx=2, side=ttk.TOP, pady=(10, 0))
+        self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
         self.restart_warning.pack_forget()
         
         header = self._draw_header(parent)
-        header.pack(fill=ttk.X, padx=2)
+        header.pack(fill=ttk.X)
         
         ttk.Separator(parent, orient="horizontal").pack(fill=ttk.X, pady=(20, 16), padx=4)
         
