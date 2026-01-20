@@ -13,17 +13,18 @@ from utils.files import resource_path
 from utils import uninstall_fonts
 
 from gui.pages import HomePage, LoadingPage, SettingsPage, OnboardingPage, ScriptsPage, ToolsPage
-from gui.components import Sidebar, Console
+from gui.components import Sidebar, Console, Titlebar
 from gui.helpers import Images, Layout
 
 class GhostGUI:
     def __init__(self, bot_controller):
-        self.size = (600, 530)
+        self.size = (650, 530)
         self.bot_controller = bot_controller
             
         enable_high_dpi_awareness()
         
         self.root = ttk.tk.Tk()
+        self.root.size = self.size
         self.root.title("Ghost")
         # self.root.resizable(False, False)
         if os.name == "nt":
@@ -45,23 +46,30 @@ class GhostGUI:
         self.root.style.configure("TLabel", font=("Host Grotesk",))
         self.root.style.configure("TButton", font=("Host Grotesk",))
         
+        self.root.overrideredirect(True)
+        self.root.attributes("-transparent", True)
+        self.root.configure(bg="systemTransparent")
+        
+        self.root.focus()
+        
         self.cfg      = Config()
         self.notifier = Notifier()
         self.images   = Images()
         self.sidebar  = Sidebar(self.root)
         
         self.sidebar.add_button("home", self.draw_home)
-        self.sidebar.add_button("console", self.draw_console)
+        # self.sidebar.add_button("console", self.draw_console)
         self.sidebar.add_button("settings", self.draw_settings)
         self.sidebar.add_button("scripts", self.draw_scripts)
         self.sidebar.add_button("tools", self.draw_tools)
         self.sidebar.add_button("logout", self.quit)
         
-        self.layout          = Layout(self.root, self.sidebar)
+        self.titlebar        = Titlebar(self.root)
+        self.layout          = Layout(self.root, self.sidebar, self.titlebar)
         self.loading_page    = LoadingPage(self.root)
         self.onboarding_page = OnboardingPage(self.root, self.run, self.bot_controller)
         self.console         = Console(self.root, self.bot_controller)
-        self.home_page       = HomePage(self.root, self.bot_controller, self._restart_bot)
+        self.home_page       = HomePage(self.root, self.bot_controller, self._restart_bot, self.console)
         self.settings_page   = SettingsPage(self.root, self.bot_controller)
         self.scripts_page    = ScriptsPage(self, self.bot_controller, self.images)
         self.tools_page      = ToolsPage(self.root, self.bot_controller, self.images, self.layout)
@@ -70,6 +78,13 @@ class GhostGUI:
         
         if bot_controller:
             self.bot_controller.set_gui(self)
+            
+        self.root.overrideredirect(False)
+        self.layout.center_window(self.size[0], self.size[1])
+        self.root.update_idletasks()
+
+        # When restored, remove decorations again
+        self.root.after(10, lambda: self.root.overrideredirect(True))
 
     def _show_window(self):
         self.root.deiconify()

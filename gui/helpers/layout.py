@@ -18,11 +18,12 @@ def center_window(root, width, height):
     root.focus_force()
 
 class Layout:
-    def __init__(self, root, sidebar):
+    def __init__(self, root, sidebar, titlebar):
         self.root = root
         self.width = root.winfo_width()
         self.height = root.winfo_height()
         self.sidebar = sidebar
+        self.titlebar = titlebar
         
     def main(self, scrollable=False, padx=25, pady=25):
         width = self.width - (self.width // 100)
@@ -48,6 +49,9 @@ class Layout:
         for widget in self.root.winfo_children():
             if isinstance(widget, ttk.Frame):
                 widget.destroy()
+
+        titlebar = self.titlebar.draw()
+        titlebar.pack(fill=ttk.X, side=ttk.TOP)
 
         sidebar = self.sidebar.draw()
         sidebar.pack(side=ttk.LEFT, fill=ttk.BOTH)
