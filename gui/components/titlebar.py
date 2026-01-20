@@ -33,12 +33,20 @@ class Titlebar:
         self.root.event_generate("<Motion>", warp=True, x=x+1, y=y)
         self.root.event_generate("<Motion>", warp=True, x=x, y=y)
 
+    def _close(self):
+        if sys.platform == "darwin":
+            self.root.update_idletasks()
+            self.root.overrideredirect(False)
+            self.root.withdraw()
+        else:
+            self.root.quit()
+
     def _minimize(self):
         self.root.update_idletasks()
         self.root.overrideredirect(False)
         
         if sys.platform == "darwin":
-            self.root.withdraw()
+            self.root.iconify()
         elif sys.platform == "win32":
             self.root.iconify()
             def restore_override():
@@ -97,16 +105,16 @@ class Titlebar:
             close_btn = ttk.Label(inner_wrapper, text="●", foreground="#FF5F57", font=("Arial", 25))
             close_btn.configure(background=Style.WINDOW_BORDER.value)
             close_btn.pack(side=ttk.LEFT, padx=(0, 0))
-            close_btn.bind("<Button-1>", lambda e: self.root.quit())
+            close_btn.bind("<Button-1>", lambda e: self._close())
             close_btn.bind("<Enter>", lambda e: close_btn.configure(foreground="#CC4940"))
             close_btn.bind("<Leave>", lambda e: close_btn.configure(foreground="#FF5F57"))
             
-            minimize_btn = ttk.Label(inner_wrapper, text="●", foreground="#FFBD2E", font=("Arial", 25))
+            minimize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 25))
             minimize_btn.configure(background=Style.WINDOW_BORDER.value)
             minimize_btn.pack(side=ttk.LEFT, padx=(0, 0))
-            minimize_btn.bind("<Button-1>", lambda e: self._minimize())
-            minimize_btn.bind("<Enter>", lambda e: minimize_btn.configure(foreground="#CC9A26"))
-            minimize_btn.bind("<Leave>", lambda e: minimize_btn.configure(foreground="#FFBD2E"))
+            # minimize_btn.bind("<Button-1>", lambda e: self._minimize())
+            # minimize_btn.bind("<Enter>", lambda e: minimize_btn.configure(foreground="#CC9A26"))
+            # minimize_btn.bind("<Leave>", lambda e: minimize_btn.configure(foreground="#FFBD2E"))
             
             maximize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 25))
             maximize_btn.configure(background=Style.WINDOW_BORDER.value)
