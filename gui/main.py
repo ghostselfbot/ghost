@@ -60,6 +60,8 @@ class GhostGUI:
         
         self.root.focus()
         
+        self._create_resize_grips()
+        
         self.cfg      = Config()
         self.notifier = Notifier()
         self.images   = Images()
@@ -73,7 +75,7 @@ class GhostGUI:
         self.sidebar.add_button("logout", self.quit)
         
         self.titlebar        = Titlebar(self.root, self.images)
-        self.layout          = Layout(self.root, self.sidebar, self.titlebar)
+        self.layout          = Layout(self.root, self.sidebar, self.titlebar, self.resize_grips)
         self.loading_page    = LoadingPage(self.root)
         self.onboarding_page = OnboardingPage(self.root, self.run, self.bot_controller)
         self.console         = Console(self.root, self.bot_controller)
@@ -95,39 +97,49 @@ class GhostGUI:
             # When restored, remove decorations again
             self.root.after(10, lambda: self.root.overrideredirect(True))
 
-    def _add_resize_grips(self):
-        bottom_resize_zone = RoundedFrame(self.root, radius=(0, 0, 25, 25), background=self.border_color)
-        bottom_resize_zone.set_height(self.resize_grip_size)
-        bottom_resize_zone.set_width(self.root.winfo_width())
-        bottom_resize_zone.place(x=0, y=self.root.winfo_height() - self.resize_grip_size)
-        ttk.tk.Misc.lift(bottom_resize_zone)
-        bottom_resize_zone.bind("<B1-Motion>", self._resize_window)
-        bottom_resize_zone.bind("<Enter>", lambda e: self.root.config(cursor="sb_v_double_arrow"))
-        bottom_resize_zone.bind("<Leave>", lambda e: self.root.config(cursor=""))
+    def _create_resize_grips(self):
+        self.resize_grips = {}
+
+        # Bottom grip
+        bottom = RoundedFrame(
+            self.root,
+            radius=(0, 0, 25, 25),
+            background=self.border_color
+        )
+        bottom.bind("<B1-Motion>", self._resize_window)
+        bottom.bind("<Enter>", lambda e: self.root.config(cursor="sb_v_double_arrow"))
+        bottom.bind("<Leave>", lambda e: self.root.config(cursor=""))
+        self.resize_grips["bottom"] = bottom
+
+        # Right grip
+        right = RoundedFrame(
+            self.root,
+            radius=(0, 25, 25, 0),
+            background=self.border_color
+        )
+        right.bind("<B1-Motion>", self._resize_window)
+        right.bind("<Enter>", lambda e: self.root.config(cursor="sb_h_double_arrow"))
+        right.bind("<Leave>", lambda e: self.root.config(cursor=""))
+        self.resize_grips["right"] = right
+
+        self._position_resize_grips()
         
-        # top_resize_zone = RoundedFrame(self.root, radius=(25, 25, 0, 0), background=self.border_color)
-        # top_resize_zone.set_height(self.resize_grip_size // 2)
-        # top_resize_zone.set_width(self.root.winfo_width())
-        # top_resize_zone.place(x=0, y=0)
-        # ttk.tk.Misc.lift(top_resize_zone)
-        # top_resize_zone.bind("<B1-Motion>", self._resize_window)
-        
-        # left_resize_zone = RoundedFrame(self.root, radius=(25, 0, 0, 25), background=self.border_color)
-        # left_resize_zone.set_height(self.root.winfo_height())
-        # left_resize_zone.set_width(self.resize_grip_size)
-        # left_resize_zone.place(x=0, y=0)
-        # ttk.tk.Misc.lift(left_resize_zone)
-        # left_resize_zone.bind("<B1-Motion>", self._resize_window)
-        
-        right_resize_zone = RoundedFrame(self.root, radius=(0, 25, 25, 0), background=self.border_color)
-        right_resize_zone.set_height(self.root.winfo_height())
-        right_resize_zone.set_width(self.resize_grip_size)
-        right_resize_zone.place(x=self.root.winfo_width() - self.resize_grip_size, y=0)
-        ttk.tk.Misc.lift(right_resize_zone)
-        right_resize_zone.bind("<B1-Motion>", self._resize_window)
-        right_resize_zone.bind("<Enter>", lambda e: self.root.config(cursor="sb_h_double_arrow"))
-        right_resize_zone.bind("<Leave>", lambda e: self.root.config(cursor=""))
-        
+    def _position_resize_grips(self):
+        w = self.root.winfo_width()
+        h = self.root.winfo_height()
+        s = self.resize_grip_size
+
+        self.resize_grips["bottom"].place(
+            x=0, y=h - s, width=w, height=s
+        )
+
+        self.resize_grips["right"].place(
+            x=w - s, y=0, width=s, height=h
+        )
+
+        for grip in self.resize_grips.values():
+            ttk.tk.Misc.lift(grip)
+            
     def _resize_window(self, event):
         # resize the window based on mouse position, save the new positions so resizing continues smoothly
         x = self.root.winfo_pointerx()
@@ -136,6 +148,7 @@ class GhostGUI:
         self.root.update_idletasks()
         
         self.size = (self.root.winfo_width(), self.root.winfo_height())
+        self._position_resize_grips()
 
     def _show_window(self):
         self.root.deiconify()
@@ -145,7 +158,7 @@ class GhostGUI:
         self.layout.clear()
         main = self.layout.main()
         self.home_page.draw(main, restart=restart, start=start)
-        self._add_resize_grips()
+        self._position_resize_grips()
     
     # def draw_console(self):
     #     self.sidebar.set_current_page("console")
@@ -158,21 +171,21 @@ class GhostGUI:
         self.layout.clear()
         main = self.layout.main(scrollable=True)
         self.settings_page.draw(main)
-        self._add_resize_grips()
+        self._position_resize_grips()
         
     def draw_scripts(self):
         self.sidebar.set_current_page("scripts")
         self.layout.clear()
         main = self.layout.main()
         self.scripts_page.draw(main)
-        self._add_resize_grips()
+        self._position_resize_grips()
         
     def draw_tools(self):
         self.sidebar.set_current_page("tools")
         self.layout.clear()
         main = self.layout.main(scrollable=True)
         self.tools_page.draw(main)
-        self._add_resize_grips()
+        self._position_resize_grips()
         
     # def draw_loading(self):
     #     self.layout.hide_titlebar()

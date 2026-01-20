@@ -19,12 +19,13 @@ def center_window(root, width, height):
     root.focus_force()
 
 class Layout:
-    def __init__(self, root, sidebar, titlebar):
+    def __init__(self, root, sidebar, titlebar, resize_grips):
         self.root = root
         self.width = root.winfo_width()
         self.height = root.winfo_height()
         self.sidebar = sidebar
         self.titlebar = titlebar
+        self.resize_grips = resize_grips
         self.border_color = "#171616"
         
     def main(self, scrollable=False, padx=10, pady=10):
@@ -90,6 +91,9 @@ class Layout:
     
     def clear(self):
         for widget in self.root.winfo_children():
+            # ignore resize grips
+            if widget in self.resize_grips.values():
+                continue
             if isinstance(widget, ttk.Frame) or isinstance(widget, ScrolledFrame) or isinstance(widget, ttk.Canvas) or isinstance(widget, RoundedFrame):
                 widget.destroy()
 
