@@ -1,4 +1,5 @@
 import abc
+import sys
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame
 
@@ -26,7 +27,7 @@ class ToolPage(abc.ABC):
         back_button.bind("<Button-1>", lambda e: self.go_back())
         back_button.grid(row=0, column=1, sticky=ttk.W, padx=(0, 10))
 
-        page_name = ttk.Label(wrapper, text=self.title, font=("Host Grotesk", 16, "bold"))
+        page_name = ttk.Label(wrapper, text=self.title, font=("Host Grotesk", 14 if sys.platform != "darwin" else 16, "bold"))
         page_name.grid(row=0, column=2, sticky=ttk.W)
 
         return wrapper

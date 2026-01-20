@@ -84,7 +84,7 @@ class ToolsPage:
             page_wrapper.pack(fill="x", expand=True, pady=(0, 10))
             page_wrapper.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
 
-            page_title = ttk.Label(page_wrapper, text=page["name"], font=("Host Grotesk", 14 if sys.platform != "darwin" else 20, "bold"))
+            page_title = ttk.Label(page_wrapper, text=page["name"], font=("Host Grotesk", 14 if sys.platform != "darwin" else 18, "bold"))
             page_title.configure(background=self.root.style.colors.get("secondary"))
             page_title.grid(row=0, column=0, sticky=ttk.NSEW, padx=15, pady=(15, 15))
             page_title.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
