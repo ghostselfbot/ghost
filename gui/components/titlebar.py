@@ -92,12 +92,14 @@ class Titlebar:
             minimize_btn.bind("<Enter>", lambda e: minimize_btn.configure(foreground="#CC9A26"))
             minimize_btn.bind("<Leave>", lambda e: minimize_btn.configure(foreground="#FFBD2E"))
             
-            maximize_btn = ttk.Label(inner_wrapper, text="●", foreground="#28C940", font=("Arial", 25))
+            maximize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 25))
             maximize_btn.configure(background=self.bg_color)
             maximize_btn.pack(side=ttk.LEFT, padx=(0, 5))
-            maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#20A833"))
-            maximize_btn.bind("<Leave>", lambda e: maximize_btn.configure(foreground="#28C940"))
-            maximize_btn.bind("<Button-1>", lambda e: self._maximize())
+            # maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#20A833"))
+            # maximize_btn.bind("<Leave>", lambda e: maximize_btn.configure(foreground="#28C940"))
+            maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#3b3a3a"))
+            maximize_btn.bind("<Leave>", lambda e: maximize_btn.configure(foreground="#4f4c4c"))
+            # maximize_btn.bind("<Button-1>", lambda e: self._maximize())
             
         else:
             title = ttk.Label(inner_wrapper, text="Ghost")
