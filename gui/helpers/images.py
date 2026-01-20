@@ -73,7 +73,7 @@ class Images:
 
         ICON_CONFIG = {
             "bigger": ["scripts"],
-            "small": ["trash", "github", "restart", "checkmark", "left-chevron", "file-signature", "trash-white", "right-chevron"],
+            "small": ["trash", "github", "restart", "checkmark", "left-chevron", "file-signature", "trash-white", "right-chevron", "titlebar-ico"],
             "tiny": ["submit", "max", "min", "search"],
             "smaller": ["folder-open", "plus", "reset", "play", "stop"],
             "logo": ["ghost-logo"],
@@ -109,6 +109,7 @@ class Images:
             "reset": "data/icons/rotate-left-solid.png",
             "play": "data/icons/play-solid.png",
             "stop": "data/icons/stop-solid.png",
+            "titlebar-ico": "data/icon-win.png"
         }
 
         for key, path in ICON_PATHS.items():

@@ -3,8 +3,9 @@ import ttkbootstrap as ttk
 from gui.components import RoundedFrame
 
 class Titlebar:
-    def __init__(self, root):
+    def __init__(self, root, images):
         self.root = root
+        self.images = images
         self._offset_x = 0
         self._offset_y = 0
         self._dragging = False
@@ -32,8 +33,14 @@ class Titlebar:
         self.root.event_generate("<Motion>", warp=True, x=x, y=y)
 
     def _minimize(self):
-        self.root.withdraw()
-        self.root.bind("<FocusIn>", self._restore_once, add="+")
+        if sys.platform == "darwin":
+            self.root.withdraw()
+            self.root.bind("<FocusIn>", self._restore_once, add="+")
+        else:
+            self.root.overrideredirect(False)
+            self.root.deiconify()
+            self.root.overrideredirect(True)
+            self.root.update_idletasks()
 
     def _restore_once(self, event=None):
         self.root.unbind("<FocusIn>")
@@ -69,7 +76,8 @@ class Titlebar:
         )
 
         inner_wrapper = RoundedFrame(titlebar, background=self.bg_color, radius=0)
-        inner_wrapper.pack(fill=ttk.BOTH, expand=True, pady=0, padx=8)
+        padx = 8
+        pady = 8
 
         # Bind to all titlebar surfaces
         for widget in (titlebar, inner_wrapper):
@@ -78,6 +86,8 @@ class Titlebar:
             widget.bind("<ButtonRelease-1>", self._on_release)
 
         if sys.platform == "darwin":
+            pady = 0
+
             close_btn = ttk.Label(inner_wrapper, text="●", foreground="#FF5F57", font=("Arial", 25))
             close_btn.configure(background=self.bg_color)
             close_btn.pack(side=ttk.LEFT, padx=(0, 0))
@@ -102,18 +112,24 @@ class Titlebar:
             # maximize_btn.bind("<Button-1>", lambda e: self._maximize())
             
         else:
-            title = ttk.Label(inner_wrapper, text="Ghost")
+            ico = ttk.Label(inner_wrapper, image=self.images.images["titlebar-ico"])
+            ico.configure(background=self.bg_color)
+            ico.pack(side=ttk.LEFT, padx=(5, 0))
+
+            title = ttk.Label(inner_wrapper, text="Ghost", font=("Host Grotesk", 10))
             title.configure(background=self.bg_color)
             title.pack(side=ttk.LEFT, padx=(5, 0))
             
-            close_btn = ttk.Label(inner_wrapper, text="✕")
+            close_btn = ttk.Label(inner_wrapper, text="✕", font=("Host Grotesk", 10))
             close_btn.configure(background=self.bg_color)
             close_btn.pack(side=ttk.RIGHT, padx=(0, 5))
             close_btn.bind("<Button-1>", lambda e: self.root.quit())
             
-            minimize_btn = ttk.Label(inner_wrapper, text="—")
+            minimize_btn = ttk.Label(inner_wrapper, text="—", font=("Host Grotesk", 10))
             minimize_btn.configure(background=self.bg_color)
             minimize_btn.pack(side=ttk.RIGHT, padx=(0, 7))
             minimize_btn.bind("<Button-1>", lambda e: self._minimize())
 
+
+        inner_wrapper.pack(fill=ttk.BOTH, expand=True, pady=pady, padx=padx)
         return titlebar
