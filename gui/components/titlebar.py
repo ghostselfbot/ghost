@@ -34,17 +34,20 @@ class Titlebar:
         self.root.event_generate("<Motion>", warp=True, x=x, y=y)
 
     def _minimize(self):
+        self.root.update_idletasks()
         self.root.overrideredirect(False)
-        self.root.withdraw()
-        # if sys.platform == "darwin":
-        #     self.root.withdraw()
-        #     self.root.bind("<FocusIn>", self._restore_once, add="+")
-        # else:
-        #     self.root.overrideredirect(False)
-        #     self.root.deiconify()
-        #     self.root.overrideredirect(True)
-        #     self.root.update_idletasks()
-
+        
+        if sys.platform == "darwin":
+            self.root.withdraw()
+        elif sys.platform == "win32":
+            self.root.iconify()
+            def restore_override():
+                if not self.root.state() == 'iconic':
+                    self.root.overrideredirect(True)
+                else:
+                    self.root.after(100, restore_override)
+            self.root.after(100, restore_override)
+            
     def _restore_once(self, event=None):
         self.root.unbind("<FocusIn>")
         self.root.deiconify()
