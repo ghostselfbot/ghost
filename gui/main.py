@@ -18,27 +18,26 @@ from gui.helpers import Images, Layout
 
 class GhostGUI:
     def __init__(self, bot_controller):
-        self.resize_grip_size = 10
+        self.resize_grip_size = 5
         self.size = (650, 530)
         self.border_color = "#171616"
         self.bot_controller = bot_controller
+        self.resize_grips = {}
             
         enable_high_dpi_awareness()
         
         self.root = ttk.tk.Tk()
-        
-        # hide the window until ready
-        self.root.withdraw()
-        
         self.root.size = self.size
         self.root.title("Ghost")
-        # self.root.resizable(False, False)
+        
+        self.root.overrideredirect(False)
+        self.root.withdraw()
+        
         if os.name == "nt":
             self.root.iconbitmap(resource_path("data/icon.ico"))
-        self.root.geometry(f"{self.size[0]}x{self.size[1]}")
+        
         self.root.minsize(self.size[0], self.size[1])
         self.root.protocol("WM_DELETE_WINDOW", self.quit)
-        self.root.createcommand('::tk::mac::ReopenApplication', self._show_window)
         
         self.root.style = ttk.Style()
         # self.root.style.theme_use("darkly")
@@ -52,7 +51,6 @@ class GhostGUI:
         self.root.style.configure("TLabel", font=("Host Grotesk",))
         self.root.style.configure("TButton", font=("Host Grotesk",))
         
-        self.root.overrideredirect(True)
         if sys.platform == "darwin":
             self.root.attributes("-transparent", True)
             self.root.configure(bg="systemTransparent")
@@ -61,10 +59,6 @@ class GhostGUI:
             self.root.attributes("-transparentcolor", "#ff00ff")
         else:
             self.root.attributes("-alpha", 1)
-        
-        self.root.focus()
-        
-        self._create_resize_grips()
         
         self.cfg      = Config()
         self.notifier = Notifier()
@@ -77,6 +71,9 @@ class GhostGUI:
         self.sidebar.add_button("scripts", self.draw_scripts)
         self.sidebar.add_button("tools", self.draw_tools)
         self.sidebar.add_button("logout", self.quit)
+        
+        if self.cfg.get("token") != "":
+            self._create_resize_grips()
         
         self.titlebar        = Titlebar(self.root, self.images)
         self.layout          = Layout(self.root, self.sidebar, self.titlebar, self.resize_grips)
@@ -94,17 +91,26 @@ class GhostGUI:
             self.bot_controller.set_gui(self)
             
         if sys.platform == "darwin":
-            self.root.overrideredirect(False)
             self.layout.center_window(self.size[0], self.size[1])
             self.root.update_idletasks()
-
-            # When restored, remove decorations again
-            self.root.after(10, lambda: self.root.overrideredirect(True))
             
         self.root.update_idletasks()
-        # bring window to front
-        self.root.after(500, lambda: self.root.deiconify())
+        self.root.createcommand('::tk::mac::ReopenApplication', self._show_window)
+        self.root.bind("<Map>", lambda _: self._window_mapped())
+        
+        self.root.after(450, self._show_window)
+        self.root.after(500, self._window_mapped)
 
+    def _window_mapped(self):
+        self.root.update_idletasks()
+        self.root.overrideredirect(True)
+        self.root.state("normal")
+        
+    def _show_window(self):
+        self.root.update_idletasks()
+        self.root.deiconify()
+        self.root.overrideredirect(True)
+        
     def _create_resize_grips(self):
         self.resize_grips = {}
 
@@ -157,9 +163,6 @@ class GhostGUI:
         
         self.size = (self.root.winfo_width(), self.root.winfo_height())
         self._position_resize_grips()
-
-    def _show_window(self):
-        self.root.deiconify()
         
     def draw_home(self, restart=False, start=False):
         self.sidebar.set_current_page("home")

@@ -33,14 +33,16 @@ class Titlebar:
         self.root.event_generate("<Motion>", warp=True, x=x, y=y)
 
     def _minimize(self):
-        if sys.platform == "darwin":
-            self.root.withdraw()
-            self.root.bind("<FocusIn>", self._restore_once, add="+")
-        else:
-            self.root.overrideredirect(False)
-            self.root.deiconify()
-            self.root.overrideredirect(True)
-            self.root.update_idletasks()
+        self.root.overrideredirect(False)
+        self.root.withdraw()
+        # if sys.platform == "darwin":
+        #     self.root.withdraw()
+        #     self.root.bind("<FocusIn>", self._restore_once, add="+")
+        # else:
+        #     self.root.overrideredirect(False)
+        #     self.root.deiconify()
+        #     self.root.overrideredirect(True)
+        #     self.root.update_idletasks()
 
     def _restore_once(self, event=None):
         self.root.unbind("<FocusIn>")
