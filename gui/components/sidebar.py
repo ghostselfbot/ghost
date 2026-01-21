@@ -24,12 +24,12 @@ class Sidebar:
         self.current_page = page_name
     
     def _hover_enter(self, button_wrapper, button, page_name):
-        background = "#242424" if self.current_page != page_name else self.root.style.colors.get("secondary")
+        background = self.root.style.colors.get("secondary") if self.current_page != page_name else "#1F1F1F"
         button.configure(background=background)
         button_wrapper.set_background(background)
         
     def _hover_leave(self, button_wrapper, button, page_name):
-        background = Style.WINDOW_BORDER.value if self.current_page != page_name else self.root.style.colors.get("secondary")
+        background = Style.WINDOW_BORDER.value if self.current_page != page_name else "#1F1F1F"
         button.configure(background=background)
         button_wrapper.set_background(background)
     
@@ -39,7 +39,7 @@ class Sidebar:
         
         button_wrapper = RoundedFrame(
             self.sidebar,
-            radius=15,
+            radius=20,
             background=bg_color
         )
         
