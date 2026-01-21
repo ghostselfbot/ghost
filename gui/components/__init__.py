@@ -6,3 +6,4 @@ from .settings_frame import SettingsFrame
 from .settings_panel import SettingsPanel
 from .titlebar import Titlebar
 from .tool_page import ToolPage
+from .dropdown_menu import DropdownMenu
