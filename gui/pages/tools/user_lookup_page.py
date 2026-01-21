@@ -12,6 +12,8 @@ class UserLookupPage(ToolPage):
         self.wrapper = None  # Initialize wrapper to None
         
     def _search_user(self, user_id):
+        if not user_id.isdigit():
+            return  # Invalid user ID
         user = self.bot_controller.get_user_from_id(user_id)
         self.user = user
         
