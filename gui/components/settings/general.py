@@ -3,8 +3,8 @@ import utils.console as console
 from gui.components import SettingsPanel, DropdownMenu, RoundedButton
 
 class GeneralPanel(SettingsPanel):
-    def __init__(self, root, parent, bot_controller, images, config):
-        super().__init__(root, parent, "General", images.get("settings"), collapsed=False)
+    def __init__(self, root, parent, bot_controller, images, config, width=None):
+        super().__init__(root, parent, "General", images.get("settings"), collapsed=False, width=width)
         self.bot_controller = bot_controller
         self.cfg = config
         self.config_tk_entries = {}
@@ -62,8 +62,6 @@ class GeneralPanel(SettingsPanel):
 
             if index == 0:
                 padding = (padding[0], (10, 2))
-            elif index == len(self.config_entries) - 1:
-                padding = (padding[0], (2, 10))
 
             label = ttk.Label(self.body, text=value)
             label.configure(background=self.root.style.colors.get("dark"))

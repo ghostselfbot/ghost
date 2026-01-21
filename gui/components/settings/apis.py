@@ -3,8 +3,8 @@ import utils.console as console
 from gui.components import SettingsPanel
 
 class APIsPanel(SettingsPanel):
-    def __init__(self, root, parent, images, config):
-        super().__init__(root, parent, "APIs", images.get("apis"))
+    def __init__(self, root, parent, images, config, width=None):
+        super().__init__(root, parent, "APIs", images.get("apis"), width=width, collapsed=False)
         self.cfg = config
         self.api_keys_tk_entries = {}
         self.api_keys_entries = {

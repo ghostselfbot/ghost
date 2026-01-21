@@ -3,8 +3,8 @@ import utils.console as console
 from gui.components import SettingsPanel, RoundedFrame
 
 class SnipersPanel(SettingsPanel):
-    def __init__(self, root, parent, images, config):
-        super().__init__(root, parent, "Snipers", images.get("snipers"))
+    def __init__(self, root, parent, images, config, width=None):
+        super().__init__(root, parent, "Snipers", images.get("snipers"), width=width, collapsed=False)
         self.cfg = config
         self.images = images
         self.snipers = None
