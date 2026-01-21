@@ -3,7 +3,7 @@ import sys
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame
 
-class ToolPage(abc.ABC):
+class ToolPage:
     def __init__(self, toolspage, root, bot_controller, images, layout, title, frame=True):
         self.toolspage = toolspage
         self.root = root

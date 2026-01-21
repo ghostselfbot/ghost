@@ -109,14 +109,14 @@ class Titlebar:
             close_btn.bind("<Enter>", lambda e: close_btn.configure(foreground="#CC4940"))
             close_btn.bind("<Leave>", lambda e: close_btn.configure(foreground="#FF5F57"))
             
-            minimize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 25))
+            minimize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 28))
             minimize_btn.configure(background=Style.WINDOW_BORDER.value)
             minimize_btn.pack(side=ttk.LEFT, padx=(0, 0))
             # minimize_btn.bind("<Button-1>", lambda e: self._minimize())
             # minimize_btn.bind("<Enter>", lambda e: minimize_btn.configure(foreground="#CC9A26"))
             # minimize_btn.bind("<Leave>", lambda e: minimize_btn.configure(foreground="#FFBD2E"))
             
-            maximize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 25))
+            maximize_btn = ttk.Label(inner_wrapper, text="●", foreground="#4f4c4c", font=("Arial", 28))
             maximize_btn.configure(background=Style.WINDOW_BORDER.value)
             maximize_btn.pack(side=ttk.LEFT, padx=(0, 5))
             # maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#20A833"))
