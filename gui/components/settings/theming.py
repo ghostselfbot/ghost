@@ -97,22 +97,30 @@ class ThemingPanel(SettingsPanel):
         
         return wrapper
         
+    def toggle_create_theme_button(self, state):
+        if state:
+            self.create_button.set_state("normal")
+        else:
+            self.create_button.set_state("disabled")
+        
     def draw(self):
         self.themes = self.cfg.get_themes()
         self.theme_dict = self.cfg.theme.to_dict()
         
         #-------
         
-        create_label = ttk.Label(self.body, text="Create a new theme")
+        create_label = ttk.Label(self.body, text="New theme name")
         create_label.configure(background=self.root.style.colors.get("dark"))
         create_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=(10, 0))
         
         self.create_entry = ttk.Entry(self.body, bootstyle="secondary", font=("Host Grotesk",))
         self.create_entry.config(style="secondary.TEntry")
         self.create_entry.grid(row=0, column=1, sticky="we", padx=(10, 10), pady=(10, 0))
+        self.create_entry.bind("<KeyRelease>", lambda e: self.toggle_create_theme_button(self.create_entry.get().strip() != ""))
         
-        create_button = RoundedButton(self.body, text="Create", command=lambda _: self._create_theme(self.create_entry.get()), style="success.TButton")
-        create_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 11), pady=(10, 0))
+        self.create_button = RoundedButton(self.body, text="Create", command=lambda _: self._create_theme(self.create_entry.get()), style="success.TButton")
+        self.create_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 11), pady=(10, 0))
+        self.create_button.set_state("disabled")
         
         #-------
         
