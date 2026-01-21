@@ -1,10 +1,11 @@
+import sys
 import ttkbootstrap as ttk
 import utils.console as console
-from gui.components import SettingsPanel, RoundedButton
+from gui.components import SettingsPanel, RoundedButton, RoundedFrame
 
 class RichPresencePanel(SettingsPanel):
-    def __init__(self, root, parent, images, config):
-        super().__init__(root, parent, "Rich Presence", images.get("rich_presence"))
+    def __init__(self, root, parent, images, config, width=None):
+        super().__init__(root, parent, "Rich Presence", images.get("rich_presence"), width=width, collapsed=False)
         self.cfg = config
         self.rpc = self.cfg.get_rich_presence()
         self.rpc_tk_entries = {}
@@ -51,16 +52,27 @@ class RichPresencePanel(SettingsPanel):
         self.rpc.reset_defaults()
         
     def draw(self):
-        toggle_checkbox = ttk.Checkbutton(self.body, text="Enable Rich Presence", style="success.TCheckbutton")
-        toggle_checkbox.grid(row=0, column=0, columnspan=2, sticky=ttk.W, padx=(13, 0), pady=(10, 10))
-        toggle_checkbox.configure(command=self._save_rpc)
+        toggle_wrapper = RoundedFrame(self.wrapper, radius=(10, 10, 10, 10), bootstyle="dark.TFrame")
+        toggle_wrapper.grid(row=0, column=0, columnspan=4, sticky="we", pady=(0, 10))
+        toggle_wrapper.bind("<Button-1>", lambda e: self.toggle_checkbox.invoke())
+        
+        toggle_label = ttk.Label(toggle_wrapper, text="Enable Rich Presence")
+        toggle_label.configure(background=self.root.style.colors.get("dark"))
+        toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
+        toggle_label.bind("<Button-1>", lambda e: self.toggle_checkbox.invoke())
+        
+        self.toggle_checkbox = ttk.Checkbutton(toggle_wrapper, text="", style="success-round-toggle")
+        self.toggle_checkbox.grid(row=0, column=1, sticky=ttk.E, padx=(0, 10), pady=10)
+        self.toggle_checkbox.configure(command=self._save_rpc)
+        
+        toggle_wrapper.grid_columnconfigure(0, weight=1)
         
         if self.rpc.enabled:
-            toggle_checkbox.state(["!alternate", "selected"])
+            self.toggle_checkbox.state(["!alternate", "selected"])
         else:
-            toggle_checkbox.state(["!alternate", "!selected"])
+            self.toggle_checkbox.state(["!alternate", "!selected"])
         
-        self.rpc_tk_entries["enabled"] = toggle_checkbox
+        self.rpc_tk_entries["enabled"] = self.toggle_checkbox
         padding = (10, 2)
 
         for index, (key, value) in enumerate(self.rpc_entries.items()):
@@ -76,8 +88,8 @@ class RichPresencePanel(SettingsPanel):
             label = ttk.Label(self.body, text=value)
             label.configure(background=self.root.style.colors.get("dark"))
             
-            label.grid(row=index + 1, column=0, sticky=ttk.W, padx=padding[0], pady=padding[1])
-            entry.grid(row=index + 1, column=1, sticky="we", padx=padding[0], pady=padding[1], columnspan=3)
+            label.grid(row=index + 1, column=0, sticky=ttk.W, padx=padding[0], pady=(padding[1] + 8 if index == 1 else padding[1], padding[1]))
+            entry.grid(row=index + 1, column=1, sticky="we", padx=padding[0], pady=(padding[1] + 8 if index == 1 else padding[1], padding[1]), columnspan=3)
             
             self.body.grid_columnconfigure(1, weight=1)
             self.rpc_tk_entries[key] = entry

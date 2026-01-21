@@ -31,9 +31,17 @@ class SessionSpoofingPanel(SettingsPanel):
             self._save_session_spoofing()
         
     def draw(self):
-        self.checkbox = ttk.Checkbutton(self.body, text="Enable session spoofing", style="success.TCheckbutton")
-        self.checkbox.grid(row=0, column=0, columnspan=2, sticky=ttk.W, padx=(13, 0), pady=(10, 0))
+        toggle_label = ttk.Label(self.body, text="Enable Session Spoofing")
+        toggle_label.configure(background=self.root.style.colors.get("dark"))
+        toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=(15, 5))
+        toggle_label.bind("<Button-1>", lambda e: self.checkbox.invoke())
+        
+        self.checkbox = ttk.Checkbutton(self.body, text="", style="success-round-toggle")
+        # self.checkbox.grid(row=0, column=0, columnspan=2, sticky=ttk.W, padx=(13, 0), pady=(15, 0))
+        self.checkbox.grid(row=0, column=1, sticky=ttk.E, padx=(0, 10), pady=(10, 5))
         self.checkbox.configure(command=self._save_session_spoofing)
+        
+        self.body.grid_columnconfigure(0, weight=1)
         
         if self.cfg.get("session_spoofing.enabled"):
             self.checkbox.state(["!alternate", "selected"])
