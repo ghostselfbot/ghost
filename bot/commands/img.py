@@ -33,7 +33,7 @@ class Img(commands.Cog):
         resp = requests.get("https://api.alexflipnote.dev/cats")
         image = resp.json()["file"]
 
-        await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        await ctx.send(image)
 
     @commands.command(name="doggo", description="Get a random dog picture.", aliases=["dog", "dogpic"], usage="")
     async def doggo(self, ctx):
@@ -41,7 +41,7 @@ class Img(commands.Cog):
         resp = requests.get("https://api.alexflipnote.dev/dogs")
         image = resp.json()["file"]
 
-        await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        await ctx.send(image)
 
     @commands.command(name="bird", description="Get a random bird picture.", aliases=["birb", "birdpic"], usage="")
     async def birb(self, ctx):
@@ -49,13 +49,21 @@ class Img(commands.Cog):
         resp = requests.get("https://api.alexflipnote.dev/birb")
         image = resp.json()["file"]
 
-        await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        await ctx.send(image)
 
     @commands.command(name="fox", description="Get a random fox picture.", aliases=["foxpic"], usage="")
     async def fox(self, ctx):
         cfg = self.cfg
         resp = requests.get("https://randomfox.ca/floof/")
         image = resp.json()["image"]
+
+        await ctx.send(image)
+
+    @commands.command(name="minion", description="Get a random minion meme.", aliases=["minionmeme"], usage="")
+    async def minion(self, ctx):
+        cfg = self.cfg
+        resp = requests.get("https://benny.fun/api/minion?json=true")
+        image = resp.json()["url"]
 
         await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
@@ -173,8 +181,8 @@ class Img(commands.Cog):
             with open(files.get_application_support() + "/data/cache/discordmessage.png", "wb") as file:
                 file.write(response.content)
 
-            await ctx.send(file=discord.File("data/cache/discordmessage.png"))
-            os.remove("data/cache/discordmessage.png")
+            await ctx.send(file=discord.File(files.get_application_support() + "/data/cache/discordmessage.png"))
+            os.remove(files.get_application_support() + "/data/cache/discordmessage.png")
         else:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
