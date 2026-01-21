@@ -16,7 +16,7 @@ from gui.helpers import Images, Layout, Style
 class GhostGUI:
     def __init__(self, bot_controller):
         self.resize_grip_size = 5
-        self.size = (650, 530)
+        self.size = (700, 530)
         self.bot_controller = bot_controller
         self.resize_grips = {}
         
@@ -77,7 +77,7 @@ class GhostGUI:
         self.home_page       = HomePage(self.root, self.bot_controller, self._restart_bot, self.console)
         self.settings_page   = SettingsPage(self.root, self.bot_controller)
         self.scripts_page    = ScriptsPage(self, self.bot_controller, self.images)
-        self.tools_page      = ToolsPage(self.root, self.bot_controller, self.images, self.layout)
+        self.tools_page      = ToolsPage(self.root, self.bot_controller, self.images, self.layout, self._position_resize_grips)
         
         logging.set_gui(self)
         

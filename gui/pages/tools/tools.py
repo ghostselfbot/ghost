@@ -7,11 +7,12 @@ from gui.pages.tools.message_logger_page import MessageLoggerPage
 from gui.pages.tools.user_lookup_page import UserLookupPage
 
 class ToolsPage:
-    def __init__(self, root, bot_controller, images, layout):
+    def __init__(self, root, bot_controller, images, layout, position_resize_grips):
         self.root = root
         self.bot_controller = bot_controller
         self.images = images
         self.layout = layout
+        self.position_resize_grips = position_resize_grips
         self.hover_colour = "#282a2a"
         
         self.spypet_page = SpyPetPage(self, root, bot_controller, images, layout)
@@ -45,6 +46,7 @@ class ToolsPage:
         main = self.layout.main()
         self.spypet_page.draw(main)
         self.layout.sidebar.set_button_command("tools", self.draw_spypet)
+        self.position_resize_grips()
         
     def draw_message_logger(self):
         self.layout.sidebar.set_current_page("tools")
@@ -52,6 +54,7 @@ class ToolsPage:
         main = self.layout.main()
         self.message_logger_page.draw(main)
         self.layout.sidebar.set_button_command("tools", self.draw_message_logger)
+        self.position_resize_grips()
         
     def draw_user_lookup(self):
         self.layout.sidebar.set_current_page("tools")
@@ -59,6 +62,7 @@ class ToolsPage:
         main = self.layout.main()
         self.user_lookup_page.draw(main)
         self.layout.sidebar.set_button_command("tools", self.draw_user_lookup)
+        self.position_resize_grips()
         
     def _bind_hover_effects(self, widget, targets, hover_bg, normal_bg):
         def on_enter(_):
@@ -86,7 +90,7 @@ class ToolsPage:
 
             page_title = ttk.Label(page_wrapper, text=page["name"], font=("Host Grotesk", 14 if sys.platform != "darwin" else 18, "bold"))
             page_title.configure(background=self.root.style.colors.get("secondary"))
-            page_title.grid(row=0, column=0, sticky=ttk.NSEW, padx=15, pady=(15, 15))
+            page_title.grid(row=0, column=0, sticky=ttk.NSEW, padx=15, pady=10)
             page_title.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
 
             # page_description = ttk.Label(page_wrapper, text=page["description"], font=("Host Grotesk", 12 if sys.platform != "darwin" else 16), wraplength=450)
@@ -100,3 +104,5 @@ class ToolsPage:
             
             page_wrapper.grid_columnconfigure(1, weight=1)
             self._bind_hover_effects(page_wrapper, [page_title, page_wrapper, page_icon], self.hover_colour, self.root.style.colors.get("secondary"))
+            self._bind_hover_effects(page_title, [page_title, page_wrapper, page_icon], self.hover_colour, self.root.style.colors.get("secondary"))
+            self._bind_hover_effects(page_icon, [page_title, page_wrapper, page_icon], self.hover_colour, self.root.style.colors.get("secondary"))
