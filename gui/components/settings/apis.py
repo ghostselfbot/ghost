@@ -8,7 +8,7 @@ class APIsPanel(SettingsPanel):
         self.cfg = config
         self.api_keys_tk_entries = {}
         self.api_keys_entries = {
-            "serpapi": "SerpAPI"
+            "serpapi": "SerpAPI Key"
         }
         
     def _save_api_keys(self):
