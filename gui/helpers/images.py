@@ -1,10 +1,12 @@
 from PIL import Image, ImageTk, ImageFilter, ImageEnhance
 import os
 import threading
+import requests
 from utils.files import resource_path
 import requests
 from io import BytesIO
 from collections import Counter
+from bot.helpers import imgembed
 
 def resize_and_sharpen(image, size):
     try:
@@ -190,3 +192,11 @@ class Images:
         most_common = counter.most_common(1)[0][0]
         
         return '#{:02x}{:02x}{:02x}'.format(*most_common)
+    
+    def load_image_from_url(self, image_url: str, size: tuple, radius=10) -> ImageTk.PhotoImage:
+        response = requests.get(image_url)
+        image = Image.open(BytesIO(response.content)).convert("RGBA")
+        image = resize_and_sharpen(image, size)
+        if radius > 0:
+            image = imgembed.add_corners(image, radius)
+        return ImageTk.PhotoImage(image)
