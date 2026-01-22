@@ -149,7 +149,7 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         msg_style = "codeblock"
 
     if msg_style == "codeblock":
-        description = re.sub(r"[*_~`]", "", codeblock_desc).lower()
+        description = re.sub(r"[*_~`]", "", codeblock_desc)
         if title == theme.title:
             title = f"{theme.emoji} {title}"
 
@@ -159,17 +159,17 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
 
         msg = await ctx.send(
             str(codeblock.Codeblock(
-                title=title.lower(),
-                description=description.lower(),
-                extra_title=extra_title.lower(),
-                # footer=footer.lower()
+                title=title,
+                description=description,
+                extra_title=extra_title,
+                # footer=footer
             )),
             delete_after=delete_after
         )
 
     elif msg_style == "image":
         title = remove_emojis(title.replace(theme.emoji, "").lstrip())
-        embed2 = imgembed.Embed(title=title.lower(), description=description.lower(), colour=colour)
+        embed2 = imgembed.Embed(title=title, description=description, colour=colour)
         embed2.set_footer(text=footer)
         embed2.set_thumbnail(url=thumbnail)
         embed_file = embed2.save()
@@ -181,8 +181,8 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         if title == theme.title:
             title = f"{theme.emoji} {title}"
         embed = discord.Embed(
-            title=title.lower(),
-            description=description.lower(),
+            title=title,
+            description=description,
             colour=discord.Color.from_str(colour)
         )
         embed.set_footer(text=footer)
