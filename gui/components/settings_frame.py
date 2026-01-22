@@ -63,7 +63,7 @@ class SettingsFrame:
     def _draw_body(self, parent):
         frame = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
         # frame.pack(fill=ttk.BOTH, expand=False)
-        frame.grid(column=0, row=5, sticky="nsew")
+        frame.grid(column=0, row=1, sticky="nsew")
         parent.grid_columnconfigure(0, weight=1)
         
         return frame

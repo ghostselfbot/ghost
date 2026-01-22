@@ -50,7 +50,7 @@ class SettingsPage:
         self.general = GeneralPanel(self.root, general_wrapper, self.bot_controller, self.images, self.cfg).draw()
         self.session_spoofing = SessionSpoofingPanel(self.root, general_wrapper, self.images, self.cfg).draw()
         self.snipers = SnipersPanel(self.root, wrapper, self.images, self.cfg).draw()
-        self.rpc = RichPresencePanel(self.root, wrapper, self.images, self.cfg).draw()
+        self.rpc = RichPresencePanel(self.root, wrapper, self.images, self.cfg, bot_controller=self.bot_controller).draw()
         self.apis = APIsPanel(self.root, general_wrapper, self.images, self.cfg).draw()
         self.theming = ThemingPanel(self.root, wrapper, self.images, self.cfg).draw()
         
