@@ -97,8 +97,8 @@ class Sidebar:
             "home": self._create_button(self.images.get("home"), "home", self.button_cmds["home"], 0),
             # "console": self._create_button(self.images.get("console"), "console", self.button_cmds["console"], 1),
             "settings": self._create_button(self.images.get("settings"), "settings", self.button_cmds["settings"], 1),
-            "scripts": self._create_button(self.images.get("scripts"), "scripts", self.button_cmds["scripts"], 2),
-            "tools": self._create_button(self.images.get("tools"), "tools", self.button_cmds["tools"], 3),
+            "tools": self._create_button(self.images.get("tools"), "tools", self.button_cmds["tools"], 2),
+            "scripts": self._create_button(self.images.get("scripts"), "scripts", self.button_cmds["scripts"], 3),
         }
             
         logout_btn = ttk.Label(self.sidebar, image=self.images.get("logout"), background=Style.WINDOW_BORDER.value, anchor="center")
