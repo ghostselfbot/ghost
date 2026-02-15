@@ -354,7 +354,6 @@ class Embed:
         # path = "embed.png" # uncomment this if youre running the script directly
         
         if thumbnail_is_gif:
-            print("Saving animated embed as GIF...")
             frames, duration = self.draw_animated()
             frames[0].save(path, save_all=True, append_images=frames[1:], optimize=True, duration=duration, loop=0)
         else:
