@@ -47,7 +47,7 @@ class Sidebar:
             background=bg_color
         )
         
-        button_wrapper.grid(row=row, column=0, sticky=ttk.NSEW, pady=(10, 2) if row == 0 else 2, ipady=8, padx=10)
+        button_wrapper.grid(row=row, column=0, sticky=ttk.NSEW, pady=(10 if sys.platform == "darwin" else 25, 2) if row == 0 else 2, ipady=8, padx=10)
         
         button = ttk.Label(button_wrapper, image=image, anchor="center", background=bg_color)
         
