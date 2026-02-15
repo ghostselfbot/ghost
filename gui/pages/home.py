@@ -100,22 +100,22 @@ class HomePage:
             avatar.grid(row=0, column=0, sticky=ttk.W, padx=(15, 10), pady=15, rowspan=2)
             
         if not self.restart:
-            display_name = ttk.Label(wrapper, text=self.bot_controller.get_user().display_name, font=("Host Grotesk", 16 if sys.platform != "darwin" else 20, "bold"))
+            display_name = ttk.Label(wrapper, text=self.bot_controller.get_user().display_name, font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
             display_name.configure(background=self.root.style.colors.get("secondary"))
             display_name.grid(row=0, column=1, sticky=ttk.W, pady=(15, 0))
 
-            username = ttk.Label(wrapper, text=self.bot_controller.get_user().name, font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "italic"))
+            username = ttk.Label(wrapper, text=self.bot_controller.get_user().name, font=("Host Grotesk", 14 if sys.platform != "darwin" else 16, "italic"))
             username.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
             username.grid(row=1, column=1, sticky=ttk.W, pady=(0, 15))
             
             # restart_btn = self._draw_restart_button(wrapper)
             # restart_btn.grid(row=0, column=3, rowspan=2, sticky=ttk.EW, padx=(10, 16), pady=(10, 10))
-            restart_btn = RoundedButton(wrapper, radius=8, bootstyle="primary.TButton", command=lambda _: self._restart_bot(), image=self.images.get("restart"), padx=15, pady=6)
+            restart_btn = RoundedButton(wrapper, radius=8, bootstyle="primary.TButton", command=lambda _: self._restart_bot(), image=self.images.get("restart"), padx=15 if sys.platform == "darwin" else 20, pady=6 if sys.platform == "darwin" else 10)
             restart_btn.grid(row=0, column=3, rowspan=2, sticky=ttk.EW, padx=(10, 16), pady=(10, 10))
             
             wrapper.grid_columnconfigure(2, weight=1)
         else:
-            self.restart_title = ttk.Label(wrapper, text=f"{self.restart_title_text}...", font=("Host Grotesk", 14 if sys.platform != "darwin" else 20, "bold"), anchor="center")
+            self.restart_title = ttk.Label(wrapper, text=f"{self.restart_title_text}...", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"), anchor="center")
             self.restart_title.configure(background=self.root.style.colors.get("secondary"))
             self.restart_title.grid(row=0, column=0, sticky=ttk.NSEW, pady=26, padx=15, columnspan=2)
             wrapper.grid_columnconfigure(0, weight=1)
@@ -188,7 +188,7 @@ class HomePage:
     def draw(self, parent, restart=False, start=False):
         self.restart = restart or start
         self.restart_title_text = "Ghost is starting" if start else "Ghost is restarting"
-        self.avatar = self.bot_controller.get_avatar()
+        self.avatar = self.bot_controller.get_avatar(size=50 if sys.platform == "darwin" else 65)
         self._draw_header(parent)
         
         # self.details_wrapper = self._draw_details_wrapper(parent)
