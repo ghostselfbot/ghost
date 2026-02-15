@@ -47,11 +47,11 @@ class GhostGUI:
         if sys.platform == "darwin":
             self.root.attributes("-transparent", True)
             self.root.configure(bg="systemTransparent")
-        elif sys.platform == "win32":
-            self.root.configure(bg="#ff00ff")
-            self.root.attributes("-transparentcolor", "#ff00ff")
-        else:
-            self.root.attributes("-alpha", 1)
+        # elif sys.platform == "win32":
+        #     self.root.configure(bg="#ff00ff")
+        #     self.root.attributes("-transparentcolor", "#ff00ff")
+        # else:
+        #     self.root.attributes("-alpha", 1)
         
         self.cfg      = Config()
         self.notifier = Notifier()
