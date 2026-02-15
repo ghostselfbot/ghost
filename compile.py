@@ -36,6 +36,8 @@ def build():
         "pyinstaller",
         f"--name={name}",
         "--onefile",
+        "--clean",
+        "--noconfirm",
         "--windowed",
         "--noconsole",
         f"--icon={icon}",
