@@ -113,10 +113,13 @@ class Console:
             state="normal"
         )
 
-        self.textarea.bind_all(
-            "<Control-c>" if sys.platform != "darwin" else "<Command-c>", 
-            lambda _: self.textarea.event_generate("<<Copy>>")
-        )
+        try:
+            self.textarea.bind_all(
+                "<Control-c>" if sys.platform != "darwin" else "<Command-c>", 
+                lambda _: self.textarea.event_generate("<<Copy>>")
+            )
+        except:
+            pass
 
         self.textarea.pack(fill="both", expand=True, padx=5, pady=5)
         self._load_tags()
