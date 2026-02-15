@@ -7,6 +7,20 @@ from PIL import Image, ImageDraw, ImageFont, ImageChops
 from utils import files
 from utils import console
 
+def crop_center_square(im: Image.Image) -> Image.Image:
+    if im.mode != "RGBA":
+        im = im.convert("RGBA")
+
+    w, h = im.size
+    side = min(w, h)
+
+    left = (w - side) // 2
+    top = (h - side) // 2
+    right = left + side
+    bottom = top + side
+
+    return im.crop((left, top, right, bottom))
+
 def add_corners(im, rad):
     if im.mode != "RGBA":
         im = im.convert("RGBA")
@@ -160,12 +174,14 @@ class Embed:
     def draw_thumbnail(self, template, draw):
         if self.thumbnail != "":
             try:
-                logo = Image.open(BytesIO(self.thumbnail_resp.content)).convert("RGBA")
-                logo = logo.resize((300, 300))
+                logo = Image.open(BytesIO(self.thumbnail_resp.content))
+                logo = crop_center_square(logo)
+                logo = logo.resize((300, 300), Image.LANCZOS)
                 logo = add_corners(logo, 20)
+
                 template.alpha_composite(logo, (self.width - 300 - 45, 40))
-            except Exception as e:
-                console.print_error(f"Failed to load thumbnail from theme.")
+            except Exception:
+                console.print_error("Failed to load thumbnail from theme.")
 
     def draw_description(self, template, draw):
         if self.description != "":
@@ -306,7 +322,6 @@ class Embed:
         self.setup_dimensions()
 
         thumbnail = Image.open(BytesIO(self.thumbnail_resp.content))
-        thumbnail.thumbnail((300, 300), Image.LANCZOS)
 
         base = self.build_static_base()
 
@@ -321,11 +336,12 @@ class Embed:
             thumbnail.seek(i)
 
             frame_image = thumbnail.convert("RGBA")
+            frame_image = crop_center_square(frame_image)
+            frame_image = frame_image.resize((300, 300), Image.LANCZOS)
             frame_image = add_corners(frame_image, 20)
 
             frame = base.copy()  # cheap copy
-            frame.alpha_composite(frame_image, (self.width - 300 - 60, 40))
-            frame.resize((self.width // 2, self.height // 2), Image.LANCZOS)
+            frame.alpha_composite(frame_image, (self.width - 300 - 45, 40))
 
             frames.append(frame)
 
