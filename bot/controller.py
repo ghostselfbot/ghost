@@ -291,5 +291,15 @@ class BotController:
     get_user    = lambda self: self.bot.user if self.bot else None
     get_friends = lambda self: self.bot.friends if self.bot else None
     get_guilds  = lambda self: self.bot.guilds if self.bot else None
-    get_uptime  = lambda self: cmdhelper.format_time(time.time() - self.bot.start_time, short_form=True) if self.bot else "0:00:00"
-    get_latency = lambda self: f"{round(self.bot.latency * 1000)}ms" if self.bot else "0ms"
+    
+    def get_latency(self):
+        try:
+            return f"{round(self.bot.latency * 1000)}ms"
+        except:
+            return "0ms"
+    
+    def get_uptime(self):
+        try:
+            return cmdhelper.format_time(time.time() - self.bot.start_time, short_form=True)
+        except:
+            return "0s"

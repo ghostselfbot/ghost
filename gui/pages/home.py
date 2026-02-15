@@ -180,10 +180,27 @@ class HomePage:
         self.latency_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
         self.latency_label.grid(row=4, column=0, sticky=ttk.W, padx=(10, 0), pady=(0, 10))
         
+    def _draw_details(self, parent):
+        wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
+        wrapper.pack(fill=ttk.BOTH, expand=False, pady=(0, 10))
+        
+        version = ttk.Label(wrapper, text=f"Ghost v{VERSION}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+        version.configure(background=self.root.style.colors.get("dark"))
+        version.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
+        
+        self.uptime_label = ttk.Label(wrapper, text=f"Uptime: {self.bot_controller.get_uptime()}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+        self.uptime_label.configure(background=self.root.style.colors.get("dark"))
+        self.uptime_label.grid(row=0, column=1, sticky=ttk.E, padx=(10, 0), pady=10)
+        
+        self.latency_label = ttk.Label(wrapper, text=f"Latency: {self.bot_controller.get_latency()}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+        self.latency_label.configure(background=self.root.style.colors.get("dark"))
+        self.latency_label.grid(row=0, column=2, sticky=ttk.E, padx=10, pady=10)
+        
+        wrapper.grid_columnconfigure(1, weight=1)
+        
     def _update_wraplength(self, event=None):
         # This method can be used for future wraplength updates if needed
         pass
-            
             
     def draw(self, parent, restart=False, start=False):
         self.restart = restart or start
@@ -191,11 +208,13 @@ class HomePage:
         self.avatar = self.bot_controller.get_avatar(size=55 if sys.platform == "darwin" else 65)
         self._draw_header(parent)
         
+        self._draw_details(parent)
+        
         # self.details_wrapper = self._draw_details_wrapper(parent)
         # self._draw_account_details(self.details_wrapper)
         # self._draw_bot_details(self.details_wrapper)
         
-        # self._update_bot_details()
+        self._update_bot_details()
         # self._update_account_details()
         
         self.console.draw(parent)
