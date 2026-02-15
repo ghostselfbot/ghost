@@ -29,16 +29,16 @@ class ToolsPage:
             },
             {
                 "name": "Message Logger",
-                "description": "Logs every deleted message sent",
+                "description": "Logs every deleted message sent in your servers",
                 "page": self.message_logger_page,
                 "command": self.draw_message_logger
             },
-            {
-                "name": "User Lookup",
-                "description": "Look up information about a user by their ID",
-                "page": self.user_lookup_page,
-                "command": self.draw_user_lookup
-            }
+            # {
+            #     "name": "User Lookup",
+            #     "description": "Look up information about a user by their ID",
+            #     "page": self.user_lookup_page,
+            #     "command": self.draw_user_lookup
+            # }
         ]
         
     def draw_surveillance(self):
@@ -92,7 +92,7 @@ class ToolsPage:
         page_title.grid(row=0, column=0, pady=(25, 5))
         page_title.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
 
-        page_description = ttk.Label(page_wrapper, text=page["description"], wraplength=150, justify=ttk.CENTER)
+        page_description = ttk.Label(page_wrapper, text=page["description"], wraplength=175, justify=ttk.CENTER)
         page_description.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
         page_description.grid(row=1, column=0, pady=(0, 25))
         page_description.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
@@ -129,3 +129,5 @@ class ToolsPage:
             if col > 1:
                 col = 0
                 row += 1
+                
+        self.position_resize_grips()

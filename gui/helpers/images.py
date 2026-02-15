@@ -81,7 +81,7 @@ class Images:
 
         ICON_CONFIG = {
             "bigger": ["scripts"],
-            "small": ["trash", "github", "restart", "checkmark", "left-chevron", "file-signature", "trash-white", "titlebar-ico"],
+            "small": ["trash", "github", "restart", "checkmark", "left-chevron", "file-signature", "trash-white", "titlebar-ico", "right-chevron-small"],
             "tiny": ["submit", "max", "min", "search", "right-chevron-tiny"],
             "smaller": ["folder-open", "plus", "reset", "play", "stop", "right-chevron"],
             "logo": ["ghost-logo"],
@@ -114,6 +114,7 @@ class Images:
             "left-chevron": "data/icons/chevron-left-solid.png",
             "right-chevron": "data/icons/chevron-right-solid.png",
             "right-chevron-tiny": "data/icons/chevron-right-solid.png",
+            "right-chevron-small": "data/icons/chevron-right-solid.png",
             "tools": "data/icons/screwdriver-wrench-solid.png",
             "reset": "data/icons/rotate-left-solid.png",
             "play": "data/icons/play-solid.png",
