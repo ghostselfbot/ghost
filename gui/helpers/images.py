@@ -1,5 +1,5 @@
 from PIL import Image, ImageTk, ImageFilter, ImageEnhance
-import os
+import os, sys
 import threading
 import requests
 from utils.files import resource_path
@@ -72,7 +72,7 @@ class Images:
     def _load_images(self):
         SIZES = {
             "bigger": (23, 23),
-            "icon": (20, 20),
+            "icon": (20, 20) if sys.platform == "darwin" else (23, 23),
             "small": (15, 15),
             "smaller": (12, 12),
             "tiny": (10, 10),

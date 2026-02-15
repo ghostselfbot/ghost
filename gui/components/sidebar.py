@@ -16,6 +16,8 @@ class Sidebar:
         
         root_width = 600
         self.width = root_width // (root_width // 65)
+        if sys.platform != "darwin":
+            self.width += 5
         
     def add_button(self, page_name, command):
         self.button_cmds[page_name] = command
