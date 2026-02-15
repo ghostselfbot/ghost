@@ -174,7 +174,7 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         embed2.set_thumbnail(url=thumbnail)
         embed_file = embed2.save()
 
-        msg = await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=delete_after)
+        msg = await ctx.send(file=discord.File(embed_file, filename=embed_file.split("/")[-1]), delete_after=delete_after)
         os.remove(embed_file)
 
     elif msg_style == "embed" and cfg.get("rich_embed_webhook"):
