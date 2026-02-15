@@ -188,7 +188,7 @@ class HomePage:
     def draw(self, parent, restart=False, start=False):
         self.restart = restart or start
         self.restart_title_text = "Ghost is starting" if start else "Ghost is restarting"
-        self.avatar = self.bot_controller.get_avatar(size=50 if sys.platform == "darwin" else 65)
+        self.avatar = self.bot_controller.get_avatar(size=55 if sys.platform == "darwin" else 65)
         self._draw_header(parent)
         
         # self.details_wrapper = self._draw_details_wrapper(parent)
