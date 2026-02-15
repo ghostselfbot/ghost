@@ -16,7 +16,7 @@ from gui.helpers import Images, Layout, Style
 class GhostGUI:
     def __init__(self, bot_controller):
         self.resize_grip_size = 5
-        self.size = (700, 530)
+        self.size = (700 if sys.platform == "darwin" else 800, 530)
         self.bot_controller = bot_controller
         self.resize_grips = {}
         
