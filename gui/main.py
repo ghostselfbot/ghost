@@ -95,6 +95,18 @@ class GhostGUI:
         self.root.after(450, self._show_window)
         self.root.after(500, self._window_mapped)
 
+    def _pre_load_images(self, user):
+        print("Pre-loading images...")
+        avatar_url = user.avatar.url if user and user.avatar else "https://ia600305.us.archive.org/31/items/discordprofilepictures/discordblue.png"
+        self.bot_controller.get_avatar_from_url(avatar_url, size=65, radius=65//2)
+        self.images.get_majority_color_from_url(avatar_url)
+
+        rpc = self.cfg.get_rich_presence()
+        if rpc and rpc.large_image:
+            self.images.load_image_from_url(rpc.large_image if rpc.large_image else "https://www.ghostt.cc/assets/ghost.png", (64, 64), 5)
+        
+        print("Finished pre-loading images.")
+
     def _window_mapped(self):
         self.root.update_idletasks()
         self.root.overrideredirect(True)
@@ -232,6 +244,8 @@ class GhostGUI:
                 self.layout.resize(600, 530)
                 self.layout.center_window(600, 530)
 
+        user = self.bot_controller.get_user()
+        self._pre_load_images(user)
         self.root.after(50, lambda: self.notifier.send("Ghost", "Ghost has successfully started!"))
         self.root.after(50, lambda: self.draw_home())
 
