@@ -205,7 +205,7 @@ class GhostGUI:
     def draw_tools(self):
         self.sidebar.set_current_page("tools")
         self.layout.clear()
-        main = self.layout.main(scrollable=True)
+        main = self.layout.main(scrollable=False)
         self.tools_page.draw(main)
         self._position_resize_grips()
         
