@@ -378,7 +378,7 @@ class SurveillancePage(ToolPage):
             
             username = ttk.Label(user_info_wrapper, text=f"{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
             username.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
-            username.place(relx=0, rely=0.42)
+            username.place(relx=0, rely=0.42 if sys.platform == "darwin" else 0.45)
             
             if self.mutual_guilds:
                 mutual_guilds_subtitle = ttk.Label(wrapper, text="Mutual Guilds", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "bold"))
@@ -534,7 +534,7 @@ class SurveillancePage(ToolPage):
         
         self.total_user_messages_label = ttk.Label(wrapper, text="Sent by user: 0", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
         self.total_user_messages_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
-        self.total_user_messages_label.place(relx=0.05, rely=0.3 + 0.13, relwidth=1, anchor="nw")
+        self.total_user_messages_label.place(relx=0.05, rely=0.43 if sys.platform == "darwin" else 0.45, relwidth=1, anchor="nw")
         
         return wrapper
 

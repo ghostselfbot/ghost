@@ -189,7 +189,7 @@ class RichPresencePanel(SettingsPanel):
             
             username = ttk.Label(user_info_wrapper, text=f"{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
             username.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
-            username.place(relx=0, rely=0.42)
+            username.place(relx=0, rely=0.42 if sys.platform == "darwin" else 0.45)
             
             self._draw_preview(wrapper)
         
