@@ -43,9 +43,15 @@ class Images:
                     cls._instance._init_images()  # Initialize images
         return cls._instance
 
-    def _init_images(self):
+    def _init_images(self):        
         self.images = {}
         self.original_images = {}
+        
+        self._url_image_cache = {}        # (url, size, radius) -> PhotoImage
+        self._url_color_cache = {}        # url -> hex colour
+        self._url_bytes_cache = {}        # url -> raw bytes
+        self._url_lock = threading.Lock() # thread safety
+        
         self._load_images()
         self._load_webhooks_template()
 
@@ -162,41 +168,81 @@ class Images:
         return self.images.get(key)
 
     def get_majority_color_from_url(self, image_url: str) -> str:
-        response = requests.get(image_url)
-        image = Image.open(BytesIO(response.content)).convert("RGB")
+        with self._url_lock:
+            if image_url in self._url_color_cache:
+                return self._url_color_cache[image_url]
 
-        # Crop center to focus on subject
-        w, h = image.size
-        crop_margin = 0.2
-        image = image.crop((
-            int(w * crop_margin),
-            int(h * crop_margin),
-            int(w * (1 - crop_margin)),
-            int(h * (1 - crop_margin))
-        ))
+        try:
+            # reuse downloaded bytes if available
+            with self._url_lock:
+                if image_url in self._url_bytes_cache:
+                    content = self._url_bytes_cache[image_url]
+                else:
+                    response = requests.get(image_url, timeout=5)
+                    response.raise_for_status()
+                    content = response.content
+                    self._url_bytes_cache[image_url] = content
 
-        # Slight blur to reduce texture noise
-        image = image.filter(ImageFilter.GaussianBlur(radius=1))
-        image = image.resize((50, 50))  # reduce size for performance
+            image = Image.open(BytesIO(content)).convert("RGB")
 
-        pixels = list(image.getdata())
+            w, h = image.size
+            crop_margin = 0.2
+            image = image.crop((
+                int(w * crop_margin),
+                int(h * crop_margin),
+                int(w * (1 - crop_margin)),
+                int(h * (1 - crop_margin))
+            ))
 
-        # Filter out very dark pixels (likely shadows)
-        filtered_pixels = [rgb for rgb in pixels if sum(rgb) > 60]  # brightness threshold
+            image = image.filter(ImageFilter.GaussianBlur(radius=1))
+            image = image.resize((50, 50))
 
-        if not filtered_pixels:
-            # fallback to original pixels if all were filtered
-            filtered_pixels = pixels
+            pixels = list(image.getdata())
+            filtered_pixels = [rgb for rgb in pixels if sum(rgb) > 60] or pixels
 
-        counter = Counter(filtered_pixels)
-        most_common = counter.most_common(1)[0][0]
-        
-        return '#{:02x}{:02x}{:02x}'.format(*most_common)
-    
+            most_common = Counter(filtered_pixels).most_common(1)[0][0]
+            hex_colour = '#{:02x}{:02x}{:02x}'.format(*most_common)
+
+            with self._url_lock:
+                self._url_color_cache[image_url] = hex_colour
+
+            return hex_colour
+
+        except Exception as e:
+            print("Error getting majority colour:", e)
+            return "#2b2d31"  # safe fallback
+
     def load_image_from_url(self, image_url: str, size: tuple, radius=10) -> ImageTk.PhotoImage:
-        response = requests.get(image_url)
-        image = Image.open(BytesIO(response.content)).convert("RGBA")
-        image = resize_and_sharpen(image, size)
-        if radius > 0:
-            image = imgembed.add_corners(image, radius)
-        return ImageTk.PhotoImage(image)
+        cache_key = (image_url, size, radius)
+
+        with self._url_lock:
+            if cache_key in self._url_image_cache:
+                return self._url_image_cache[cache_key]
+
+        try:
+            # reuse raw bytes if already downloaded
+            with self._url_lock:
+                if image_url in self._url_bytes_cache:
+                    content = self._url_bytes_cache[image_url]
+                else:
+                    response = requests.get(image_url, timeout=5)
+                    response.raise_for_status()
+                    content = response.content
+                    self._url_bytes_cache[image_url] = content
+
+            image = Image.open(BytesIO(content)).convert("RGBA")
+            image = resize_and_sharpen(image, size)
+
+            if radius > 0:
+                image = imgembed.add_corners(image, radius)
+
+            photo = ImageTk.PhotoImage(image)
+
+            with self._url_lock:
+                self._url_image_cache[cache_key] = photo
+
+            return photo
+
+        except Exception as e:
+            print("Error loading image from URL:", e)
+            return None
