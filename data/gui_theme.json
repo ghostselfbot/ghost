@@ -5,7 +5,7 @@
 				"type": "dark",
 				"colors": {
 		            "primary": "#433dfb",
-		            "secondary": "#181722",
+		            "secondary": "#171726",
 		            "success": "#0abf34",
 		            "info": "#2b6eff",
 		            "warning": "#f39c12",
@@ -19,7 +19,7 @@
 		            "border": "#121111",
 		            "inputfg": "#ffffff",
 		            "inputbg": "#2f2f2f",
-		            "active": "#181722"
+		            "active": "#171726"
 				}
 			}
 		}

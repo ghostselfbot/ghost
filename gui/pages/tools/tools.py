@@ -14,7 +14,7 @@ class ToolsPage:
         self.images = images
         self.layout = layout
         self.position_resize_grips = position_resize_grips
-        self.hover_colour = Style.SETTINGS_PILL_HOVER.value
+        self.hover_colour = Style.TOOL_HOVER.value
         
         self.surveillance_page = SurveillancePage(self, root, bot_controller, images, layout)
         self.message_logger_page = MessageLoggerPage(self, root, bot_controller, images, layout)
