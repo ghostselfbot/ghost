@@ -19,8 +19,6 @@ class ThemingPanel(SettingsPanel):
             self.cfg.theme.set(key, self.theme_tk_entries[index].get())
             
         self.cfg.theme.save(notify=False)
-        
-        self.cfg.set("message_settings.style", self.message_style_entry.cget("text"), save=False)
         self.cfg.save(notify=False)
         
     def _set_theme(self, theme):
