@@ -4,6 +4,7 @@ from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.tableview import Tableview
 from gui.components import ToolPage, RoundedFrame, RoundedButton
 from utils.console import get_formatted_time
+from gui.helpers.style import Style
 
 class SpyPetPage(ToolPage):
     def __init__(self, toolspage, root, bot_controller, images, layout):
@@ -187,8 +188,8 @@ class SpyPetPage(ToolPage):
 
     def _draw_start_stop_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background="#322bef" if not self.spypet.running else "#de2d1b")
-            self.start_stop_button.configure(background="#322bef" if not self.spypet.running else "#de2d1b")
+            wrapper.set_background(background=Style.PRIMARY_BTN_HOVER if not self.spypet.running else "#de2d1b")
+            self.start_stop_button.configure(background=Style.PRIMARY_BTN_HOVER if not self.spypet.running else "#de2d1b")
             
         def _hover_leave(_):
             wrapper.set_background(background=self.root.style.colors.get("primary") if not self.spypet.running else self.root.style.colors.get("danger"))
@@ -312,8 +313,8 @@ class SpyPetPage(ToolPage):
         self.update()
 
     def _load_tags(self):
-        self.textarea.tag_config("timestamp", foreground="gray")
-        self.textarea.tag_config("log_text",  foreground="lightgrey")
+        self.textarea.tag_config("timestamp", foreground=Style.DARK_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
+        self.textarea.tag_config("log_text",  foreground=Style.LIGHT_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
         
         self.textarea.tag_config("prefix_sniper",  foreground="red",     font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
         self.textarea.tag_config("sniper_key",     foreground="#eceb18", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
@@ -334,7 +335,7 @@ class SpyPetPage(ToolPage):
         self.textarea.config(
             border=0,
             background=self.root.style.colors.get("dark"),
-            foreground="lightgrey",
+            foreground=Style.LIGHT_GREY.value,
             highlightcolor=self.root.style.colors.get("dark"),
             highlightbackground=self.root.style.colors.get("dark"),
             state="normal"
@@ -376,7 +377,7 @@ class SpyPetPage(ToolPage):
             display_name.place(relx=0, rely=0)
             
             username = ttk.Label(user_info_wrapper, text=f"{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-            username.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
+            username.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
             username.place(relx=0, rely=0.42)
             
             if self.mutual_guilds:
@@ -402,7 +403,7 @@ class SpyPetPage(ToolPage):
                     row += 1
             else:
                 mutual_guilds_subtitle = ttk.Label(wrapper, text="No Mutual Guilds", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-                mutual_guilds_subtitle.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
+                mutual_guilds_subtitle.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
                 mutual_guilds_subtitle.place(relx=.7, rely=0.65, relwidth=1, anchor="center")
         
         return wrapper
@@ -506,7 +507,7 @@ class SpyPetPage(ToolPage):
         self.messages_textarea.config(
             border=0,
             background=self.root.style.colors.get("dark"),
-            foreground="lightgrey",
+            foreground=Style.LIGHT_GREY.value,
             highlightcolor=self.root.style.colors.get("dark"),
             highlightbackground=self.root.style.colors.get("dark"),
             state="normal"
@@ -528,11 +529,11 @@ class SpyPetPage(ToolPage):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame", custom_size=True)
         
         self.total_messages_label = ttk.Label(wrapper, text="Total: 0", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-        self.total_messages_label.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
+        self.total_messages_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         self.total_messages_label.place(relx=0.05, rely=0.13, relwidth=1, anchor="nw")
         
         self.total_user_messages_label = ttk.Label(wrapper, text="Sent by user: 0", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-        self.total_user_messages_label.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
+        self.total_user_messages_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         self.total_user_messages_label.place(relx=0.05, rely=0.3 + 0.13, relwidth=1, anchor="nw")
         
         return wrapper

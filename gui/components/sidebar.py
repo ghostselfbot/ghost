@@ -24,12 +24,16 @@ class Sidebar:
         self.current_page = page_name
     
     def _hover_enter(self, button_wrapper, button, page_name):
-        background = self.root.style.colors.get("secondary") if self.current_page != page_name else "#1F1F1F"
+        if self.current_page == page_name:
+            return
+        background = self.root.style.colors.get("secondary") if self.current_page != page_name else Style.WINDOW_BORDER.value
         button.configure(background=background)
         button_wrapper.set_background(background)
         
     def _hover_leave(self, button_wrapper, button, page_name):
-        background = Style.WINDOW_BORDER.value if self.current_page != page_name else "#1F1F1F"
+        if self.current_page == page_name:
+            return
+        background = Style.WINDOW_BORDER.value if self.current_page != page_name else self.root.style.colors.get("secondary")
         button.configure(background=background)
         button_wrapper.set_background(background)
     

@@ -2,6 +2,7 @@ import sys
 import ttkbootstrap as ttk
 from gui.components.rounded_frame import RoundedFrame
 from gui.helpers.images import Images
+from gui.helpers.style import Style
 from utils.console import get_formatted_time
 
 class Console:
@@ -61,8 +62,8 @@ class Console:
         self.update()
         
     def _load_tags(self):
-        self.textarea.tag_config("timestamp", foreground="gray")
-        self.textarea.tag_config("log_text",  foreground="lightgrey")
+        self.textarea.tag_config("timestamp", foreground=Style.DARK_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
+        self.textarea.tag_config("log_text",  foreground=Style.LIGHT_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
         
         self.textarea.tag_config("prefix_sniper",  foreground="red",     font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
         self.textarea.tag_config("sniper_key",     foreground="#eceb18", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))

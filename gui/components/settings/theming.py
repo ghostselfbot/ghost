@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 import utils.console as console
 from utils.files import open_path_in_explorer, get_themes_path
 from gui.components import SettingsPanel, RoundedButton, RoundedFrame, DropdownMenu
+from gui.helpers.style import Style
 
 class ThemingPanel(SettingsPanel):
     def __init__(self, root, parent, images, config, width=None):
@@ -74,8 +75,8 @@ class ThemingPanel(SettingsPanel):
         
     def _draw_open_folder_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background="#202021")
-            open_folder_button.configure(background="#202021")
+            wrapper.set_background(background=Style.SETTINGS_PILL_HOVER.value)
+            open_folder_button.configure(background=Style.SETTINGS_PILL_HOVER.value)
             
         def _hover_leave(_):
             wrapper.set_background(background=self.root.style.colors.get("secondary"))
@@ -111,8 +112,7 @@ class ThemingPanel(SettingsPanel):
         create_label.configure(background=self.root.style.colors.get("dark"))
         create_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=(10, 0))
         
-        self.create_entry = ttk.Entry(self.body, bootstyle="secondary", font=("Host Grotesk",))
-        self.create_entry.config(style="secondary.TEntry")
+        self.create_entry = ttk.Entry(self.body, font=("Host Grotesk",))
         self.create_entry.grid(row=0, column=1, sticky="we", padx=(10, 10), pady=(10, 0))
         self.create_entry.bind("<KeyRelease>", lambda e: self.toggle_create_theme_button(self.create_entry.get().strip() != ""))
         
@@ -160,7 +160,7 @@ class ThemingPanel(SettingsPanel):
         
         for index, (key, value) in enumerate(self.theme_dict.items()):
             padding = (10, 2)
-            entry = ttk.Entry(self.body, bootstyle="secondary", font=("Host Grotesk",))
+            entry = ttk.Entry(self.body, font=("Host Grotesk",))
             entry.insert(0, value)
 
             if index == 0:

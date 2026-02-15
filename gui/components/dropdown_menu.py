@@ -1,5 +1,6 @@
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame
+from gui.helpers.style import Style
 
 class DropdownMenu:
     def __init__(self, parent, options, command=None):
@@ -9,8 +10,8 @@ class DropdownMenu:
         self.command = command
         
     def _hover_enter(self, wrapper, label):
-        wrapper.set_background("#282828")
-        label.configure(background="#282828")
+        wrapper.set_background(Style.DROPDOWN_OPTION_HOVER.value)
+        label.configure(background=Style.DROPDOWN_OPTION_HOVER.value)
         
     def _hover_leave(self, wrapper, label):
         wrapper.set_background(self.parent.style.colors.get("secondary"))

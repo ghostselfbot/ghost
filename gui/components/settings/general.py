@@ -52,7 +52,7 @@ class GeneralPanel(SettingsPanel):
         for index, (key, value) in enumerate(self.config_entries.items()):
             padding = (10, 2)
             cfg_value = self.cfg.get(key)
-            entry = ttk.Entry(self.body, bootstyle="secondary", font=("Host Grotesk",)) if key != "token" else ttk.Entry(self.body, bootstyle="secondary", show="*", font=("Host Grotesk",))
+            entry = ttk.Entry(self.body, font=("Host Grotesk",)) if key != "token" else ttk.Entry(self.body, show="*", font=("Host Grotesk",))
             entry.insert(0, cfg_value)
             entry.bind("<Return>", lambda event: self._save_cfg())
             entry.bind("<FocusOut>", lambda event: self._save_cfg())

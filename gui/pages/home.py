@@ -4,6 +4,7 @@ import tkinter.font as tkFont
 from ttkbootstrap.scrolled import ScrolledFrame
 from gui.components import RoundedFrame, RoundedButton
 from gui.helpers import Images
+from gui.helpers.style import Style
 from utils.config import VERSION, CHANGELOG, MOTD, Config
 
 class HomePage:
@@ -65,8 +66,8 @@ class HomePage:
         
     def _draw_restart_button(self, parent, disabled=False):
         def _hover_enter(_):
-            frame.set_background(background="#322bef")
-            restart_label.configure(background="#322bef")
+            frame.set_background(background=Style.PRIMARY_BTN_HOVER.value)
+            restart_label.configure(background=Style.PRIMARY_BTN_HOVER.value)
             
         def _hover_leave(_):
             frame.set_background(background=self.root.style.colors.get("primary"))
@@ -104,7 +105,7 @@ class HomePage:
             display_name.grid(row=0, column=1, sticky=ttk.W, pady=(15, 0))
 
             username = ttk.Label(wrapper, text=self.bot_controller.get_user().name, font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "italic"))
-            username.configure(background=self.root.style.colors.get("secondary"), foreground="lightgrey")
+            username.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
             username.grid(row=1, column=1, sticky=ttk.W, pady=(0, 15))
             
             # restart_btn = self._draw_restart_button(wrapper)
@@ -146,11 +147,11 @@ class HomePage:
         wrapper.grid_columnconfigure(1, weight=1)
         
         self.friends_label = ttk.Label(wrapper, text=f"Friends: {len(self.bot_controller.get_friends())}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-        self.friends_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else "lightgrey")
+        self.friends_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
         self.friends_label.grid(row=2, column=0, sticky=ttk.W, padx=10, pady=(5, 0))
         
         self.guilds_label = ttk.Label(wrapper, text=f"Guilds: {len(self.bot_controller.get_guilds())}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-        self.guilds_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else "lightgrey")
+        self.guilds_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
         self.guilds_label.grid(row=3, column=0, sticky=ttk.W, padx=10, pady=(0, 10))
         
     def _draw_bot_details(self, parent):
@@ -172,11 +173,11 @@ class HomePage:
         version.grid(row=2, column=0, sticky=ttk.W, padx=(10, 0), pady=(5, 0))    
         
         self.uptime_label = ttk.Label(wrapper, text=f"Uptime: {self.bot_controller.get_uptime()}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-        self.uptime_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else "lightgrey")
+        self.uptime_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
         self.uptime_label.grid(row=3, column=0, sticky=ttk.W, padx=(10, 0))
         
         self.latency_label = ttk.Label(wrapper, text=f"Latency: {self.bot_controller.get_latency()}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
-        self.latency_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else "lightgrey")
+        self.latency_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
         self.latency_label.grid(row=4, column=0, sticky=ttk.W, padx=(10, 0), pady=(0, 10))
         
     def _update_wraplength(self, event=None):

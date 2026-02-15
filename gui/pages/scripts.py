@@ -4,6 +4,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.dialogs import Messagebox
 from gui.components import RoundedFrame
+from gui.helpers.style import Style
 
 # Uncomment the below to enable the dedicated script page.
 # Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
@@ -171,8 +172,8 @@ class ScriptsPage:
     
     def _draw_open_folder_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background="#202021")
-            open_folder_button.configure(background="#202021")
+            wrapper.set_background(background=Style.SETTINGS_PILL_HOVER.value)
+            open_folder_button.configure(background=Style.SETTINGS_PILL_HOVER.value)
             
         def _hover_leave(_):
             wrapper.set_background(background=self.root.style.colors.get("secondary"))
@@ -194,8 +195,8 @@ class ScriptsPage:
     
     def _draw_plus_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background="#322bef")
-            plus_button.configure(background="#322bef")
+            wrapper.set_background(background=Style.PRIMARY_BTN_HOVER.value)
+            plus_button.configure(background=Style.PRIMARY_BTN_HOVER.value)
             
         def _hover_leave(_):
             wrapper.set_background(background=self.root.style.colors.get("primary"))

@@ -37,11 +37,9 @@ class GhostGUI:
         # self.root.style.theme_use("darkly")
         self.root.style.load_user_themes(resource_path("data/gui_theme.json"))
         self.root.style.theme_use("ghost")
-        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=self.root.style.colors.get("secondary"))
-        self.root.style.configure("TCheckbutton", background=self.root.style.colors.get("dark"))
+        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk",), bordercolor=Style.ENTRY_BG.value, foreground="#ffffff", borderstyle="flat", borderwidth=0)
+        self.root.style.configure("TCheckbutton", background=self.root.style.colors.get("dark"), font=("Host Grotesk",))
         self.root.style.configure("TMenubutton",  font=("Host Grotesk",))
-        self.root.style.configure("TCheckbutton", font=("Host Grotesk",))
-        self.root.style.configure("TEntry",       font=("Host Grotesk",))
         self.root.style.configure("TLabel",       font=("Host Grotesk",))
         self.root.style.configure("TButton",      font=("Host Grotesk",))
         

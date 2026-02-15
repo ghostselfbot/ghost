@@ -25,7 +25,7 @@ class APIsPanel(SettingsPanel):
         
         for index, (key, value) in enumerate(self.api_keys_entries.items()):
             cfg_value = self.cfg.get(f"apis.{key}")
-            entry = ttk.Entry(wrapper, bootstyle="secondary", show="*", font=("Host Grotesk",))
+            entry = ttk.Entry(wrapper, show="*", font=("Host Grotesk",))
             entry.insert(0, cfg_value)
             entry.bind("<Return>", lambda event: self._save_api_keys())
             entry.bind("<FocusOut>", lambda event: self._save_api_keys())

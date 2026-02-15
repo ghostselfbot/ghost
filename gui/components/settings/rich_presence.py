@@ -119,41 +119,41 @@ class RichPresencePanel(SettingsPanel):
             print(f"Error updating RPC preview: {e}")
         
     def _draw_preview(self, parent):
-        wrapper = RoundedFrame(parent, radius=15, background="#252526")
+        wrapper = RoundedFrame(parent, radius=15, background=self.root.style.colors.get("secondary"))
         wrapper.pack(fill=ttk.X, expand=False, pady=(10, 0), padx=10)
         
         playing_label = ttk.Label(wrapper, text="Playing", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
-        playing_label.configure(background="#252526")
+        playing_label.configure(background=self.root.style.colors.get("secondary"))
         playing_label.grid(row=0, column=0, sticky=ttk.W, padx=(5, 5), pady=(5, 0))
         
         large_image = self.images.load_image_from_url(self.rpc.large_image if self.rpc.large_image else "https://www.ghostt.cc/assets/ghost.png", (64, 64), 5)
-        self.large_image_label = ttk.Label(wrapper, image=large_image, background="#252526")
+        self.large_image_label = ttk.Label(wrapper, image=large_image, background=self.root.style.colors.get("secondary"))
         self.large_image_label.image = large_image
         self.large_image_label.grid(row=1, column=0, padx=(5, 5), pady=5)
         
         # small_image = self.images.load_image_from_url(self.rpc.small_image if self.rpc.small_image else "https://www.ghostt.cc/assets/ghost.png", (28, 28), 12)
-        # self.small_image_label = ttk.Label(wrapper, image=small_image, background="#252526")
+        # self.small_image_label = ttk.Label(wrapper, image=small_image, background=self.root.style.colors.get("secondary"))
         # self.small_image_label.image = small_image
         # self.small_image_label.place(x=50, y=70, width=28, height=28)
         # self.small_image_label.lift() 
         
-        details_wrapper = RoundedFrame(wrapper, radius=0, background="#252526")
+        details_wrapper = RoundedFrame(wrapper, radius=0, background=self.root.style.colors.get("secondary"))
         details_wrapper.grid(row=1, column=1, sticky=ttk.W, padx=(0, 5), pady=5)
         
         self.name_label = ttk.Label(details_wrapper, text=self.rpc.name or "Ghost", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "bold"))
-        self.name_label.configure(background="#252526")
+        self.name_label.configure(background=self.root.style.colors.get("secondary"))
         self.name_label.grid(row=0, column=0, sticky=ttk.W)
         
         self.details_label = ttk.Label(details_wrapper, text=self.rpc.details or "", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
-        self.details_label.configure(background="#252526")
+        self.details_label.configure(background=self.root.style.colors.get("secondary"))
         self.details_label.grid(row=1, column=0, sticky=ttk.W)
         
         self.state_label = ttk.Label(details_wrapper, text=self.rpc.state or "", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
-        self.state_label.configure(background="#252526")
+        self.state_label.configure(background=self.root.style.colors.get("secondary"))
         self.state_label.grid(row=2, column=0, sticky=ttk.W)
         
         time_elapsed_label = ttk.Label(details_wrapper, text="00:15", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
-        time_elapsed_label.configure(foreground="#68ae7c", background="#252526")
+        time_elapsed_label.configure(foreground="#68ae7c", background=self.root.style.colors.get("secondary"))
         time_elapsed_label.grid(row=3, column=0, sticky=ttk.W)
         
     def _draw_user_wrapper(self, parent):
@@ -234,14 +234,12 @@ class RichPresencePanel(SettingsPanel):
             if key in self.preview_vars:
                 entry = ttk.Entry(
                     self.body,
-                    bootstyle="secondary",
                     textvariable=self.preview_vars[key],
                     font=("Host Grotesk",)
                 )
             else:
                 entry = ttk.Entry(
                     self.body,
-                    bootstyle="secondary",
                     font=("Host Grotesk",)
                 )
                 entry.insert(0, rpc_value)

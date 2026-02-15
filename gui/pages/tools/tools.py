@@ -5,6 +5,7 @@ from gui.components import RoundedFrame
 from gui.pages.tools.spypet_page import SpyPetPage
 from gui.pages.tools.message_logger_page import MessageLoggerPage
 from gui.pages.tools.user_lookup_page import UserLookupPage
+from gui.helpers.style import Style
 
 class ToolsPage:
     def __init__(self, root, bot_controller, images, layout, position_resize_grips):
@@ -13,7 +14,7 @@ class ToolsPage:
         self.images = images
         self.layout = layout
         self.position_resize_grips = position_resize_grips
-        self.hover_colour = "#282a2a"
+        self.hover_colour = Style.SETTINGS_PILL_HOVER.value
         
         self.spypet_page = SpyPetPage(self, root, bot_controller, images, layout)
         self.message_logger_page = MessageLoggerPage(self, root, bot_controller, images, layout)
@@ -92,7 +93,7 @@ class ToolsPage:
         page_title.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
 
         page_description = ttk.Label(page_wrapper, text=page["description"], wraplength=150, justify=ttk.CENTER)
-        page_description.configure(background=self.root.style.colors.get("secondary"))
+        page_description.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
         page_description.grid(row=1, column=0, pady=(0, 25))
         page_description.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
         

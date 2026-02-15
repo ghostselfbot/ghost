@@ -89,7 +89,7 @@ class SnipersPanel(SettingsPanel):
                 label.configure(background=self.root.style.colors.get("secondary"))
                 label.grid(row=i + 1, column=0, sticky=ttk.W, pady=(10, 5), padx=10)
 
-                textbox = ttk.Entry(card, bootstyle="secondary", font=("Host Grotesk",))
+                textbox = ttk.Entry(card, font=("Host Grotesk",))
                 textbox.insert(0, entry["value"])
                 textbox.grid(row=i + 2, column=0, sticky=ttk.EW, pady=(0, 10), padx=10, columnspan=2)
 

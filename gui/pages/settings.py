@@ -2,7 +2,7 @@ import sys
 import ttkbootstrap as ttk
 from gui.components.settings import GeneralPanel, ThemingPanel, APIsPanel, SessionSpoofingPanel, RichPresencePanel, SnipersPanel
 from gui.components import RoundedFrame, DropdownMenu
-from gui.helpers import Images
+from gui.helpers import Images, Style
 from utils.config import Config
 
 class SettingsPage:
@@ -26,8 +26,8 @@ class SettingsPage:
             "snipers": None,
         }
         self.pills = {}
-        self.selected_colour = "#373737"
-        self.hover_colour = "#282828"
+        self.selected_colour = Style.SETTINGS_PILL_SELECTED.value
+        self.hover_colour = Style.SETTINGS_PILL_HOVER.value
         
     def refresh_config(self):
         if not self.parent:
