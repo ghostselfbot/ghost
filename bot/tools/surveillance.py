@@ -8,7 +8,7 @@ from discord.errors import HTTPException
 from utils import files
 from utils.config import Config
 
-class SpyPetConsole:
+class SurveillanceConsole:
     def __init__(self, controller):
         self.controller = controller
         self.gui = None
@@ -31,7 +31,7 @@ class SpyPetConsole:
     def warning(self, message):
         self.add_log("warning", message)
 
-class SpyPet:
+class Surveillance:
     def __init__(self, controller):
         self.bot = None
         self.gui = None
@@ -43,7 +43,7 @@ class SpyPet:
         self.semaphore = asyncio.Semaphore(5)
         self.member_id = None
         self.cache = set()
-        self.console = SpyPetConsole(controller)
+        self.console = SurveillanceConsole(controller)
         self.tasks = []
         self.total_messages = 0
         self.user_total_messages = 0
@@ -51,15 +51,15 @@ class SpyPet:
     def set_gui(self, gui):
         self.gui = gui
         self.console.set_gui(gui)
-        self.console.success("SpyPet GUI set successfully.")
+        self.console.success("Surveillance GUI set successfully.")
 
     def set_bot(self, bot):
         self.bot = bot
         self.load_cache()
-        self.console.success("SpyPet bot set successfully.")
+        self.console.success("Surveillance bot set successfully.")
 
     def get_data_path(self):
-        return files.get_application_support() + f"/data/spypet/{self.member_id}.json"
+        return files.get_application_support() + f"/data/surveillance/{self.member_id}.json"
 
     def save_data(self):
         if not self.data:
@@ -249,9 +249,9 @@ class SpyPet:
             return
 
         self.running = True
-        self.console.info("SpyPet started.")
+        self.console.info("Surveillance started.")
         self.mutual_guilds = await self.get_mutual_guilds()
-        self.gui._check_spypet_running()
+        self.gui._check_surveillance_running()
         self.gui.mutual_guilds = self.mutual_guilds
 
         if not self.tasks:
@@ -297,8 +297,8 @@ class SpyPet:
             self.console.info("Saving data...")
             self.save_data()
         
-        self.console.success("SpyPet stopped and data saved.")
-        self.gui._check_spypet_running()
+        self.console.success("Surveillance stopped and data saved.")
+        self.gui._check_surveillance_running()
         
     def reset(self):
         self.running = False
@@ -308,8 +308,8 @@ class SpyPet:
         self.tasks.clear()
         self.total_messages = 0
         self.user_total_messages = 0
-        self.console.info("SpyPet reset. All data cleared and tasks cancelled.")
-        self.gui._check_spypet_running()
+        self.console.info("Surveillance reset. All data cleared and tasks cancelled.")
+        self.gui._check_surveillance_running()
 
     def set_member_id(self, member_id):
         self.member_id = member_id

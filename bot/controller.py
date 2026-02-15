@@ -15,13 +15,13 @@ from utils.config import Config
 from bot.helpers import cmdhelper, imgembed
 import utils.webhook as webhook_client
 from gui.helpers.images import resize_and_sharpen
-from bot.tools import SpyPet
+from bot.tools import Surveillance
 
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(sys.executable))
 
 class BotController:
-    spypet = None
+    surveillance = None
 
     def __init__(self):
         self.cfg = Config()
@@ -33,37 +33,37 @@ class BotController:
         self.bot_running = False
         self.startup_scripts = []
         self.presence = self.cfg.get_rich_presence()
-        self.spypet = SpyPet(self)
+        self.surveillance = Surveillance(self)
         self._avatar_cache = {}        # (url, size, radius) -> PhotoImage
         self._avatar_bytes_cache = {}  # url -> raw bytes
         self._avatar_lock = threading.Lock()
 
-    def start_spypet(self):
-        if not self.spypet.bot:
-            self.spypet.set_bot(self.bot)
-            console.success("SpyPet bot set successfully.")
+    def start_surveillance(self):
+        if not self.surveillance.bot:
+            self.surveillance.set_bot(self.bot)
+            console.success("Surveillance bot set successfully.")
         else:
-            console.warning("SpyPet bot is already set.")
+            console.warning("Surveillance bot is already set.")
         
-        if not self.spypet.member_id:
-            console.error("SpyPet member ID is not set. Please set it in the settings.")
+        if not self.surveillance.member_id:
+            console.error("Surveillance member ID is not set. Please set it in the settings.")
             return
 
-        asyncio.run_coroutine_threadsafe(self.spypet.start(), self.loop)
-        console.success("SpyPet started successfully!")
+        asyncio.run_coroutine_threadsafe(self.surveillance.start(), self.loop)
+        console.success("Surveillance started successfully!")
 
-    def stop_spypet(self):
-        if self.spypet.running:
-            asyncio.run_coroutine_threadsafe(self.spypet.stop(), self.loop)
-            console.success("SpyPet stopped successfully!")
+    def stop_surveillance(self):
+        if self.surveillance.running:
+            asyncio.run_coroutine_threadsafe(self.surveillance.stop(), self.loop)
+            console.success("Surveillance stopped successfully!")
         else:
-            console.warning("SpyPet is not running.")
+            console.warning("Surveillance is not running.")
             
-    def get_mutual_guilds_spypet(self):
-        if self.spypet.running:
-            return asyncio.run_coroutine_threadsafe(self.spypet.get_mutual_guilds(), self.loop).result()
+    def get_mutual_guilds_surveillance(self):
+        if self.surveillance.running:
+            return asyncio.run_coroutine_threadsafe(self.surveillance.get_mutual_guilds(), self.loop).result()
         else:
-            console.warning("SpyPet is not running. Cannot get mutual guilds.")
+            console.warning("Surveillance is not running. Cannot get mutual guilds.")
             return []
 
     def add_startup_script(self, script):
@@ -71,7 +71,7 @@ class BotController:
 
     def set_gui(self, gui):
         self.gui = gui
-        self.spypet.set_gui(gui.tools_page.spypet_page)
+        self.surveillance.set_gui(gui.tools_page.surveillance_page)
         
     def check_token(self):
         resp = requests.get("https://discord.com/api/v9/users/@me", headers={"Authorization": self.cfg.get("token")})

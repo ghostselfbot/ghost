@@ -2,7 +2,7 @@ import os, sys
 import ttkbootstrap as ttk
 
 from gui.components import RoundedFrame
-from gui.pages.tools.spypet_page import SpyPetPage
+from gui.pages.tools.surveillance_page import SurveillancePage
 from gui.pages.tools.message_logger_page import MessageLoggerPage
 from gui.pages.tools.user_lookup_page import UserLookupPage
 from gui.helpers.style import Style
@@ -16,16 +16,16 @@ class ToolsPage:
         self.position_resize_grips = position_resize_grips
         self.hover_colour = Style.SETTINGS_PILL_HOVER.value
         
-        self.spypet_page = SpyPetPage(self, root, bot_controller, images, layout)
+        self.surveillance_page = SurveillancePage(self, root, bot_controller, images, layout)
         self.message_logger_page = MessageLoggerPage(self, root, bot_controller, images, layout)
         self.user_lookup_page = UserLookupPage(self, root, bot_controller, images, layout)
         
         self.pages = [
             {
-                "name": "ghetto spy.pet",
-                "description": "Get messages sent by a user in mutual guilds",
-                "page": self.spypet_page,
-                "command": self.draw_spypet
+                "name": "Surveillance",
+                "description": "Search a user’s message history across mutual servers",
+                "page": self.surveillance_page,
+                "command": self.draw_surveillance
             },
             {
                 "name": "Message Logger",
@@ -41,12 +41,12 @@ class ToolsPage:
             }
         ]
         
-    def draw_spypet(self):
+    def draw_surveillance(self):
         self.layout.sidebar.set_current_page("tools")
         self.layout.clear()
         main = self.layout.main()
-        self.spypet_page.draw(main)
-        self.layout.sidebar.set_button_command("tools", self.draw_spypet)
+        self.surveillance_page.draw(main)
+        self.layout.sidebar.set_button_command("tools", self.draw_surveillance)
         self.position_resize_grips()
         
     def draw_message_logger(self):

@@ -156,7 +156,7 @@ class Ghost(commands.Bot):
             
             await self._setup_scripts()
             await self.controller.setup_webhooks()
-            self.controller.spypet.set_bot(self)
+            self.controller.surveillance.set_bot(self)
             
         except Exception as e:
             console.print_error(str(e))

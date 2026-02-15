@@ -12,7 +12,7 @@ REQUIRED_DIRS = [
     "data",
     "scripts",
     "themes",
-    "data/spypet"
+    "data/surveillance"
 ]
 
 REQUIRED_FILES = {

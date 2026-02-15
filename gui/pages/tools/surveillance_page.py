@@ -6,9 +6,9 @@ from gui.components import ToolPage, RoundedFrame, RoundedButton
 from utils.console import get_formatted_time
 from gui.helpers.style import Style
 
-class SpyPetPage(ToolPage):
+class SurveillancePage(ToolPage):
     def __init__(self, toolspage, root, bot_controller, images, layout):
-        super().__init__(toolspage, root, bot_controller, images, layout, title="ghetto spy.pet", frame=None)
+        super().__init__(toolspage, root, bot_controller, images, layout, title="Surveillance", frame=None)
         self.wrapper = None
         self.search_entry = None  # Initialize search entry to None
         self.user_id = None
@@ -16,7 +16,7 @@ class SpyPetPage(ToolPage):
         self.user_avatar = None
         self.user_wrapper = None
         self.mutual_guilds = []
-        self.spypet = self.bot_controller.spypet
+        self.surveillance = self.bot_controller.surveillance
         self.log_wrapper = None
         self.search_placeholder_text = "Search a Discord user ID..."
         self.console = []
@@ -57,15 +57,15 @@ class SpyPetPage(ToolPage):
             self.add_log("error", "Invalid user ID. Please enter a valid Discord user ID.")
             return
         
-        if user_id == self.user_id or self.spypet.member_id == user_id:
+        if user_id == self.user_id or self.surveillance.member_id == user_id:
             self.add_log("info", "You are already viewing this user.")
             return
         else:
             self.add_log("warning", f"Switching to user ID: {user_id}")
-            self._reset_spypet()
+            self._reset_surveillance()
         
         self.user_id = user_id
-        self.spypet.set_member_id(user_id)
+        self.surveillance.set_member_id(user_id)
         user = self.bot_controller.get_user_from_id(int(user_id))
         self.user = user
         
@@ -89,8 +89,8 @@ class SpyPetPage(ToolPage):
         except Exception as e:
             print(f"Error configuring start/stop button: {e}")
                 
-    def _check_spypet_running(self):
-        if self.spypet.running:
+    def _check_surveillance_running(self):
+        if self.surveillance.running:
             self.search_placeholder_text = "Search for a message..."
             self.messages_textarea_updating = True
             self.root.after(50, lambda: self._disable_reset_button())
@@ -107,11 +107,11 @@ class SpyPetPage(ToolPage):
             if self.search_button.winfo_ismapped():
                 self.search_button.grid_forget()
         
-        if not self.spypet.running and len(self.messages_all) > 0:
+        if not self.surveillance.running and len(self.messages_all) > 0:
             self.search_placeholder_text = "Search for a message..."
             if not self.search_button.winfo_ismapped():
                 self.search_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 10), pady=10)
-        # elif self.spypet.running and len(self.messages_all) > 0:
+        # elif self.surveillance.running and len(self.messages_all) > 0:
         #     self.search_placeholder_text = "Search for a message..."
                 
         try:
@@ -142,14 +142,14 @@ class SpyPetPage(ToolPage):
         except Exception as e:
             print(f"Error enabling reset button: {e}")
                 
-    def _toggle_spypet(self):
+    def _toggle_surveillance(self):
         search_text = self.search_entry.get().strip()
         
-        if not self.spypet.running:
-            if self.user and int(self.user.id) == int(self.spypet.member_id):
-                self.bot_controller.start_spypet()
+        if not self.surveillance.running:
+            if self.user and int(self.user.id) == int(self.surveillance.member_id):
+                self.bot_controller.start_surveillance()
             elif not search_text or search_text == self.search_placeholder_text:
-                self.add_log("error", "Please enter a valid Discord user ID to start SpyPet.")
+                self.add_log("error", "Please enter a valid Discord user ID to start Surveillance.")
                 return
             else:
                 self._get_user(search_text)
@@ -157,53 +157,53 @@ class SpyPetPage(ToolPage):
                     self.add_log("error", "Failed to fetch user. Please check the user ID.")
                     return
                 
-                self.bot_controller.start_spypet()
-                self.add_log("info", f"SpyPet started for user ID: {self.user_id}")
+                self.bot_controller.start_surveillance()
+                self.add_log("info", f"Surveillance started for user ID: {self.user_id}")
                 
             self.messages_textarea_updating = True
             self.root.after(50, lambda: self.update_messages())
         else:
-            self.bot_controller.stop_spypet()
-            self.add_log("info", "SpyPet stopped.")
+            self.bot_controller.stop_surveillance()
+            self.add_log("info", "Surveillance stopped.")
             
-        self._check_spypet_running()
+        self._check_surveillance_running()
 
-    def _reset_spypet(self):
-        if self.spypet.running:
-            self.add_log("warning", "You cannot reset SpyPet while it is running. Please stop it first.")
+    def _reset_surveillance(self):
+        if self.surveillance.running:
+            self.add_log("warning", "You cannot reset Surveillance while it is running. Please stop it first.")
             return
-        print("Resetting SpyPet...")
+        print("Resetting Surveillance...")
         self.clear()
-        self.spypet.reset()
+        self.surveillance.reset()
         self.user_id = None
         self.user = None
         self.user_avatar = None
         self.mutual_guilds = []
         self._redraw_user_wrapper()
         self.clear_messages()
-        self._check_spypet_running()
+        self._check_surveillance_running()
         self._update_progress_labels(0, 0)
         
         self.root.after(150, self._disable_reset_button)
 
     def _draw_start_stop_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background=Style.PRIMARY_BTN_HOVER if not self.spypet.running else "#de2d1b")
-            self.start_stop_button.configure(background=Style.PRIMARY_BTN_HOVER if not self.spypet.running else "#de2d1b")
+            wrapper.set_background(background=Style.PRIMARY_BTN_HOVER.value if not self.surveillance.running else "#de2d1b")
+            self.start_stop_button.configure(background=Style.PRIMARY_BTN_HOVER.value if not self.surveillance.running else "#de2d1b")
             
         def _hover_leave(_):
-            wrapper.set_background(background=self.root.style.colors.get("primary") if not self.spypet.running else self.root.style.colors.get("danger"))
-            self.start_stop_button.configure(background=self.root.style.colors.get("primary") if not self.spypet.running else self.root.style.colors.get("danger"))
+            wrapper.set_background(background=self.root.style.colors.get("primary") if not self.surveillance.running else self.root.style.colors.get("danger"))
+            self.start_stop_button.configure(background=self.root.style.colors.get("primary") if not self.surveillance.running else self.root.style.colors.get("danger"))
         
-        wrapper = RoundedFrame(parent, radius=(10, 10, 10, 10), bootstyle="primary" if not self.spypet.running else "danger")
+        wrapper = RoundedFrame(parent, radius=(10, 10, 10, 10), bootstyle="primary" if not self.surveillance.running else "danger")
         wrapper.bind("<Enter>", _hover_enter)
         wrapper.bind("<Leave>", _hover_leave)
-        wrapper.bind("<Button-1>", lambda e: self._toggle_spypet())
+        wrapper.bind("<Button-1>", lambda e: self._toggle_surveillance())
         
         self.start_stop_button = ttk.Label(wrapper, image=self.images.get("play"), style="primary")
         self.start_stop_button.configure(background=self.root.style.colors.get("primary"))
         self.start_stop_button.pack(side=ttk.LEFT, padx=15, pady=14)
-        self.start_stop_button.bind("<Button-1>", lambda e: self._toggle_spypet())
+        self.start_stop_button.bind("<Button-1>", lambda e: self._toggle_surveillance())
         self.start_stop_button.bind("<Enter>", _hover_enter)
         self.start_stop_button.bind("<Leave>", _hover_leave)
         
@@ -212,7 +212,7 @@ class SpyPetPage(ToolPage):
     def _draw_reset_button(self, parent):
         def _reset(_):
             if not self.reset_button_disabled:
-                self._reset_spypet()
+                self._reset_surveillance()
         
         def _hover_enter(_):
             self.reset_button_wrapper.set_background(background="#de2d1b" if not self.reset_button_disabled else self.root.style.colors.get("dark"))
@@ -298,14 +298,14 @@ class SpyPetPage(ToolPage):
             
             self.textarea.yview_moveto(1)
         except:
-            print("SpyPet console tried to update without being drawn.")
+            print("Surveillance console tried to update without being drawn.")
             
     def clear(self):
         self.console = []
         try:
             self.textarea.delete("1.0", "end")
         except:
-            print("SpyPet console tried to clear without being drawn.")
+            print("Surveillance console tried to clear without being drawn.")
 
     def add_log(self, prefix, text):
         time = get_formatted_time()
@@ -418,7 +418,7 @@ class SpyPetPage(ToolPage):
             self.messages_textarea_updating = False
 
             # Reset placeholder for search bar
-            # self.search_placeholder_text = "Search a Discord user ID..." if not self.spypet.running else "Search for a message..."
+            # self.search_placeholder_text = "Search a Discord user ID..." if not self.surveillance.running else "Search for a message..."
             # if self.search_entry:
             #     self.search_entry.configure(foreground="grey")
             #     self.search_var.set("")  # Resets the actual entry content
@@ -460,7 +460,7 @@ class SpyPetPage(ToolPage):
     def update_messages(self):
         if self.messages_textarea_updating and self.messages_textarea:
             try:
-                data = self.spypet.data
+                data = self.surveillance.data
                 current_yview = self.messages_textarea.yview()
                 at_bottom = current_yview[1] >= 0.999
 
@@ -571,10 +571,10 @@ class SpyPetPage(ToolPage):
         
         self.update()
         
-        if self.spypet.running or len(self.messages_all) > 0:
-            print("SpyPet is running, updating messages...")
-            self._check_spypet_running()
-            self._update_progress_labels(self.spypet.total_messages, self.spypet.user_total_messages)
+        if self.surveillance.running or len(self.messages_all) > 0:
+            print("Surveillance is running, updating messages...")
+            self._check_surveillance_running()
+            self._update_progress_labels(self.surveillance.total_messages, self.surveillance.user_total_messages)
             
         if self._disable_reset_button:
             self._disable_reset_button()
