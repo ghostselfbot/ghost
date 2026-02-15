@@ -34,6 +34,9 @@ class BotController:
         self.startup_scripts = []
         self.presence = self.cfg.get_rich_presence()
         self.spypet = SpyPet(self)
+        self._avatar_cache = {}        # (url, size, radius) -> PhotoImage
+        self._avatar_bytes_cache = {}  # url -> raw bytes
+        self._avatar_lock = threading.Lock()
 
     def start_spypet(self):
         if not self.spypet.bot:
@@ -220,20 +223,45 @@ class BotController:
 
     def get_avatar_from_url(self, url, size=50, radius=5):
         try:
+            if not url:
+                return None
+
             url = url.split("?")[0]
             if url.endswith(".gif"):
                 url = url.replace(".gif", ".png")
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                image = Image.open(BytesIO(response.content))
-                # image = image.resize((size, size))
-                image = resize_and_sharpen(image, (size, size))
+
+            cache_key = (url, size, radius)
+
+            with self._avatar_lock:
+                if cache_key in self._avatar_cache:
+                    return self._avatar_cache[cache_key]
+
+            # reuse downloaded bytes if available
+            with self._avatar_lock:
+                if url in self._avatar_bytes_cache:
+                    content = self._avatar_bytes_cache[url]
+                else:
+                    response = requests.get(url, timeout=5)
+                    response.raise_for_status()
+                    content = response.content
+                    self._avatar_bytes_cache[url] = content
+
+            image = Image.open(BytesIO(content)).convert("RGBA")
+            image = resize_and_sharpen(image, (size, size))
+
+            if radius > 0:
                 image = imgembed.add_corners(image, radius)
-                return ImageTk.PhotoImage(image)
+
+            photo = ImageTk.PhotoImage(image)
+
+            with self._avatar_lock:
+                self._avatar_cache[cache_key] = photo
+
+            return photo
+
         except Exception as e:
             print(f"Error processing avatar from URL {url}: {e}")
-        
-        return None
+            return None
 
     def get_avatar(self, size=50, radius=5):
         try:
