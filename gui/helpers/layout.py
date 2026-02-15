@@ -97,8 +97,9 @@ class Layout:
             if isinstance(widget, ttk.Frame) or isinstance(widget, ScrolledFrame) or isinstance(widget, ttk.Canvas) or isinstance(widget, RoundedFrame):
                 widget.destroy()
 
-        titlebar = self.titlebar.draw()
-        titlebar.pack(fill=ttk.X, side=ttk.TOP)
+        if sys.platform == "darwin":
+            titlebar = self.titlebar.draw()
+            titlebar.pack(fill=ttk.X, side=ttk.TOP)
 
         sidebar = self.sidebar.draw()
         sidebar.pack(side=ttk.LEFT, fill=ttk.BOTH)

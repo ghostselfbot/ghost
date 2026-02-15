@@ -24,8 +24,9 @@ class GhostGUI:
         self.root.size = self.size
         self.root.title("Ghost")
         
-        self.root.overrideredirect(False)
-        self.root.withdraw()
+        if sys.platform == "darwin":
+            self.root.overrideredirect(False)
+            self.root.withdraw()
         
         if os.name == "nt":
             self.root.iconbitmap(resource_path("data/icon.ico"))
@@ -86,12 +87,12 @@ class GhostGUI:
             self.layout.center_window(self.size[0], self.size[1])
             self.root.update_idletasks()
             
-        self.root.update_idletasks()
-        self.root.createcommand('::tk::mac::ReopenApplication', self._show_window)
-        self.root.bind("<Map>", lambda _: self._window_mapped())
-        
-        self.root.after(450, self._show_window)
-        self.root.after(500, self._window_mapped)
+            self.root.update_idletasks()
+            self.root.createcommand('::tk::mac::ReopenApplication', self._show_window)
+            self.root.bind("<Map>", lambda _: self._window_mapped())
+            
+            self.root.after(450, self._show_window)
+            self.root.after(500, self._window_mapped)
 
     def _pre_load_images(self, user):
         print("Pre-loading images...")
@@ -116,6 +117,9 @@ class GhostGUI:
         self.root.overrideredirect(True)
         
     def _create_resize_grips(self):
+        if sys.platform != "darwin":
+            return
+        
         self.resize_grips = {}
 
         # Bottom grip
@@ -143,6 +147,9 @@ class GhostGUI:
         self._position_resize_grips()
         
     def _position_resize_grips(self):
+        if sys.platform != "darwin":
+            return
+        
         w = self.root.winfo_width()
         h = self.root.winfo_height()
         s = self.resize_grip_size
