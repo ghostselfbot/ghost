@@ -22,16 +22,21 @@ class Theming(commands.Cog):
             "codeblock_desc": pages["codeblock"][selected_page - 1 if selected_page - 1 < len(pages["codeblock"]) else 0]
         }, extra_title=f"Page {selected_page}/{len(pages['codeblock'])}")
 
-    @commands.command(name="themes", description="Lists all your themes.", usage="")
-    async def themes(self, ctx):
+    @commands.command(name="themes", description="Lists all your themes.", usage="[page]")
+    async def themes(self, ctx, page: int = 1):
         cfg = self.cfg
         desc = ""
 
-        for theme in cfg.get_themes():
+        themes = cfg.get_themes()
+        page_size = 10
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+
+        for i, theme in enumerate(themes[start_index:end_index]):
             desc += f"- {theme}\n"
 
         await cmdhelper.send_message(ctx, {
-            "title": "Themes",
+            "title": f"🎨 Themes (Page {page}/{(len(themes) + page_size - 1) // page_size})",
             "description": desc,
             "colour": cfg.theme.colour,
             "footer": f"Use {self.bot.command_prefix}theme [name] to change your theme",
@@ -49,11 +54,57 @@ class Theming(commands.Cog):
             else:
                 theme = cfg.theme
                 await cmdhelper.send_message(ctx, {
-                    "title": "Theme",
+                    "title": f"🎨 Theme",
                     "description": f"Current theme: {theme.name}",
                     "colour": theme.colour,
                     "footer": theme.footer,
                 })
+
+    @theme.command(name="create", description="Create a new theme.", usage="[name]", aliases=["new", "add"])
+    async def create_theme(self, ctx, theme_name: str = None):
+        cfg = self.cfg
+        description = ""
+        colour = cfg.theme.colour
+
+        if theme_name is None:
+            description = "You need to provide a theme name!"
+            colour = "#ff0000"
+        elif cfg.theme_exists(theme_name):
+            description = f"A theme named {theme_name} already exists!"
+            colour = "#ff0000"
+        else:
+            cfg.create_theme(theme_name)
+            description = f"Theme {theme_name} created!"
+
+        await cmdhelper.send_message(ctx, {
+            "title": f"🎨 Theme",
+            "description": description,
+            "colour": colour,
+            "footer": cfg.theme.footer,
+        })
+        
+    @theme.command(name="delete", description="Delete a theme.", usage="[name]", aliases=["remove", "del", "rm"])
+    async def delete_theme(self, ctx, theme_name: str = None):
+        cfg = self.cfg
+        description = ""
+        colour = cfg.theme.colour
+
+        if theme_name is None:
+            description = "You need to provide a theme name!"
+            colour = "#ff0000"
+        elif not cfg.theme_exists(theme_name):
+            description = f"There isn't a theme named {theme_name}!"
+            colour = "#ff0000"
+        else:
+            cfg.delete_theme(theme_name)
+            description = f"Theme {theme_name} deleted!"
+
+        await cmdhelper.send_message(ctx, {
+            "title": f"🎨 Theme",
+            "description": description,
+            "colour": colour,
+            "footer": cfg.theme.footer,
+        })
 
     @theme.command(name="set", description="Change your theme", usage="[theme]")
     async def change_theme(self, ctx, theme_name: str = None):
@@ -72,7 +123,7 @@ class Theming(commands.Cog):
             description = f"There isn't a theme named {theme_name}"
         
         await cmdhelper.send_message(ctx, {
-            "title": "Theme",
+            "title": f"🎨 Theme",
             "description": description,
             "colour": colour,
             "footer": cfg.theme.footer,
@@ -98,7 +149,7 @@ class Theming(commands.Cog):
             description = f"Message setting {subkey} set to {value}"
 
         await cmdhelper.send_message(ctx, {
-            "title": "Theme",
+            "title": f"🎨 Theme",
             "description": description,
             "colour": cfg.theme.colour,
             "footer": cfg.theme.footer,
@@ -134,58 +185,9 @@ class Theming(commands.Cog):
     async def textmode(self, ctx):
         await self.theme_set(ctx=ctx, subkey="style", value="codeblock")
 
-    @commands.command(name="richembedmode", description="Set your theme style to embed.", usage="", aliases=["embedmode"])
-    async def richembedmode(self, ctx):
-        cfg = self.cfg
-
-        if cfg.get("rich_embed_webhook") == "":
-            await cmdhelper.send_message(ctx, {
-                "title": "Theme",
-                "description": "You need to set a rich embed webhook in your config before you can use the rich embed mode! Use the `richembedwebhook` command to set it.",
-                "colour": "#ff0000",
-                "footer": cfg.theme.footer,
-            })
-            return
-        
+    @commands.command(name="embedmode", description="Set your theme style to embed.", usage="")
+    async def embedmode(self, ctx):
         await self.theme_set(ctx=ctx, subkey="style", value="embed")
-
-    @commands.command(name="richembedwebhook", description="Set your rich embed webhook.", usage="[webhook]")
-    async def richembedwebhook(self, ctx, webhook_url: str = None):
-        cfg = self.cfg
-        
-        if webhook_url is None:
-            await cmdhelper.send_message(ctx, {
-                "title": "Theme",
-                "description": "You need to provide a webhook URL!",
-                "colour": "#ff0000",
-                "footer": cfg.theme.footer,
-            })
-            return
-        
-        elif not webhook_url.startswith("https://discord.com/api/webhooks/") or len(webhook_url.split("/")) != 7:
-            await cmdhelper.send_message(ctx, {
-                "title": "Theme",
-                "description": "Invalid webhook URL!",
-                "colour": "#ff0000",
-                "footer": cfg.theme.footer,
-            })
-            return
-
-        cfg.set("rich_embed_webhook", webhook_url)
-        cfg.save()
-
-        try:
-            webhook = discord.Webhook.from_url(webhook_url, session=self.bot._connection)
-            desc = f"Rich embed webhook set!\nID: {webhook.id}"
-        except:
-            desc = "Rich embed webhook set!"
-
-        await cmdhelper.send_message(ctx, {
-            "title": "Theme",
-            "description": desc,
-            "colour": cfg.theme.colour,
-            "footer": cfg.theme.footer,
-        })
 
 def setup(bot):
     bot.add_cog(Theming(bot))
