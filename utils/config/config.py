@@ -194,6 +194,9 @@ class Config:
     def get_rich_presence(self):
         return RichPresence(config=self, **self.config["rich_presence"])
 
+    def theme_exists(self, theme_name):
+        return os.path.exists(self.base_path + f"themes/{theme_name}.json")
+
     def create_theme(self, theme_name):
         if os.path.exists(self.base_path + f"themes/{theme_name}.json"):
             return False

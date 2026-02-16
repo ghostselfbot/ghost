@@ -4,6 +4,7 @@ import json
 import asyncio
 import discord
 import requests
+import discord_self_embed
 
 from . import codeblock
 from . import imgembed
@@ -11,6 +12,28 @@ from utils import webhook
 from utils import config
 
 get_command_full_name = lambda cmd: f"{cmd.parent.name} {cmd.name}" if cmd.parent else cmd.name
+
+def remove_markdown(text):
+    return re.sub(r'[*_~`]', '', text)
+
+def fake_markdown(text):
+    bold_alphabet = "𝗮,𝗯,𝗰,𝗱,𝗲,𝗳,𝗴,𝗵,𝗶,𝗷,𝗸,𝗹,𝗺,𝗻,𝗼,𝗽,𝗾,𝗿,𝘀,𝘁,𝘂,𝘃,𝘄,𝘅,𝘆,𝘇"
+    bold_uppercase = "𝗔,𝗕,𝗖,𝗗,𝗘,𝗙,𝗚,𝗛,𝗜,𝗝,𝗞,𝗟,𝗠,𝗡,𝗢,𝗣,𝗤,𝗥,𝗦,𝗧,𝗨,𝗩,𝗪,𝗫,𝗬,𝗭"
+    numbers = "𝟬,𝟭,𝟮,𝟯,𝟰,𝟱,𝟲,𝟳,𝟴,𝟵"
+    
+    lowercase_table = str.maketrans("abcdefghijklmnopqrstuvwxyz", bold_alphabet.replace(",", ""))
+    uppercase_table = str.maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZ", bold_uppercase.replace(",", ""))
+    numbers_table = str.maketrans("0123456789", numbers.replace(",", ""))
+    
+    # use the bold versions of letters when ** is used, and the normal versions when not
+    def replace(match):
+        text = match.group(0)
+        if text.startswith("**") and text.endswith("**"):
+            return text[2:-2].translate(lowercase_table).translate(uppercase_table).translate(numbers_table)
+        else:
+            return text
+        
+    return re.sub(r'\*\*.*?\*\*|.', replace, text)
 
 def format_time(seconds, short_form=True):
     minutes, seconds = divmod(seconds, 60)
@@ -53,6 +76,24 @@ def remove_emojis(text):
 def cog_desc(cmd, desc):
     return f"{desc}\n{cmd}"
 
+def split_into_pages(commands_list, max_length):
+    pages = []
+    current_page = ""
+    for cmd in commands_list:
+        if len(current_page) + len(cmd) > max_length:
+            pages.append(current_page)
+            current_page = ""
+        current_page += f"{cmd}\n"
+    if current_page:
+        pages.append(current_page)
+    return pages
+
+def merge_pages(pages, merge_count=2):
+    merged = []
+    for i in range(0, len(pages), merge_count):
+        merged.append("".join(pages[i:i+merge_count]))
+    return merged
+
 def generate_help_pages(bot, cog_name):
     commands = bot.get_cog(cog_name).walk_commands()
     command_details = []
@@ -66,29 +107,19 @@ def generate_help_pages(bot, cog_name):
 
     formatted_commands = []
     formatted_commands_codeblock = []
+    formatted_commands_embed = []
 
     for name, description in command_details:
         padded_name = name.ljust(max_name_length)
         if description.endswith("."):
             description = description[:-1]
         formatted_commands_codeblock.append(f"{padded_name} :: {description}")
-        formatted_commands.append(f"**{bot.command_prefix}{name}** {description}")
-
-    def split_into_pages(commands_list, max_length):
-        pages = []
-        current_page = ""
-        for cmd in commands_list:
-            if len(current_page) + len(cmd) > max_length:
-                pages.append(current_page)
-                current_page = ""
-            current_page += f"{cmd}\n"
-        if current_page:
-            pages.append(current_page)
-        return pages
+        formatted_commands.append(f"**{name}** {description}")
+        formatted_commands_embed.append(f"{bot.command_prefix}{name} ~ {description}")
 
     codeblock_pages = split_into_pages(formatted_commands_codeblock, 1000)
     image_pages = split_into_pages(formatted_commands, 400)
-    embed_pages = split_into_pages(formatted_commands, 1000)
+    embed_pages = split_into_pages(formatted_commands_embed, 300)
 
     return {"codeblock": codeblock_pages, "image": image_pages, "embed": embed_pages, "edited": codeblock_pages}
 
@@ -191,15 +222,31 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
     elif msg_style == "embed" and cfg.get("rich_embed_webhook"):
         if title == theme.title:
             title = f"{theme.emoji} {title}"
-        embed = discord.Embed(
-            title=title,
-            description=description,
-            colour=discord.Color.from_str(colour)
-        )
-        embed.set_footer(text=footer)
-        embed.set_thumbnail(url=thumbnail)
+        # embed = discord.Embed(
+        #     title=title,
+        #     description=description,
+        #     colour=discord.Color.from_str(colour)
+        # )
+        # embed.set_footer(text=footer)
+        # embed.set_thumbnail(url=thumbnail)
 
-        msg = await rich_embed(ctx, embed)
+        # msg = await rich_embed(ctx, embed)
+        
+        if "page" in footer.lower():
+            title += f" (Page {footer.split()[-1]})"
+        
+        description = description.strip()
+        if footer:
+            description += f"\n\n{theme.footer}"
+        
+        embed = discord_self_embed.Embed("", description=fake_markdown(description.strip()), colour=colour)
+        embed.set_image(thumbnail)
+        embed.set_author(name=title.title())
+        # if not title.startswith(theme.emoji):
+        #     embed.set_provider(theme.title)
+        
+        url = embed.generate_url()
+        msg = await ctx.send(f"[ghostt.cc]({url})", delete_after=delete_after)
 
     if extra_message:
         extra_msg = await ctx.send(extra_message, delete_after=delete_after)

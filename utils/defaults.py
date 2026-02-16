@@ -42,8 +42,7 @@ DEFAULT_CONFIG = {
             "name": "privnote"
         }
     },
-    "rich_presence": DEFAULT_RPC,
-    "rich_embed_webhook": ""
+    "rich_presence": DEFAULT_RPC
 }
 
 DEFAULT_THEME = {

@@ -11,8 +11,7 @@ class GeneralPanel(SettingsPanel):
         self.config_entries = {
             "token": "Token",
             "prefix": "Prefix",
-            "message_settings.auto_delete_delay": "Auto delete delay",
-            "rich_embed_webhook": "Rich embed webhook",
+            "message_settings.auto_delete_delay": "Auto delete delay"
         }
         self.message_style_entry = None
         

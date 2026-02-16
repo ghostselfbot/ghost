@@ -14,7 +14,7 @@ class General(commands.Cog):
     @commands.command(name="help", description="A list of all categories.", usage="")
     async def help(self, ctx, command: str = None):
         cfg = self.cfg
-        descriptions = {"codeblock": "", "image": ""}
+        descriptions = {"codeblock": "", "image": "", "embed": ""}
         cmds = []
 
         for _, cog in self.bot.cogs.items():
@@ -34,11 +34,12 @@ class General(commands.Cog):
             spacing = " " * (max_name_length - len(cmd["name"]))
             descriptions["codeblock"] += f"{spacing}{cmd['name']} :: {cmd['description']}\n"
             descriptions["image"] += f"{self.bot.command_prefix}**{cmd['name']}** {cmd['description']}\n"
+            descriptions["embed"] += f"{self.bot.command_prefix}{cmd['name']} ~ {cmd['description']}\n"
 
         if command is None:
             await cmdhelper.send_message(ctx, {
                 "title": cfg.theme.title,
-                "description": f"{descriptions['image']}\nThere are **{len(self.bot.commands)}** commands!",
+                "description": f"{descriptions['image'] if cfg.get('message_settings')['style'] == 'image' else descriptions['embed']}\nThere are **{len(self.bot.commands)}** commands!",
                 "codeblock_desc": descriptions["codeblock"]
             }, extra_title=f"{len(self.bot.commands)} total commands")
         else:
