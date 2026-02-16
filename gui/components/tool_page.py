@@ -1,8 +1,10 @@
 import abc
+import sys
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame
+from gui.helpers.style import Style
 
-class ToolPage(abc.ABC):
+class ToolPage:
     def __init__(self, toolspage, root, bot_controller, images, layout, title, frame=True):
         self.toolspage = toolspage
         self.root = root
@@ -22,12 +24,17 @@ class ToolPage(abc.ABC):
     def draw_navigation(self, parent):
         wrapper = ttk.Frame(parent)
 
-        back_button = ttk.Label(wrapper, image=self.images.get("left-chevron"))
-        back_button.bind("<Button-1>", lambda e: self.go_back())
-        back_button.grid(row=0, column=1, sticky=ttk.W, padx=(0, 10))
+        tools_label = ttk.Label(wrapper, text="Tools", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"), foreground=Style.LIGHT_GREY.value)
+        tools_label.grid(row=0, column=0, sticky=ttk.W)
+        tools_label.bind("<Button-1>", lambda e: self.go_back())
 
-        page_name = ttk.Label(wrapper, text=self.title, font=("Host Grotesk", 16, "bold"))
+        back_button = ttk.Label(wrapper, image=self.images.get("right-chevron-small"))
+        back_button.bind("<Button-1>", lambda e: self.go_back())
+        back_button.grid(row=0, column=1, sticky=ttk.W, padx=(10, 10))
+
+        page_name = ttk.Label(wrapper, text=self.title, font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
         page_name.grid(row=0, column=2, sticky=ttk.W)
+        page_name.bind("<Button-1>", lambda e: self.go_back())
 
         return wrapper
 

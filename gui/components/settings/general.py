@@ -1,10 +1,10 @@
 import ttkbootstrap as ttk
 import utils.console as console
-from gui.components import SettingsPanel
+from gui.components import SettingsPanel, DropdownMenu, RoundedButton
 
 class GeneralPanel(SettingsPanel):
-    def __init__(self, root, parent, bot_controller, images, config):
-        super().__init__(root, parent, "General", images.get("settings"), collapsed=False)
+    def __init__(self, root, parent, bot_controller, images, config, width=None):
+        super().__init__(root, parent, "General", images.get("settings"), collapsed=False, width=width)
         self.bot_controller = bot_controller
         self.cfg = config
         self.config_tk_entries = {}
@@ -14,6 +14,7 @@ class GeneralPanel(SettingsPanel):
             "message_settings.auto_delete_delay": "Auto delete delay",
             "rich_embed_webhook": "Rich embed webhook",
         }
+        self.message_style_entry = None
         
     def _save_cfg(self):
         for index, (key, value) in enumerate(self.config_entries.items()):
@@ -32,17 +33,26 @@ class GeneralPanel(SettingsPanel):
 
             self.cfg.set(key, tkinter_entry.get(), save=False)
 
+        try:
+            self.cfg.set("message_settings.style", self.message_style_entry.value(), save=False)
+        except Exception as e:
+            console.error(f"Failed to set message style: {e}")
+
         self.cfg.save(notify=False)
         
     def _only_numeric(self, event):
         if not event.char.isnumeric() and event.char != "" and event.keysym != "BackSpace":
             return "break"
         
+    def _set_message_style(self, style):
+        # self.message_style_entry.configure(text=style)
+        self._save_cfg()
+        
     def draw(self):
         for index, (key, value) in enumerate(self.config_entries.items()):
             padding = (10, 2)
             cfg_value = self.cfg.get(key)
-            entry = ttk.Entry(self.body, bootstyle="secondary", font=("Host Grotesk",)) if key != "token" else ttk.Entry(self.body, bootstyle="secondary", show="*", font=("Host Grotesk",))
+            entry = ttk.Entry(self.body, font=("Host Grotesk",)) if key != "token" else ttk.Entry(self.body, show="*", font=("Host Grotesk",))
             entry.insert(0, cfg_value)
             entry.bind("<Return>", lambda event: self._save_cfg())
             entry.bind("<FocusOut>", lambda event: self._save_cfg())
@@ -52,8 +62,6 @@ class GeneralPanel(SettingsPanel):
 
             if index == 0:
                 padding = (padding[0], (10, 2))
-            elif index == len(self.config_entries) - 1:
-                padding = (padding[0], (2, 10))
 
             label = ttk.Label(self.body, text=value)
             label.configure(background=self.root.style.colors.get("dark"))
@@ -63,6 +71,14 @@ class GeneralPanel(SettingsPanel):
 
             self.body.grid_columnconfigure(1, weight=1)
             self.config_tk_entries[key] = entry
+        
+        message_style_label = ttk.Label(self.body, text="Message style")
+        message_style_label.configure(background=self.root.style.colors.get("dark"))
+        message_style_label.grid(row=len(self.config_entries) + 1, column=0, sticky=ttk.NW, padx=(10, 0), pady=(5, 10))
+        
+        self.message_style_entry = DropdownMenu(self.body, options=["codeblock", "image", "embed"], command=self._set_message_style)
+        self.message_style_entry.set_selected(self.cfg.get("message_settings.style"))
+        self.message_style_entry.draw().grid(row=len(self.config_entries) + 1, column=1, sticky="we", padx=(10, 10), pady=(2, 10), columnspan=3)
         
         return self.wrapper
     

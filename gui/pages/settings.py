@@ -1,6 +1,8 @@
+import sys
 import ttkbootstrap as ttk
 from gui.components.settings import GeneralPanel, ThemingPanel, APIsPanel, SessionSpoofingPanel, RichPresencePanel, SnipersPanel
-from gui.helpers import Images
+from gui.components import RoundedFrame, DropdownMenu
+from gui.helpers import Images, Style
 from utils.config import Config
 
 class SettingsPage:
@@ -13,6 +15,19 @@ class SettingsPage:
         self.images = Images()
         self.cfg = Config()
         self.cfg.subscribe(self)
+
+        self.current_page = "general"
+        self.pages = {
+            "general": None,
+            "theming": None,
+            # "apis": None,
+            # "session_spoofing": None,
+            "rich_presence": None,
+            "snipers": None,
+        }
+        self.pills = {}
+        self.selected_colour = Style.SETTINGS_PILL_SELECTED.value
+        self.hover_colour = Style.SETTINGS_PILL_HOVER.value
         
     def refresh_config(self):
         if not self.parent:
@@ -24,26 +39,92 @@ class SettingsPage:
                 
             if self.parent: self.parent.update_idletasks()
             self.draw(self.parent)
-        except:
-            pass
-          
+            if self.parent:
+                self.root.after_idle(lambda: self.root.focus_force())
+        except Exception as e:
+            print(f"Error refreshing config: {e}")
+    
+    def _create_sections(self, wrapper):
+        general_wrapper = ttk.Frame(wrapper)
+        
+        self.general = GeneralPanel(self.root, general_wrapper, self.bot_controller, self.images, self.cfg).draw()
+        self.session_spoofing = SessionSpoofingPanel(self.root, general_wrapper, self.images, self.cfg).draw()
+        self.snipers = SnipersPanel(self.root, wrapper, self.images, self.cfg).draw()
+        self.rpc = RichPresencePanel(self.root, wrapper, self.images, self.cfg, bot_controller=self.bot_controller).draw()
+        self.apis = APIsPanel(self.root, general_wrapper, self.images, self.cfg).draw()
+        self.theming = ThemingPanel(self.root, wrapper, self.images, self.cfg).draw()
+        
+        self.general.pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+        self.session_spoofing.pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+        self.apis.pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+        
+        self.pages["general"] = general_wrapper
+        self.pages["theming"] = self.theming
+        # self.pages["apis"] = self.apis
+        # self.pages["session_spoofing"] = self.session_spoofing
+        self.pages["rich_presence"] = self.rpc
+        self.pages["snipers"] = self.snipers
+    
+    def _create_pill(self, parent, text, row, command):
+        def _hover_enter(_, pill, label):
+            if pill == self.pills[self.current_page]["pill"]:
+                return
+            pill.set_background(self.hover_colour)
+            label.configure(background=self.hover_colour)
+        def _hover_leave(_, pill, label):
+            if pill == self.pills[self.current_page]["pill"]:
+                return
+            pill.set_background(self.root.style.colors.get("secondary"))
+            label.configure(background=self.root.style.colors.get("secondary"))
+        
+        pill = RoundedFrame(parent, radius=10, bootstyle="secondary.TFrame")
+        pill.grid(row=0, column=row, sticky=ttk.W, padx=(5, 0 if text != "Snipers" else 5), pady=5)
+        label = ttk.Label(pill, text=text, font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+        label.configure(background=self.root.style.colors.get("secondary"))
+        label.grid(row=0, column=0, sticky=ttk.W, padx=5, pady=5)
+        label.bind("<Button-1>", lambda e: command())
+        pill.bind("<Button-1>", lambda e: command())
+        pill.bind("<Enter>", lambda e: _hover_enter(e, pill, label))
+        pill.bind("<Leave>", lambda e: _hover_leave(e, pill, label))
+        label.bind("<Enter>", lambda e: _hover_enter(e, pill, label))
+        label.bind("<Leave>", lambda e: _hover_leave(e, pill, label))
+        self.pills[text.lower().replace(" ", "_")] = {"pill": pill, "label": label}
+        
+    def toggle(self, key):
+        if key != self.current_page:
+            for page in self.pages.values():
+                page.pack_forget()
+            self.pages[key].pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+            self.current_page = key
+        
+        for pill_key, pill_components in self.pills.items():
+            is_selected = pill_key == key
+            bg_color = self.selected_colour if is_selected else self.root.style.colors.get("secondary")
+            pill_components["pill"].set_background(bg_color)
+            pill_components["label"].configure(background=bg_color, font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "bold" if is_selected else "normal"))
+    
     def draw(self, parent):
         self.parent = parent
         
-        general = GeneralPanel(self.root, parent, self.bot_controller, self.images, self.cfg).draw()
-        general.pack(fill=ttk.BOTH, expand=True, pady=(0, 15))
+        self.settings_wrapper = ttk.Frame(parent)
+        self._create_sections(self.settings_wrapper)
+
+        self.title = ttk.Label(parent, text="Settings", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
+        self.title.configure(background=self.root.style.colors.get("bg"))
+        self.title.pack(pady=(0, 10), anchor=ttk.W)
+
+        self.pages_wrapper = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
+        self.pages_wrapper.pack(anchor=ttk.W)
         
-        theming = ThemingPanel(self.root, parent, self.images, self.cfg).draw()
-        theming.pack(fill=ttk.BOTH, expand=True, pady=(0, 15))
+        self._create_pill(self.pages_wrapper, "General", 0, lambda: self.toggle("general"))
+        self._create_pill(self.pages_wrapper, "Theming", 1, lambda: self.toggle("theming"))
+        # self._create_pill(self.pages_wrapper, "APIs", 2, lambda: self.toggle("apis"))
+        # self._create_pill(self.pages_wrapper, "Session Spoofing", 3, lambda: self.toggle("session_spoofing"))
+        self._create_pill(self.pages_wrapper, "Rich Presence", 4, lambda: self.toggle("rich_presence"))
+        self._create_pill(self.pages_wrapper, "Snipers", 5, lambda: self.toggle("snipers"))
         
-        apis = APIsPanel(self.root, parent, self.images, self.cfg).draw()
-        apis.pack(fill=ttk.BOTH, expand=True, pady=(0, 15))
+        # -------
         
-        session_spoofing = SessionSpoofingPanel(self.root, parent, self.images, self.cfg).draw()
-        session_spoofing.pack(fill=ttk.BOTH, expand=True, pady=(0, 15))
-        
-        rpc = RichPresencePanel(self.root, parent, self.images, self.cfg).draw()
-        rpc.pack(fill=ttk.BOTH, expand=True, pady=(0, 15))
-        
-        snipers = SnipersPanel(self.root, parent, self.images, self.cfg).draw()
-        snipers.pack(fill=ttk.BOTH, expand=True)
+        self.settings_wrapper.pack(fill=ttk.BOTH, expand=True, pady=(10, 0))
+        self.pages[self.current_page].pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+        self.toggle(self.current_page)

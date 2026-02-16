@@ -1,6 +1,8 @@
 import sys
 import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
+from gui.components import RoundedFrame
+from gui.helpers.style import Style
 
 def resize(root, width, height):
     root.minsize(width, height)
@@ -18,25 +20,82 @@ def center_window(root, width, height):
     root.focus_force()
 
 class Layout:
-    def __init__(self, root, sidebar):
+    def __init__(self, root, sidebar, titlebar, resize_grips):
         self.root = root
         self.width = root.winfo_width()
         self.height = root.winfo_height()
         self.sidebar = sidebar
+        self.titlebar = titlebar
+        self.resize_grips = resize_grips
         
-    def main(self, scrollable=False, padx=25, pady=25):
+    def main(self, scrollable=False, padx=10, pady=10):
         width = self.width - (self.width // 100)
-        wrapper = self.root
-        
-        if scrollable:
-            wrapper = ScrolledFrame(self.root, width=width, height=self.height)
-            wrapper.pack(fill=ttk.BOTH, expand=True)
-            
-            # main = ttk.Frame(wrapper)
-            # main.pack(fill=ttk.BOTH, expand=True, padx=23, pady=23)
+        main = None
 
-        main = ttk.Frame(wrapper, width=width, height=self.height)
-        main.pack(fill=ttk.BOTH, expand=True, padx=(23, 32) if scrollable else padx, pady=23 if scrollable else pady)
+        if sys.platform == "darwin":
+            border = RoundedFrame(
+                self.root,
+                radius=(0, 0, 25, 0),  # ALL corners here
+                background=Style.WINDOW_BORDER.value
+            )
+            border.pack(fill=ttk.BOTH, expand=True)
+
+            outer = RoundedFrame(
+                border,
+                radius=(25, 25, 25, 25),  # only internal shaping
+                background=self.root.style.colors.get("bg")
+            )
+            outer.pack(
+                fill=ttk.BOTH,
+                expand=True,
+                padx=(0, 8),
+                pady=(0, 8)
+            )
+
+            # SAFE ZONE: keeps native widgets away from rounded corners
+            safe = ttk.Frame(
+                outer,
+                style="TFrame"
+            )
+            safe.pack(fill=ttk.BOTH, expand=True, padx=15, pady=15)
+
+            # INNER: scrolling container (optional)
+            if scrollable:
+                inner = ScrolledFrame(
+                    safe,
+                    width=width,
+                    height=self.height
+                )
+                inner.pack(fill=ttk.BOTH, expand=True)
+                content_parent = inner
+            else:
+                content_parent = safe
+
+            # CONTENT FRAME
+            main = ttk.Frame(
+                content_parent,
+                width=width,
+                height=self.height
+            )
+            main.pack(
+                fill=ttk.BOTH,
+                expand=True,
+                padx=(8, 22) if scrollable else padx,
+                pady=8 if scrollable else pady
+            )
+
+        else:
+            wrapper = self.root
+            
+            if scrollable:
+                wrapper = ScrolledFrame(self.root, width=width, height=self.height)
+                wrapper.pack(fill=ttk.BOTH, expand=True)
+                
+                # main = ttk.Frame(wrapper)
+                # main.pack(fill=ttk.BOTH, expand=True, padx=23, pady=23)
+
+            main = ttk.Frame(wrapper, width=width, height=self.height)
+            main.pack(fill=ttk.BOTH, expand=True, padx=(23, 32) if scrollable else 25, pady=23 if scrollable else 25)
 
         return main
     
@@ -46,8 +105,15 @@ class Layout:
     
     def clear(self):
         for widget in self.root.winfo_children():
-            if isinstance(widget, ttk.Frame):
+            # ignore resize grips
+            if widget in self.resize_grips.values():
+                continue
+            if isinstance(widget, ttk.Frame) or isinstance(widget, ScrolledFrame) or isinstance(widget, ttk.Canvas) or isinstance(widget, RoundedFrame):
                 widget.destroy()
+
+        if sys.platform == "darwin":
+            titlebar = self.titlebar.draw()
+            titlebar.pack(fill=ttk.X, side=ttk.TOP)
 
         sidebar = self.sidebar.draw()
         sidebar.pack(side=ttk.LEFT, fill=ttk.BOTH)

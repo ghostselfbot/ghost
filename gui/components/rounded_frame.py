@@ -106,3 +106,6 @@ class RoundedFrame(ttk.Canvas):
         if sequence == "<Configure>":
             return super().bind(sequence, self.on_resize, add=add)
         return super().bind(sequence, func, add=add)
+    
+    def lift(self):
+        self.master.tk.call("raise", self._w)

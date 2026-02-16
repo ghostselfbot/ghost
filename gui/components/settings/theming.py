@@ -1,16 +1,18 @@
 import ttkbootstrap as ttk
 import utils.console as console
 from utils.files import open_path_in_explorer, get_themes_path
-from gui.components import SettingsPanel, RoundedButton, RoundedFrame
+from gui.components import SettingsPanel, RoundedButton, RoundedFrame, DropdownMenu
+from gui.helpers.style import Style
 
 class ThemingPanel(SettingsPanel):
-    def __init__(self, root, parent, images, config):
-        super().__init__(root, parent, "Theming", images.get("theming"))
+    def __init__(self, root, parent, images, config, width=None):
+        super().__init__(root, parent, "Theming", images.get("theming"), width=width)
         self.cfg = config
         self.root = root
         self.images = images
         self.theme_tk_entries = []
         self.themes = self.cfg.get_themes()
+        self.menu_themes = [str(theme) for theme in self.themes]
         self.theme_dict = self.cfg.theme.to_dict()
         
     def _save_theme(self, _=None):
@@ -18,14 +20,16 @@ class ThemingPanel(SettingsPanel):
             self.cfg.theme.set(key, self.theme_tk_entries[index].get())
             
         self.cfg.theme.save(notify=False)
-        
-        self.cfg.set("message_settings.style", self.message_style_entry.cget("text"), save=False)
         self.cfg.save(notify=False)
         
     def _set_theme(self, theme):
-        self.select_menu.configure(text=theme)
+        print(f"Setting theme to: {theme}")
+        # self.select_menu.set_selected(theme)
         self.cfg.set_theme(theme, save=False)
         self.cfg.save(notify=True)
+        # self.select_menu.configure(text=theme)
+        # self.cfg.set_theme(theme, save=False)
+        # self.cfg.save(notify=True)
         
         # self.create_entry.delete(0, "end")
         # self.select_menu.configure(text=theme)
@@ -71,8 +75,8 @@ class ThemingPanel(SettingsPanel):
         
     def _draw_open_folder_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background="#202021")
-            open_folder_button.configure(background="#202021")
+            wrapper.set_background(background=Style.SETTINGS_PILL_HOVER.value)
+            open_folder_button.configure(background=Style.SETTINGS_PILL_HOVER.value)
             
         def _hover_leave(_):
             wrapper.set_background(background=self.root.style.colors.get("secondary"))
@@ -92,52 +96,61 @@ class ThemingPanel(SettingsPanel):
         
         return wrapper
         
+    def toggle_create_theme_button(self, state):
+        if state:
+            self.create_button.set_state("normal")
+        else:
+            self.create_button.set_state("disabled")
+        
     def draw(self):
         self.themes = self.cfg.get_themes()
         self.theme_dict = self.cfg.theme.to_dict()
         
         #-------
         
-        create_label = ttk.Label(self.body, text="Create a new theme")
+        create_label = ttk.Label(self.body, text="New theme name")
         create_label.configure(background=self.root.style.colors.get("dark"))
         create_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=(10, 0))
         
-        self.create_entry = ttk.Entry(self.body, bootstyle="secondary", font=("Host Grotesk",))
-        self.create_entry.config(style="secondary.TEntry")
+        self.create_entry = ttk.Entry(self.body, font=("Host Grotesk",))
         self.create_entry.grid(row=0, column=1, sticky="we", padx=(10, 10), pady=(10, 0))
+        self.create_entry.bind("<KeyRelease>", lambda e: self.toggle_create_theme_button(self.create_entry.get().strip() != ""))
         
-        create_button = RoundedButton(self.body, text="Create", command=lambda _: self._create_theme(self.create_entry.get()), style="success.TButton")
-        create_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 11), pady=(10, 0))
+        self.create_button = RoundedButton(self.body, text="Create", command=lambda _: self._create_theme(self.create_entry.get()), style="success.TButton")
+        self.create_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 11), pady=(10, 0))
+        self.create_button.set_state("disabled")
         
         #-------
         
-        select_label = ttk.Label(self.body, text="Select a theme")
+        select_label = ttk.Label(self.body, text="Select theme")
         select_label.configure(background=self.root.style.colors.get("dark"))
-        select_label.grid(row=1, column=0, sticky=ttk.W, padx=(10, 0), pady=(10, 0))
+        select_label.grid(row=1, column=0, sticky=ttk.NW, padx=(10, 0), pady=(15, 0))
         
-        self.select_menu = ttk.Menubutton(self.body, text=self.cfg.theme.name, bootstyle="secondary")
-        self.select_menu.menu = ttk.Menu(self.select_menu, tearoff=0)
-        self.select_menu["menu"] = self.select_menu.menu
+        # self.select_menu = ttk.Menubutton(self.body, text=self.cfg.theme.name, bootstyle="secondary")
+        # self.select_menu.menu = ttk.Menu(self.select_menu, tearoff=0)
+        # self.select_menu["menu"] = self.select_menu.menu
         
-        for theme in self.themes:
-            self.select_menu.menu.add_command(label=str(theme), command=lambda theme=theme.name: self._set_theme(theme))
+        # for theme in self.themes:
+        #     self.select_menu.menu.add_command(label=str(theme), command=lambda theme=theme.name: self._set_theme(theme))
             
-        self.select_menu.grid(row=1, column=1, columnspan=2, sticky="we", padx=(10, 10), pady=(10, 0))
+        self.select_menu = DropdownMenu(self.body, options=self.menu_themes, command=self._set_theme)
+        self.select_menu.set_selected(self.cfg.theme.name)
+        self.select_menu.draw().grid(row=1, column=1, columnspan=2, sticky="we", padx=(10, 10), pady=(10, 0))
         
         #-------
         
-        message_style_label = ttk.Label(self.body, text="Global message style")
-        message_style_label.configure(background=self.root.style.colors.get("dark"))
-        message_style_label.grid(row=2, column=0, sticky=ttk.W, padx=(10, 0), pady=(10, 0))
+        # message_style_label = ttk.Label(self.body, text="Message style")
+        # message_style_label.configure(background=self.root.style.colors.get("dark"))
+        # message_style_label.grid(row=2, column=0, sticky=ttk.W, padx=(10, 0), pady=(10, 0))
         
-        self.message_style_entry = ttk.Menubutton(self.body, text=self.cfg.config["message_settings"]["style"], bootstyle="secondary")
-        self.message_style_entry.menu = ttk.Menu(self.message_style_entry, tearoff=0)
-        self.message_style_entry["menu"] = self.message_style_entry.menu
+        # self.message_style_entry = ttk.Menubutton(self.body, text=self.cfg.config["message_settings"]["style"], bootstyle="secondary")
+        # self.message_style_entry.menu = ttk.Menu(self.message_style_entry, tearoff=0)
+        # self.message_style_entry["menu"] = self.message_style_entry.menu
         
-        for style in ["codeblock", "image", "embed"]:
-            self.message_style_entry.menu.add_command(label=style, command=lambda style=style: self._set_message_style(style))
+        # for style in ["codeblock", "image", "embed"]:
+        #     self.message_style_entry.menu.add_command(label=style, command=lambda style=style: self._set_message_style(style))
             
-        self.message_style_entry.grid(row=2, column=1, columnspan=2, sticky="we", padx=(10, 10), pady=(10, 0))
+        # self.message_style_entry.grid(row=2, column=1, columnspan=2, sticky="we", padx=(10, 10), pady=(10, 0))
         
         #-------
         
@@ -147,7 +160,7 @@ class ThemingPanel(SettingsPanel):
         
         for index, (key, value) in enumerate(self.theme_dict.items()):
             padding = (10, 2)
-            entry = ttk.Entry(self.body, bootstyle="secondary", font=("Host Grotesk",))
+            entry = ttk.Entry(self.body, font=("Host Grotesk",))
             entry.insert(0, value)
 
             if index == 0:

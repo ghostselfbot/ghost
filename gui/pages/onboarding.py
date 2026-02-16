@@ -172,7 +172,7 @@ class OnboardingPage:
         return wrapper
         
     def draw(self):
-        wrapper = ttk.Frame(self.root)
+        wrapper = RoundedFrame(self.root, radius=(25, 25, 25, 25), background=self.root.style.colors.get("bg"))
         wrapper.place(relx=0.5, rely=0.5, anchor="center")
         
         token_entry = self._draw_token_entry(wrapper)
