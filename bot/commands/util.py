@@ -322,7 +322,7 @@ class Util(commands.Cog):
         with open(files.get_application_support() + "/data/commands.txt", "w") as f:
             f.write("\n".join(commands))
 
-        await ctx.send(file=discord.File("data/commands.txt"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        await ctx.send(file=discord.File(files.get_application_support() + "/data/commands.txt"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
     @commands.command(name="clearconsole", description="Clear the console", usage="")
     async def clearconsole(self, ctx):
