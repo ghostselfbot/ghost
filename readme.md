@@ -14,11 +14,21 @@ Ghost has 150+ commands and a completely custom built GUI for endless customisat
 > - Account backup and restore commands
 -->
 
-> ```bash
-> curl -sSL https://www.ghostt.cc/assets/unix-install.sh | bash
-> ```
-> If you're using Windows, please use the binary in the latest release!  
-> Follow [this guide](https://gist.github.com/bennyscripts/49ecc1eade1796ee1d7cad9d165ffe67) on how to get your account token!  
+## Getting Started
+Use the commands below to run Ghost from source code. If you're using Windows, download the binary in the latest release.
+```bash
+git clone https://github.com/ghostselfbot/ghost
+cd ghost
+python3 -m venv .venv # create venv (requires Python 3.10+)
+source .venv/bin/activate # or on Windows: .\.venv\Scripts\activate
+pip install -r requirements.txt
+python3 ghost.py
+```
+If you're using macOS or Linux, run the command below to get a compiled binary.
+```bash
+curl -sSL https://www.ghostt.cc/assets/unix-install.sh | bash
+```
+Follow [this guide](https://gist.github.com/bennyscripts/49ecc1eade1796ee1d7cad9d165ffe67) on how to get your account token!  
 > _Ghost requires Python 3.10+_
 
 <!--
