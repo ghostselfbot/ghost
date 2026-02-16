@@ -76,7 +76,7 @@ class GeneralPanel(SettingsPanel):
         message_style_label.configure(background=self.root.style.colors.get("dark"))
         message_style_label.grid(row=len(self.config_entries) + 1, column=0, sticky=ttk.NW, padx=(10, 0), pady=(5, 10))
         
-        self.message_style_entry = DropdownMenu(self.body, options=["codeblock", "image", "embed"], command=self._set_message_style)
+        self.message_style_entry = DropdownMenu(self.body, options=["codeblock", "image", "embed", "edited"], command=self._set_message_style)
         self.message_style_entry.set_selected(self.cfg.get("message_settings.style"))
         self.message_style_entry.draw().grid(row=len(self.config_entries) + 1, column=1, sticky="we", padx=(10, 10), pady=(2, 10), columnspan=3)
         

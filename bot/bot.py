@@ -195,10 +195,11 @@ class Ghost(commands.Bot):
                 await self.add_cog(cog(self))
 
     async def on_command(self, ctx):
-        try:
-            await ctx.message.delete()
-        except Exception as e:
-            console.print_error(str(e))
+        if self.cfg.get("message_settings")["style"] != "edited":
+            try:
+                await ctx.message.delete()
+            except Exception as e:
+                console.print_error(str(e))
 
         command = ctx.message.content[len(self.command_prefix):]
         console.print_cmd(command)
@@ -207,10 +208,11 @@ class Ghost(commands.Bot):
     async def on_command_error(self, ctx, error):
         console.print_error(str(error))
 
-        try:
-            await ctx.message.delete()
-        except Exception as e:
-            console.print_error(str(e))
+        if self.cfg.get("message_settings")["style"] != "edited":
+            try:
+                await ctx.message.delete()
+            except Exception as e:
+                console.print_error(str(e))
 
         try:
             await cmdhelper.send_message(ctx, {

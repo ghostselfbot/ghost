@@ -90,7 +90,7 @@ def generate_help_pages(bot, cog_name):
     image_pages = split_into_pages(formatted_commands, 400)
     embed_pages = split_into_pages(formatted_commands, 1000)
 
-    return {"codeblock": codeblock_pages, "image": image_pages, "embed": embed_pages}
+    return {"codeblock": codeblock_pages, "image": image_pages, "embed": embed_pages, "edited": codeblock_pages}
 
 async def rich_embed(ctx, embed):
     cfg = config.Config()
@@ -148,7 +148,7 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
     if msg_style == "embed" and not cfg.get("rich_embed_webhook"):
         msg_style = "codeblock"
 
-    if msg_style == "codeblock":
+    if msg_style == "codeblock" or msg_style == "edited":
         description = re.sub(r"[*_~`]", "", codeblock_desc)
         if title == theme.title:
             title = f"{theme.emoji} {title}"
@@ -157,15 +157,26 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
             extra_title = description
             description = ""
 
-        msg = await ctx.send(
-            str(codeblock.Codeblock(
-                title=title,
-                description=description,
-                extra_title=extra_title,
-                # footer=footer
-            )),
-            delete_after=delete_after
-        )
+        if msg_style != "edited":
+            msg = await ctx.send(
+                str(codeblock.Codeblock(
+                    title=title,
+                    description=description,
+                    extra_title=extra_title,
+                    # footer=footer
+                )),
+                delete_after=delete_after
+            )
+        else:
+            msg = await ctx.message.edit(
+                content=str(codeblock.Codeblock(
+                    title=title,
+                    description=description,
+                    extra_title=extra_title,
+                    # footer=footer
+                )),
+                delete_after=delete_after
+            )
 
     elif msg_style == "image":
         title = remove_emojis(title.replace(theme.emoji, "").lstrip())
