@@ -2,6 +2,7 @@ import sys
 import ttkbootstrap as ttk
 from gui.components.rounded_frame import RoundedFrame
 from gui.helpers.images import Images
+from gui.helpers.style import Style
 from utils.console import get_formatted_time
 
 class Console:
@@ -61,8 +62,8 @@ class Console:
         self.update()
         
     def _load_tags(self):
-        self.textarea.tag_config("timestamp", foreground="gray")
-        self.textarea.tag_config("log_text",  foreground="lightgrey")
+        self.textarea.tag_config("timestamp", foreground=Style.DARK_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
+        self.textarea.tag_config("log_text",  foreground=Style.LIGHT_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
         
         self.textarea.tag_config("prefix_sniper",  foreground="red",     font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
         self.textarea.tag_config("sniper_key",     foreground="#eceb18", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
@@ -96,7 +97,7 @@ class Console:
         clear_btn.configure(background=self.root.style.colors.get("secondary"))
         clear_btn.bind("<Button-1>", lambda e: self.clear())
         clear_btn.grid(row=0, column=3, padx=(10, 8), pady=5, sticky="e")
-    
+
     def _draw_main(self, parent):
         wrapper = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
         wrapper.pack(side="top", fill="both", expand=True)
@@ -112,12 +113,14 @@ class Console:
             highlightbackground=self.root.style.colors.get("dark"),
             state="normal"
         )
-        
-        # Disable insert/delete actions
-        self.textarea.bind("<Key>", lambda e: "break")
-        self.textarea.bind("<Button-2>", lambda e: "break")  # Middle-click paste (Linux)
-        self.textarea.bind("<Control-v>", lambda e: "break")
-        self.textarea.bind("<Control-V>", lambda e: "break")
+
+        try:
+            self.textarea.bind_all(
+                "<Control-c>" if sys.platform != "darwin" else "<Command-c>", 
+                lambda _: self.textarea.event_generate("<<Copy>>")
+            )
+        except:
+            pass
 
         self.textarea.pack(fill="both", expand=True, padx=5, pady=5)
         self._load_tags()

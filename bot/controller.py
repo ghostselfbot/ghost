@@ -15,13 +15,13 @@ from utils.config import Config
 from bot.helpers import cmdhelper, imgembed
 import utils.webhook as webhook_client
 from gui.helpers.images import resize_and_sharpen
-from bot.helpers.spypet import Spypet
+from bot.tools import Surveillance
 
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(sys.executable))
 
 class BotController:
-    spypet = None
+    surveillance = None
 
     def __init__(self):
         self.cfg = Config()
@@ -33,13 +33,45 @@ class BotController:
         self.bot_running = False
         self.startup_scripts = []
         self.presence = self.cfg.get_rich_presence()
-        self.spypet = Spypet()
+        self.surveillance = Surveillance(self)
+        self._avatar_cache = {}        # (url, size, radius) -> PhotoImage
+        self._avatar_bytes_cache = {}  # url -> raw bytes
+        self._avatar_lock = threading.Lock()
+
+    def start_surveillance(self):
+        if not self.surveillance.bot:
+            self.surveillance.set_bot(self.bot)
+            console.success("Surveillance bot set successfully.")
+        else:
+            console.warning("Surveillance bot is already set.")
+        
+        if not self.surveillance.member_id:
+            console.error("Surveillance member ID is not set. Please set it in the settings.")
+            return
+
+        asyncio.run_coroutine_threadsafe(self.surveillance.start(), self.loop)
+        console.success("Surveillance started successfully!")
+
+    def stop_surveillance(self):
+        if self.surveillance.running:
+            asyncio.run_coroutine_threadsafe(self.surveillance.stop(), self.loop)
+            console.success("Surveillance stopped successfully!")
+        else:
+            console.warning("Surveillance is not running.")
+            
+    def get_mutual_guilds_surveillance(self):
+        if self.surveillance.running:
+            return asyncio.run_coroutine_threadsafe(self.surveillance.get_mutual_guilds(), self.loop).result()
+        else:
+            console.warning("Surveillance is not running. Cannot get mutual guilds.")
+            return []
 
     def add_startup_script(self, script):
         self.startup_scripts.append(script)
 
     def set_gui(self, gui):
         self.gui = gui
+        self.surveillance.set_gui(gui.tools_page.surveillance_page)
         
     def check_token(self):
         resp = requests.get("https://discord.com/api/v9/users/@me", headers={"Authorization": self.cfg.get("token")})
@@ -190,18 +222,46 @@ class BotController:
         return self.bot.get_user(user_id)
 
     def get_avatar_from_url(self, url, size=50, radius=5):
-        url = url.split("?")[0]
-        if url.endswith(".gif"):
-            url = url.replace(".gif", ".png")
-        response = requests.get(url)
-        if response.status_code == 200:
-            image = Image.open(BytesIO(response.content))
-            # image = image.resize((size, size))
+        try:
+            if not url:
+                return None
+
+            url = url.split("?")[0]
+            if url.endswith(".gif"):
+                url = url.replace(".gif", ".png")
+
+            cache_key = (url, size, radius)
+
+            with self._avatar_lock:
+                if cache_key in self._avatar_cache:
+                    return self._avatar_cache[cache_key]
+
+            # reuse downloaded bytes if available
+            with self._avatar_lock:
+                if url in self._avatar_bytes_cache:
+                    content = self._avatar_bytes_cache[url]
+                else:
+                    response = requests.get(url, timeout=5)
+                    response.raise_for_status()
+                    content = response.content
+                    self._avatar_bytes_cache[url] = content
+
+            image = Image.open(BytesIO(content)).convert("RGBA")
             image = resize_and_sharpen(image, (size, size))
-            image = imgembed.add_corners(image, radius)
-            return ImageTk.PhotoImage(image)
-        
-        return None
+
+            if radius > 0:
+                image = imgembed.add_corners(image, radius)
+
+            photo = ImageTk.PhotoImage(image)
+
+            with self._avatar_lock:
+                self._avatar_cache[cache_key] = photo
+
+            return photo
+
+        except Exception as e:
+            print(f"Error processing avatar from URL {url}: {e}")
+            return None
 
     def get_avatar(self, size=50, radius=5):
         try:
@@ -216,8 +276,30 @@ class BotController:
     def set_prefix(self, prefix):
         self.bot.command_prefix = prefix
 
+
+    async def get_user_from_id_async(self, user_id):
+        print(f"[BotController] Getting user from ID: {user_id}")
+        try:
+            return await self.bot.fetch_user(user_id) if self.bot else None
+        except Exception as e:
+            console.print_error(f"Error getting user from ID {user_id}: {e}")
+            return None
+
+    def get_user_from_id(self, user_id):
+        return asyncio.run_coroutine_threadsafe(self.get_user_from_id_async(user_id), self.loop).result()
+
     get_user    = lambda self: self.bot.user if self.bot else None
     get_friends = lambda self: self.bot.friends if self.bot else None
     get_guilds  = lambda self: self.bot.guilds if self.bot else None
-    get_uptime  = lambda self: cmdhelper.format_time(time.time() - self.bot.start_time, short_form=True) if self.bot else "0:00:00"
-    get_latency = lambda self: f"{round(self.bot.latency * 1000)}ms" if self.bot else "0ms"
+    
+    def get_latency(self):
+        try:
+            return f"{round(self.bot.latency * 1000)}ms"
+        except:
+            return "0ms"
+    
+    def get_uptime(self):
+        try:
+            return cmdhelper.format_time(time.time() - self.bot.start_time, short_form=True)
+        except:
+            return "0s"

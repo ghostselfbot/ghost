@@ -17,6 +17,8 @@ class RoundedButton(ttk.Canvas):
         self.style = self.root.style
         self.padx = kwargs.get("padx", 2)
         self.pady = kwargs.get("pady", 0 if sys.platform != "darwin" else 1)
+        self.state = "normal"
+        self.command = command
 
         self.configure(background=self._get_parent_background())
 
@@ -66,11 +68,36 @@ class RoundedButton(ttk.Canvas):
 
     def _hover_enter(self, event=None):
         """ Apply hover effect """
+        if self.state == "disabled":
+            return
         hover_color = self._darken_color(self.original_bg, 0.9)
         self.frame.set_background(hover_color)
         self.button.configure(background=hover_color)
 
     def _hover_leave(self, event=None):
         """ Reset to original color """
+        if self.state == "disabled":
+            return
         self.frame.set_background(self.original_bg)
         self.button.configure(background=self.original_bg)
+        
+    def set_state(self, state):
+        if state == "disabled":
+            self.state = "disabled"
+            self.button.state(["disabled"])
+            self.frame.set_background(self.style.colors.get("secondary"))
+            self.button.configure(background=self.style.colors.get("secondary"))
+            if self.command:
+                self.button.unbind("<Button-1>")
+                self.frame.unbind("<Button-1>")
+        else:
+            self.state = "normal"
+            self.button.state(["!disabled"])
+            self.frame.set_background(self.original_bg)
+            self.button.configure(background=self.original_bg)
+            if self.command:
+                self.button.bind("<Button-1>", self.command)
+                self.frame.bind("<Button-1>", self.command)
+                
+    def set_text(self, text):
+        self.button.configure(text=text)

@@ -123,6 +123,7 @@ class Ghost(commands.Bot):
                 await self.add_cog(ScriptCog(self))
                 
                 console.print_info(f"Loaded script: {script_name}")
+                self.controller.add_startup_script(script)
 
             except Exception as e:
                 console.print_error(f"Error loading script: {script_name} - {e}")
@@ -155,7 +156,7 @@ class Ghost(commands.Bot):
             
             await self._setup_scripts()
             await self.controller.setup_webhooks()
-            self.controller.spypet.set_bot(self)
+            self.controller.surveillance.set_bot(self)
             
         except Exception as e:
             console.print_error(str(e))
@@ -224,7 +225,8 @@ class Ghost(commands.Bot):
         if message.author.id == self.user.id:
             return
         delete_time = time.time()
-        self.controller.gui.home_page.add_discord_log(message.author, message, delete_time)
+        if self.controller.gui and hasattr(self.controller.gui, 'tools_page'):
+            self.controller.gui.tools_page.message_logger_page.add_discord_log(message.author, message, delete_time)
 
     def run_bot(self):
         try:

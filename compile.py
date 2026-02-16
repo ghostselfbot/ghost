@@ -1,19 +1,43 @@
 import os
-import sys
 import platform
 import subprocess
+import plistlib
+
+from utils.config import VERSION
+
+
+def patch_macos_plist(app_name):
+    plist_path = os.path.join("dist", f"{app_name}.app", "Contents", "Info.plist")
+
+    if not os.path.exists(plist_path):
+        print("Info.plist not found, skipping version patch")
+        return
+
+    with open(plist_path, "rb") as f:
+        plist = plistlib.load(f)
+
+    plist["CFBundleShortVersionString"] = VERSION  # About menu
+    plist["CFBundleVersion"] = VERSION              # build number
+
+    with open(plist_path, "wb") as f:
+        plistlib.dump(plist, f)
+
+    print(f"Patched Info.plist with version {VERSION}")
+
 
 def build():
     system = platform.system()
-    
+
     name = "Ghost"
     entry_script = "ghost.py"
     icon = "data/icon-win.png" if system == "Windows" else "data/icon.png"
 
-    common_args = [
+    args = [
         "pyinstaller",
-        "--name=" + name,
+        f"--name={name}",
         "--onefile",
+        "--clean",
+        "--noconfirm",
         "--windowed",
         "--noconsole",
         f"--icon={icon}",
@@ -25,32 +49,28 @@ def build():
         entry_script
     ]
 
-    # Add paths to site-packages if needed
     if system == "Windows":
-        site_packages = ".venv\\Lib\\site-packages"
-        add_data = [
+        args += [
+            "--paths=.venv\\Lib\\site-packages",
             "--add-data=data\\*;data",
             "--add-data=data\\fonts\\*;data/fonts",
             "--add-data=data\\icons\\*;data/icons"
         ]
     else:
-        site_packages = ".venv/lib/python3.10/site-packages"
-        add_data = [
+        args += [
+            "--paths=.venv/lib/python3.10/site-packages",
             "--add-data=data/*:data",
             "--add-data=data/fonts/*:data/fonts",
-            "--add-data=data/icons/*:data/icons"
+            "--add-data=data/icons/*:data/icons",
+            "--osx-bundle-identifier=fun.benny.ghost"
         ]
-    
-    common_args.append(f"--paths={site_packages}")
-    common_args += add_data
 
-    # macOS-specific option
+    print(f"🔨 Building Ghost {VERSION} for {system}...")
+    subprocess.run(args, check=True)
+
     if system == "Darwin":
-        common_args.append("--osx-bundle-identifier=fun.benny.ghost")
+        patch_macos_plist(name)
 
-    # Run the command
-    print(f"Building for {system}...")
-    subprocess.run(common_args)
 
 if __name__ == "__main__":
     build()

@@ -4,7 +4,13 @@ import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.dialogs import Messagebox
 from gui.components import RoundedFrame
+from gui.helpers.style import Style
+
+# Uncomment the below to enable the dedicated script page.
+# Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
+
 # from gui.pages.script import ScriptPage
+
 from utils.config import Config
 from utils.files import open_path_in_explorer, get_application_support
 from utils.defaults import DEFAULT_SCRIPT
@@ -19,11 +25,18 @@ class ScriptsPage:
         self.script_frames = []
     
     def _open_editor(self, script):
+        # Uncomment the below to enable the dedicated script page.
+        # Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
+        
         # self.gui.sidebar.set_current_page("scripts")
         # self.gui.layout.clear()
         # main = self.gui.layout.main()
         # script_page = ScriptPage(self.gui, script)
         # script_page.draw(main)
+        
+        
+        # Please comment out the below to enable the dedicated script page!
+        # Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
         
         if sys.platform == "darwin":
             try:
@@ -48,7 +61,7 @@ class ScriptsPage:
         if current_scripts != previous_scripts:
             try:
                 if not self.restart_warning.winfo_ismapped():
-                    self.restart_warning.pack(fill=ttk.X, padx=2, side=ttk.TOP, pady=(10, 0))
+                    self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
             except:
                 pass
         else:
@@ -159,8 +172,8 @@ class ScriptsPage:
     
     def _draw_open_folder_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background="#202021")
-            open_folder_button.configure(background="#202021")
+            wrapper.set_background(background=Style.SETTINGS_PILL_HOVER.value)
+            open_folder_button.configure(background=Style.SETTINGS_PILL_HOVER.value)
             
         def _hover_leave(_):
             wrapper.set_background(background=self.root.style.colors.get("secondary"))
@@ -182,8 +195,8 @@ class ScriptsPage:
     
     def _draw_plus_button(self, parent):
         def _hover_enter(_):
-            wrapper.set_background(background="#322bef")
-            plus_button.configure(background="#322bef")
+            wrapper.set_background(background=Style.PRIMARY_BTN_HOVER.value)
+            plus_button.configure(background=Style.PRIMARY_BTN_HOVER.value)
             
         def _hover_leave(_):
             wrapper.set_background(background=self.root.style.colors.get("primary"))
@@ -302,11 +315,16 @@ class ScriptsPage:
     
     def draw(self, parent):
         self.restart_warning = self._draw_restart_warning(parent)
-        self.restart_warning.pack(fill=ttk.X, padx=2, side=ttk.TOP, pady=(10, 0))
+        self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
         self.restart_warning.pack_forget()
         
+        title = ttk.Label(parent, text="Scripts", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
+        title.configure(background=self.root.style.colors.get("bg"))
+        title.pack(pady=(0, 15), anchor=ttk.W)
+        # title.grid(row=0, column=0, sticky=ttk.W, pady=(0, 15))
+        
         header = self._draw_header(parent)
-        header.pack(fill=ttk.X, padx=2)
+        header.pack(fill=ttk.X)
         
         ttk.Separator(parent, orient="horizontal").pack(fill=ttk.X, pady=(20, 16), padx=4)
         

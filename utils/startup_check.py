@@ -11,7 +11,8 @@ REQUIRED_DIRS = [
     "data/cache",
     "data",
     "scripts",
-    "themes"
+    "themes",
+    "data/surveillance"
 ]
 
 REQUIRED_FILES = {

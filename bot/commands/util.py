@@ -345,126 +345,181 @@ class Util(commands.Cog):
             description=description
             ), delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
-    @commands.command(name="spypet", description="Get a list of every message a member has sent in mutual servers.", usage="[member]")
-    async def spypet(self, ctx, member_id: int):
-        mutual_guilds = [guild for guild in self.bot.guilds if guild.get_member(member_id)]
-        data = {}
-        tasks = []
-        sem = asyncio.Semaphore(15)
-        stop_event = asyncio.Event()
-        last_saved_count = 0
+    @commands.command(name="surveillance", description="Get a list of every message a member has sent in mutual servers.", usage="[member]")
+    async def surveillance(self, ctx, member_id: int = None):
+        await cmdhelper.send_message(ctx, {
+            "title": "Surveillance",
+            "description": "This is a GUI only feature, please open the GUI to use it.",
+            "colour": "#ff0000"
+        })
+        return
+        
+    #     mutual_guilds = [guild for guild in self.bot.guilds if guild.get_member(member_id)]
+    #     data = {}
+    #     tasks = []
+    #     sem = asyncio.Semaphore(10)
+    #     stop_event = asyncio.Event()
+    #     last_saved_count = 0
 
-        def _count_messages():
-            return sum(len(channels) for guilds in data.values() for channels in guilds.values())
+    #     def _count_messages():
+    #         return sum(len(channels) for guilds in data.values() for channels in guilds.values())
 
-        def _save_data():
-            nonlocal last_saved_count
-            current_count = _count_messages()
-            if current_count == last_saved_count:
-                return
-            last_saved_count = current_count
-            with open(files.get_application_support() + "/data/spypet.json", "w") as f:
-                json.dump(data, f, indent=4)
-            console.print_info(f"Auto-saved {current_count} messages.")
-
-        async def _autosave(interval=5):
-            while not stop_event.is_set():
-                await asyncio.sleep(interval)
-                _save_data()
-                
-            console.print_info("Auto-saving stopped. Spypet complete!")
-
-        def _add_message(guild, channel, message):
-            if guild.name not in data: data[guild.name] = {}
-            if channel.name not in data[guild.name]: data[guild.name][channel.name] = []
+    #     def _save_data():
+    #         nonlocal last_saved_count
+    #         current_count = _count_messages()
+    #         if current_count == last_saved_count:
+    #             return
+    #         last_saved_count = current_count
             
-            data[guild.name][channel.name].append(message)
-            # _save_data()
+    #         with open(files.get_application_support() + "/data/surveillance.json", "w") as f:
+    #             json.dump(data, f, indent=4)
+    #         console.print_info(f"Auto-saved {current_count} messages.")
 
-        def _get_permissions(channel):
-            member = channel.guild.get_member(member_id)
-            member_role = member.top_role
-            bot_role = channel.guild.me.top_role
-        
-            return (channel.permissions_for(member).read_messages and 
-                    channel.permissions_for(channel.guild.me).read_messages or 
-                    channel.overwrites_for(member_role).read_messages and 
-                    channel.overwrites_for(bot_role).read_messages)
-        
-
-        async def _fetch_context_channel(channel):
-            if channel.id == ctx.channel.id:
-                return ctx.channel
-            try:
-                latest_msg = [msg async for msg in channel.history(limit=1)][0]
-                context = await self.bot.get_context(latest_msg)
+    #     async def _autosave(interval=5):
+    #         while not stop_event.is_set():
+    #             await asyncio.sleep(interval)
+    #             _save_data()
                 
-                return context.channel
-            except Exception as e:
-                if "429" in str(e):
-                    await asyncio.sleep(5)
-                    return await _fetch_context_channel(channel)
+    #         console.print_info("Auto-saving stopped. Surveillance complete!")
+
+    #     def _add_message(guild, channel, message):
+    #         if guild.name not in data: data[guild.name] = {}
+    #         if channel.name not in data[guild.name]: data[guild.name][channel.name] = []
+            
+    #         data[guild.name][channel.name].append(message)
+    #         # _save_data()
+
+    #     def _get_permissions(channel):
+    #         member = channel.guild.get_member(member_id)
+    #         member_role = member.top_role
+    #         bot_role = channel.guild.me.top_role
+        
+    #         return (channel.permissions_for(member).read_messages and 
+    #                 channel.permissions_for(channel.guild.me).read_messages or 
+    #                 channel.overwrites_for(member_role).read_messages and 
+    #                 channel.overwrites_for(bot_role).read_messages)
+        
+
+    #     async def _fetch_context_channel(channel):
+    #         if channel.id == ctx.channel.id:
+    #             return ctx.channel
+    #         try:
+    #             latest_msg = [msg async for msg in channel.history(limit=1)][0]
+    #             context = await self.bot.get_context(latest_msg)
                 
-                return None
+    #             console.success(f"Got context for {channel.guild.name} - {channel.name}")
+                
+    #             return context.channel
+    #         except Exception as e:
+    #             if "429" in str(e):
+    #                 console.error(f"Rate limited while fetching context for {channel.guild.name} - {channel.name}")
+    #                 await asyncio.sleep(5)
+    #                 return await _fetch_context_channel(channel)
+                
+    #             return None
 
-        async def _get_messages(channel, delay=0.25):
-            async with sem:
-                try:
-                    await asyncio.sleep(delay)
-                    console.print_info(f"Finding messages in {channel.guild.name} - {channel.name}")
+    #     async def _get_messages(channel, delay=0.25, oldest_first=False):
+    #         async with sem:
+    #             try:
+    #                 await asyncio.sleep(delay)
+    #                 console.print_info(f"Finding messages in {channel.guild.name} - {channel.name}")
 
-                    channel = await _fetch_context_channel(channel) or channel
-                    guild = channel.guild
-                    messages = []
+    #                 channel = await _fetch_context_channel(channel) or channel
+    #                 guild = channel.guild
+    #                 messages = []
 
-                    try:
-                        async for msg in channel.history(limit=999999999, oldest_first=False):
-                            if msg.author.id == member_id:
-                                if len(msg.attachments) > 0:
-                                    attachments = "\n".join([f"Attachment: {attachment.url}" for attachment in msg.attachments])
-                                    msg_string = f"[{msg.created_at.strftime('%Y-%m-%d %H:%M:%S')}] {msg.content}\n{attachments}"
-                                else:
-                                    msg_string = f"[{msg.created_at.strftime('%Y-%m-%d %H:%M:%S')}] {msg.content}"
-                                messages.append(msg_string)
-                                _add_message(guild, channel, msg_string)
+    #                 try:
+    #                     async for msg in channel.history(limit=None, oldest_first=oldest_first):
+    #                         print(channel.name, msg.author.id, msg.content)
+    #                         if msg.author.id == member_id:
+    #                             if len(msg.attachments) > 0:
+    #                                 attachments = "\n".join([f"Attachment: {attachment.url}" for attachment in msg.attachments])
+    #                                 msg_string = f"[{msg.created_at.strftime('%Y-%m-%d %H:%M:%S')}] {msg.content}\n{attachments}"
+    #                             else:
+    #                                 msg_string = f"[{msg.created_at.strftime('%Y-%m-%d %H:%M:%S')}] {msg.content}"
+    #                             messages.append(msg_string)
+    #                             _add_message(guild, channel, msg_string)
+    #                             console.print_info(f"Found message in {channel.guild.name} - {channel.name}")
                                 
-                        if len(messages) > 0: 
-                            console.print_success(f"Found messages in {channel.guild.name} - {channel.name}")
-                        else:
-                            console.print_error(f"Found no messages in {channel.guild.name} - {channel.name}")
-                    except:
-                        console.print_error(f"Failed to fetch messages in {channel.guild.name} - {channel.name}")
+    #                     if len(messages) > 0: 
+    #                         console.print_success(f"Found messages in {channel.guild.name} - {channel.name}")
+    #                     else:
+    #                         console.print_error(f"Found no messages in {channel.guild.name} - {channel.name}")
+    #                 except Exception as e:
+    #                     if "429" in str(e).lower():
+    #                         console.print_error("Rate limited! Waiting for 5 seconds...")
+    #                         await asyncio.sleep(5)
+    #                         return await _get_messages(channel, delay)
+    #                     else:
+    #                         console.print_error(f"Error in {channel.guild.name} - {channel.name}: {e}")
+    #                         return
 
-                    _save_data()
-                except asyncio.CancelledError:
-                    console.print_warning("Process was cancelled! Saving progress...")
-                    stop_event.set()
-                    _save_data()
-                    raise
-                except Exception as e:
-                    console.print_error(f"Error in {channel.guild.name} - {channel.name}: {e}")
-                finally:
-                    _save_data()
+    #                 _save_data()
+    #             except asyncio.CancelledError:
+    #                 console.print_warning("Process was cancelled! Saving progress...")
+    #                 stop_event.set()
+    #                 _save_data()
+    #                 raise
+    #             except Exception as e:
+    #                 console.print_error(f"Error in {channel.guild.name} - {channel.name}: {e}")
+    #             finally:
+    #                 _save_data()
 
-        delay = 0.5
-        autosave_task = asyncio.create_task(_autosave(5))
+    #     async def _attempt_scrape(guild, delay):
+    #         tasks = []
+    #         console.info(f"Attempting to scrape {guild.name} - {guild.id}")
+            
+    #         for channel in guild.channels:
+    #             if isinstance(channel, discord.TextChannel) and _get_permissions(channel):
+    #                 tasks.append(_get_messages(channel, delay, oldest_first=True))
+    #                 delay += 2
+                    
+    #         if len(tasks) == 0:
+    #             console.print_error(f"No valid channels in {guild.name} - {guild.id}")
+    #             return
+            
+    #         try:
+    #             await asyncio.gather(*tasks)
+    #         except asyncio.CancelledError:
+    #             console.print_warning("Process was cancelled! Saving progress...")
+    #             stop_event.set()
+    #             _save_data()
+    #             raise
+
+    #     delay = 1
+    #     autosave_task = asyncio.create_task(_autosave(5))
         
-        for guild in mutual_guilds:
-            for channel in guild.text_channels:
-                if _get_permissions(channel):
-                    tasks.append(asyncio.create_task(_get_messages(channel, delay)))
-                    delay += 0.5
+    #     for guild in mutual_guilds:
+    #         tasks.append(_attempt_scrape(guild, delay))
+    #         delay += 1.5
 
-        await asyncio.gather(*tasks)
-        stop_event.set()
-        await autosave_task
-        _save_data()
+    #     await asyncio.gather(*tasks)
+    #     stop_event.set()
+    #     await autosave_task
+    #     _save_data()
         
-        console.print_success("Spypet complete! Data saved to data/spypet.json.")
-        console.print_info(f"Total messages: {_count_messages()}")
-        console.print_info(f"Total guilds: {len(data)}")
-        console.print_info(f"Total channels: {sum(len(channels) for channels in data.values())}")
-        await ctx.send(file=discord.File("data/spypet.json"), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+    #     console.print_success("Spypet complete! Data saved to data/surveillance.json.")
+    #     console.print_info(f"Total messages: {_count_messages()}")
+    #     console.print_info(f"Total guilds: {len(data)}")
+    #     console.print_info(f"Total channels: {sum(len(channels) for channels in data.values())}")
+    #     await ctx.send(file=discord.File(files.get_application_support() + "/data/surveillance.json"), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+
+    @commands.command(name="latency", description="Check the bot's latency", usage="")
+    async def latency(self, ctx):
+        msg = await cmdhelper.send_message(ctx, {
+            "title": "Latency",
+            "description": "Calculating latency..."
+        })
+        
+        latency = (msg.created_at - ctx.message.created_at).total_seconds() * 1000
+        websocket_latency = self.bot.latency * 1000
+        
+        await msg.delete()
+        
+        await cmdhelper.send_message(ctx, {
+            "title": "Latency",
+            "description": f"Message latency: {round(latency)}ms\nWebSocket latency: {round(websocket_latency)}ms"
+        })
 
 def setup(bot):
     bot.add_cog(Util(bot))

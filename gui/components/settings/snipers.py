@@ -3,8 +3,8 @@ import utils.console as console
 from gui.components import SettingsPanel, RoundedFrame
 
 class SnipersPanel(SettingsPanel):
-    def __init__(self, root, parent, images, config):
-        super().__init__(root, parent, "Snipers", images.get("snipers"))
+    def __init__(self, root, parent, images, config, width=None):
+        super().__init__(root, parent, "Snipers", images.get("snipers"), width=width, collapsed=False)
         self.cfg = config
         self.images = images
         self.snipers = None
@@ -19,30 +19,32 @@ class SnipersPanel(SettingsPanel):
         
         sniper.enabled = self.snipers_tk_entries[sniper_name]["enabled"].get()
         sniper.ignore_invalid = self.snipers_tk_entries[sniper_name]["ignore_invalid"].get()
-        sniper.webhook = self.snipers_tk_entries[sniper_name]["webhook"].get()
+        
+        value = self.snipers_tk_entries[sniper_name]["webhook"].get()
+        sniper.webhook = "" if value == self.placeholder else value
         
         sniper.save(notify=False)
         
     def _draw_card(self, sniper):
-        card = RoundedFrame(self.body, radius=(10, 10, 10, 10), bootstyle="secondary.TFrame")
+        card = RoundedFrame(self.wrapper, radius=(10, 10, 10, 10), bootstyle="dark.TFrame")
         self.snipers_tk_entries[sniper.name] = {}
 
-        header = ttk.Frame(card, style="secondary.TFrame")
-        header.grid(row=0, column=0, sticky=ttk.NSEW, pady=(10, 5), padx=10)
+        header = ttk.Frame(card, style="dark.TFrame")
+        header.grid(row=0, column=0, sticky=ttk.NSEW, pady=(10, 10), padx=10)
 
-        title = ttk.Label(header, text=sniper.name.capitalize() + " Sniper", font=("Host Grotesk", 16, "bold"))
-        title.configure(background=self.root.style.colors.get("secondary"))
+        title = ttk.Label(header, text=sniper.name.capitalize() + " Sniper", font=("Host Grotesk", 18, "bold"))
+        title.configure(background=self.root.style.colors.get("dark"))
         title.grid(row=0, column=0, sticky=ttk.NSEW)
 
         entries = [
             {
-                "label": "Enabled",
+                "label": "Enable sniper",
                 "type": "checkbox",
                 "value": sniper.enabled,
                 "config_key": "enabled"
             },
             {
-                "label": "Ignore Invalid",
+                "label": "Ignore invalid codes",
                 "type": "checkbox",
                 "value": sniper.ignore_invalid,
                 "config_key": "ignore_invalid"
@@ -57,44 +59,77 @@ class SnipersPanel(SettingsPanel):
 
         for i, entry in enumerate(entries):
             if entry["type"] == "checkbox":
-                checkbox_wrapper = ttk.Frame(card, style="secondary.TFrame")
-                checkbox_wrapper.grid(row=i + 1, column=0, sticky=ttk.NSEW, pady=(2, 0), padx=10)
+                checkbox_wrapper = RoundedFrame(card, radius=8, bootstyle="secondary.TFrame")
+                checkbox_wrapper.grid(row=i + 1, column=0, sticky=ttk.NSEW, padx=10, pady=(0, 5))
 
-                # ✅ Use BooleanVar to properly track state
+                label = ttk.Label(checkbox_wrapper, text=" " + entry["label"])
+                label.configure(background=self.root.style.colors.get("secondary"))
+                label.grid(row=0, column=0, sticky=ttk.W, pady=10, padx=(8, 0))
+
                 var = ttk.BooleanVar(value=entry["value"])
                 
                 checkbox = ttk.Checkbutton(
                     checkbox_wrapper,
-                    style="success.TCheckbutton",
-                    variable=var,  # ✅ Bind to BooleanVar
+                    style="success-round-toggle",
+                    variable=var,
                     command=lambda sniper_name=sniper.name: self._save_sniper(sniper_name),
                     tristatevalue=None
                 )
-                checkbox.grid(row=0, column=0, sticky=ttk.W)
-
-                # ✅ Force checkbox state update
-                if entry["value"]:
-                    checkbox.state(["selected", "!alternate"])  # Remove alternate state
-                else:
-                    checkbox.state(["!selected", "!alternate"])  # Ensure it's not in an indeterminate state
+                checkbox.grid(row=0, column=1, sticky=ttk.E, pady=10, padx=(0, 10))
+                checkbox_wrapper.grid_columnconfigure(0, weight=1)
 
                 self.snipers_tk_entries[sniper.name][entry["config_key"]] = var
+                
+                def toggle_checkbox(event, var_obj=var, sniper_name=sniper.name):
+                    var_obj.set(not var_obj.get())
+                    self._save_sniper(sniper_name)
 
-                label = ttk.Label(checkbox_wrapper, text=" " + entry["label"])
-                label.configure(background=self.root.style.colors.get("secondary"))
-                label.grid(row=0, column=0, sticky=ttk.W, padx=(15, 10), ipadx=10)
+                label.bind("<Button-1>", toggle_checkbox)
+                checkbox_wrapper.bind("<Button-1>", toggle_checkbox)
                 
             else:
-                label = ttk.Label(card, text=entry["label"])
-                label.configure(background=self.root.style.colors.get("secondary"))
-                label.grid(row=i + 1, column=0, sticky=ttk.W, pady=(10, 5), padx=10)
+                wrapper = RoundedFrame(card, radius=8, bootstyle="dark.TFrame")
+                wrapper.grid(row=i + 1, column=0, sticky=ttk.NSEW, padx=10, pady=(10, 10))
 
-                textbox = ttk.Entry(card, bootstyle="secondary", font=("Host Grotesk",))
-                textbox.insert(0, entry["value"])
-                textbox.grid(row=i + 2, column=0, sticky=ttk.EW, pady=(0, 10), padx=10, columnspan=2)
+                label = ttk.Label(wrapper, text=entry["label"])
+                label.configure(background=self.root.style.colors.get("dark"))
+                label.grid(row=0, column=0, sticky=ttk.W, pady=(0, 5))
 
-                textbox.bind("<Return>", lambda event, sniper_name=sniper.name: self._save_sniper(sniper_name))
-                textbox.bind("<FocusOut>", lambda event, sniper_name=sniper.name: self._save_sniper(sniper_name))
+                textbox = ttk.Entry(wrapper, font=("Host Grotesk",))
+                textbox.grid(row=1, column=0, sticky=ttk.EW)
+                wrapper.grid_columnconfigure(0, weight=1)
+
+                placeholder_color = "#6c757d"  # subtle grey
+                normal_color = self.root.style.colors.get("fg")
+
+                def set_placeholder(entry_widget):
+                    entry_widget.delete(0, ttk.END)
+                    entry_widget.insert(0, self.placeholder)
+                    entry_widget.configure(foreground=placeholder_color)
+
+                def clear_placeholder(entry_widget):
+                    if entry_widget.get() == self.placeholder:
+                        entry_widget.delete(0, ttk.END)
+                        entry_widget.configure(foreground=normal_color)
+
+                def on_focus_in(event, entry_widget=textbox):
+                    clear_placeholder(entry_widget)
+
+                def on_focus_out(event, entry_widget=textbox, sniper_name=sniper.name):
+                    if not entry_widget.get():
+                        set_placeholder(entry_widget)
+                    self._save_sniper(sniper_name)
+
+                # Initial state
+                if entry["value"]:
+                    textbox.insert(0, entry["value"])
+                    textbox.configure(foreground=normal_color)
+                else:
+                    set_placeholder(textbox)
+
+                textbox.bind("<FocusIn>", on_focus_in)
+                textbox.bind("<FocusOut>", on_focus_out)
+                textbox.bind("<Return>", lambda e, sniper_name=sniper.name: self._save_sniper(sniper_name))
 
                 self.snipers_tk_entries[sniper.name][entry["config_key"]] = textbox
 
@@ -104,29 +139,20 @@ class SnipersPanel(SettingsPanel):
         return card
         
     def draw(self):
+        self.body.grid_remove()
         self.snipers = self.cfg.get_snipers()
         
         if not self.snipers:
             console.log_to_gui("error", "No snipers found.")
             return
         
-        row, column = 0, 0
+        row = 0
         
         for sniper in self.snipers:
             card = self._draw_card(sniper)
-            card.grid(row=row, column=column, sticky=ttk.NSEW, padx=(10, 5) if column == 0 else (5, 10), pady=10)
+            card.grid(row=row, column=0, sticky=ttk.NSEW, padx=0, pady=(0, 10))
             
-            column += 1
-            
-            if column > 1:
-                column = 0
-                row += 1
-                
-        self.body.grid_rowconfigure(row, weight=1)
-                
-        self.body.grid_columnconfigure(0, weight=1)
-        self.body.grid_columnconfigure(1, weight=1)
-        self.body.grid_rowconfigure(row, weight=1)
+            row += 1
         
         return self.wrapper
         
