@@ -15,13 +15,9 @@ Ghost has 150+ commands and a completely custom built GUI for endless customisat
 -->
 
 > ```bash
-> git clone https://github.com/ghostselfbot/ghost
-> cd ghost
-> python3 -m venv .venv      # create venv (requires Python 3.10+)
-> source .venv/bin/activate  # or on Windows: .\.venv\Scripts\activate
-> pip install -r requirements.txt
-> python3 ghost.py
+> curl -sSL https://www.ghostt.cc/assets/unix-install.sh | bash
 > ```
+> If you're using Windows, please use the binary in the latest release!  
 > Follow [this guide](https://gist.github.com/bennyscripts/49ecc1eade1796ee1d7cad9d165ffe67) on how to get your account token!  
 > _Ghost requires Python 3.10+_
 
@@ -30,7 +26,7 @@ Ghost has 150+ commands and a completely custom built GUI for endless customisat
 <img src="https://github.com/user-attachments/assets/3ed477b8-55a4-49c5-87b2-0e8f98e3832a" width="100%">
 -->
 
-> | ![CleanShot 2025-05-16 at 9  36 19@2x](https://github.com/user-attachments/assets/570fc27d-5a30-4dfa-8644-0aed5d2a818a) | ![CleanShot 2025-05-16 at 9  36 35@2x](https://github.com/user-attachments/assets/e0a3350d-a5d9-4521-a964-014000d4fd6b) |
+> | <img width="700" height="530" alt="image" src="https://github.com/user-attachments/assets/50666340-6433-4fb2-85a4-189ed2e75d17" /> | <img width="700" height="530" alt="CleanShot 2026-02-16 at 1  05 48" src="https://github.com/user-attachments/assets/f8d4c849-6b82-4039-83fe-25b99f9ff7ca" /> |
 > |---|---|
 
 > [!NOTE]
