@@ -1,12 +1,15 @@
+import sys
 import ttkbootstrap as ttk
 import utils.console as console
 from gui.components import SettingsPanel, DropdownMenu, RoundedButton
+from gui.helpers import apply_theme, get_themes
 
 class GeneralPanel(SettingsPanel):
-    def __init__(self, root, parent, bot_controller, images, config, width=None):
+    def __init__(self, root, parent, bot_controller, images, config, draw_settings, width=None):
         super().__init__(root, parent, "General", images.get("settings"), collapsed=False, width=width)
         self.bot_controller = bot_controller
         self.cfg = config
+        self.draw_settings = draw_settings
         self.config_tk_entries = {}
         self.config_entries = {
             "token": "Token",
@@ -47,6 +50,18 @@ class GeneralPanel(SettingsPanel):
         # self.message_style_entry.configure(text=style)
         self._save_cfg()
         
+    def _set_gui_theme(self):
+        selected_theme = self.gui_theme_entry.value()
+        apply_theme(self.root, selected_theme)
+        self.cfg.set("gui_theme", selected_theme)
+        self.root.after(100, lambda: self.draw_settings(resize_grips=False))
+        
+        if sys.platform == "darwin":
+            self.root.attributes("-transparent", True)
+            self.root.configure(bg="systemTransparent")
+            
+        # TODO: Fix corner radius on window and resize grips being funny on macOS when changing themes without restarting. Currently requires a restart to fix itself after changing themes, but ideally should update in real time without needing a restart.
+        
     def draw(self):
         for index, (key, value) in enumerate(self.config_entries.items()):
             padding = (10, 2)
@@ -77,7 +92,15 @@ class GeneralPanel(SettingsPanel):
         
         self.message_style_entry = DropdownMenu(self.body, options=["codeblock", "image", "embed", "edited"], command=self._set_message_style)
         self.message_style_entry.set_selected(self.cfg.get("message_settings.style"))
-        self.message_style_entry.draw().grid(row=len(self.config_entries) + 1, column=1, sticky="we", padx=(10, 10), pady=(2, 10), columnspan=3)
+        self.message_style_entry.draw().grid(row=len(self.config_entries) + 1, column=1, sticky="we", padx=(10, 10), pady=(2, 0), columnspan=3)
+        
+        gui_theme_label = ttk.Label(self.body, text="GUI Theme")
+        gui_theme_label.configure(background=self.root.style.colors.get("dark"))
+        gui_theme_label.grid(row=len(self.config_entries) + 2, column=0, sticky=ttk.NW, padx=(10, 0), pady=(5, 10))
+        
+        self.gui_theme_entry = DropdownMenu(self.body, options=get_themes(), command=lambda _: self._set_gui_theme())
+        self.gui_theme_entry.set_selected(self.cfg.get("gui_theme"))
+        self.gui_theme_entry.draw().grid(row=len(self.config_entries) + 2, column=1, sticky="we", padx=(10, 10), pady=(2, 10), columnspan=3)
         
         return self.wrapper
     
