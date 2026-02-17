@@ -70,7 +70,7 @@ class RichPresencePanel(SettingsPanel):
             
         self.rpc.save(notify=False)
         
-    def _reset_rpc(self):
+    def _reset_rpc(self, _):
         self.rpc.reset_defaults()
         
     def _schedule_preview_update(self, *_):
