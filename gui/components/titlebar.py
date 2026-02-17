@@ -1,5 +1,9 @@
 from logging import root
 import sys
+
+if sys.platform == "win32":
+    import hPyT
+
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame
 from gui.helpers.style import Style
@@ -21,9 +25,12 @@ class Titlebar:
         if not self._dragging:
             return
 
-        x = event.x_root - self._offset_x
-        y = event.y_root - self._offset_y
-        self.root.geometry(f"+{x}+{y}")
+        if sys.platform == "darwin":
+            x = event.x_root - self._offset_x
+            y = event.y_root - self._offset_y
+            self.root.geometry(f"+{x}+{y}")
+        elif sys.platform == "win32":
+            hPyT.window_frame.move(self.root, event.x_root - self._offset_x, event.y_root - self._offset_y)
 
     def _on_release(self, event):
         self._dragging = False
@@ -48,13 +55,7 @@ class Titlebar:
         if sys.platform == "darwin":
             self.root.iconify()
         elif sys.platform == "win32":
-            self.root.iconify()
-            def restore_override():
-                if not self.root.state() == 'iconic':
-                    self.root.overrideredirect(True)
-                else:
-                    self.root.after(100, restore_override)
-            self.root.after(100, restore_override)
+            hPyT.window_frame.minimize(self.root)
             
     def _restore_once(self, event=None):
         self.root.unbind("<FocusIn>")
@@ -128,20 +129,51 @@ class Titlebar:
             ico.configure(background=Style.WINDOW_BORDER.value)
             ico.pack(side=ttk.LEFT, padx=(5, 0))
 
-            title = ttk.Label(inner_wrapper, text="Ghost", font=("Host Grotesk", 10))
+            title = ttk.Label(inner_wrapper, text="Ghost", font=("Host Grotesk", 12))
             title.configure(background=Style.WINDOW_BORDER.value)
             title.pack(side=ttk.LEFT, padx=(5, 0))
             
-            close_btn = ttk.Label(inner_wrapper, text="✕", font=("Host Grotesk", 10))
-            close_btn.configure(background=Style.WINDOW_BORDER.value)
-            close_btn.pack(side=ttk.RIGHT, padx=(0, 5))
-            close_btn.bind("<Button-1>", lambda e: self.root.quit())
-            
-            minimize_btn = ttk.Label(inner_wrapper, text="—", font=("Host Grotesk", 10))
-            minimize_btn.configure(background=Style.WINDOW_BORDER.value)
-            minimize_btn.pack(side=ttk.RIGHT, padx=(0, 7))
-            minimize_btn.bind("<Button-1>", lambda e: self._minimize())
+            def close_btn_enter(e):
+                close_btn.configure(background=Style.SETTINGS_PILL_HOVER.value, foreground="#ffffff")
+                close_btn_wrapper.set_background(Style.SETTINGS_PILL_HOVER.value)
 
+            def close_btn_leave(e):
+                close_btn.configure(background=Style.WINDOW_BORDER.value, foreground="#ffffff")
+                close_btn_wrapper.set_background(Style.WINDOW_BORDER.value)
+
+            close_btn_wrapper = RoundedFrame(inner_wrapper, radius=10, background=Style.WINDOW_BORDER.value)
+            close_btn_wrapper.pack(side=ttk.RIGHT)
+            close_btn_wrapper.bind("<Button-1>", lambda e: self._close())
+            close_btn_wrapper.bind("<Enter>", close_btn_enter)
+            close_btn_wrapper.bind("<Leave>", close_btn_leave)
+
+            close_btn = ttk.Label(close_btn_wrapper, text="⨉", font=("Arial", 13))
+            close_btn.configure(background=Style.WINDOW_BORDER.value, foreground="#ffffff")
+            close_btn.pack(fill=ttk.BOTH, expand=True, padx=8, pady=4)
+            close_btn.bind("<Button-1>", lambda e: self.root.quit())
+            close_btn.bind("<Enter>", close_btn_enter)
+            close_btn.bind("<Leave>", close_btn_leave)
+
+            def minimize_btn_enter(e):
+                minimize_btn.configure(background=Style.SETTINGS_PILL_HOVER.value, foreground="#ffffff")
+                minimize_btn_wrapper.set_background(Style.SETTINGS_PILL_HOVER.value)
+
+            def minimize_btn_leave(e):
+                minimize_btn.configure(background=Style.WINDOW_BORDER.value, foreground="#ffffff")
+                minimize_btn_wrapper.set_background(Style.WINDOW_BORDER.value)
+
+            minimize_btn_wrapper = RoundedFrame(inner_wrapper, radius=10, background=Style.WINDOW_BORDER.value)
+            minimize_btn_wrapper.pack(side=ttk.RIGHT)
+            minimize_btn_wrapper.bind("<Button-1>", lambda e: self._minimize())
+            minimize_btn_wrapper.bind("<Enter>", minimize_btn_enter)
+            minimize_btn_wrapper.bind("<Leave>", minimize_btn_leave)
+
+            minimize_btn = ttk.Label(minimize_btn_wrapper, text="—", font=("Arial", 10))
+            minimize_btn.configure(background=Style.WINDOW_BORDER.value, foreground="#ffffff")
+            minimize_btn.pack(fill=ttk.BOTH, expand=True, padx=8, pady=5)
+            minimize_btn.bind("<Button-1>", lambda e: self._minimize())
+            minimize_btn.bind("<Enter>", minimize_btn_enter)
+            minimize_btn.bind("<Leave>", minimize_btn_leave)
 
         inner_wrapper.pack(fill=ttk.BOTH, expand=True, pady=pady, padx=padx)
         return titlebar
