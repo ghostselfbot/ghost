@@ -256,7 +256,7 @@ class SurveillancePage(ToolPage):
             entry_wrapper,
             bootstyle="dark.TFrame",
             textvariable=self.search_var,
-            font=("Host Grotesk",)
+            font=("Host Grotesk", 12 if sys.platform != "darwin" else 13)
         )
         self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
 
@@ -363,7 +363,7 @@ class SurveillancePage(ToolPage):
             
             # create an ovel the same size of the avatar but an extra 5px on each side and use the dark background color, this is to create a border
             avatar_label.create_oval(9, 8, 85, 85, fill=self.root.style.colors.get("dark"), outline="")
-            avatar_label.create_image(65//2 + 15, 65//2 + 15, image=self.user_avatar, anchor="center")
+            avatar_label.create_image(65//2 + 15, 65//2 + 14, image=self.user_avatar, anchor="center")
             
             avatar_label.place(x=0, y=85-50, width=100, height=200)
             
@@ -376,7 +376,7 @@ class SurveillancePage(ToolPage):
             display_name.configure(background=self.root.style.colors.get("dark"))
             display_name.place(relx=0, rely=0)
             
-            username = ttk.Label(user_info_wrapper, text=f"{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+            username = ttk.Label(user_info_wrapper, text=f"{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
             username.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
             username.place(relx=0, rely=0.42 if sys.platform == "darwin" else 0.45)
             
@@ -402,7 +402,7 @@ class SurveillancePage(ToolPage):
                     
                     row += 1
             else:
-                mutual_guilds_subtitle = ttk.Label(wrapper, text="No Mutual Guilds", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+                mutual_guilds_subtitle = ttk.Label(wrapper, text="No Mutual Guilds", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
                 mutual_guilds_subtitle.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
                 mutual_guilds_subtitle.place(relx=.7, rely=0.65, relwidth=1, anchor="center")
         
@@ -528,11 +528,11 @@ class SurveillancePage(ToolPage):
     def _draw_progress_wrapper(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame", custom_size=True)
         
-        self.total_messages_label = ttk.Label(wrapper, text="Total: 0", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+        self.total_messages_label = ttk.Label(wrapper, text="Total: 0", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.total_messages_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         self.total_messages_label.place(relx=0.05, rely=0.13, relwidth=1, anchor="nw")
         
-        self.total_user_messages_label = ttk.Label(wrapper, text="Sent by user: 0", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+        self.total_user_messages_label = ttk.Label(wrapper, text="Sent by user: 0", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.total_user_messages_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         self.total_user_messages_label.place(relx=0.05, rely=0.43 if sys.platform == "darwin" else 0.45, relwidth=1, anchor="nw")
         

@@ -41,7 +41,7 @@ class UserLookupPage(ToolPage):
                 self.search_entry.insert(0, placeholder_text)
                 self.search_entry.configure(foreground="grey")
         
-        self.search_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk",))
+        self.search_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
         self.search_entry.configure(foreground="grey")
         self.search_entry.insert(0, placeholder_text)
@@ -75,15 +75,15 @@ class UserLookupPage(ToolPage):
             display_name.grid(row=0, column=1, sticky=ttk.W)
             
             if self.user.bot:
-                bot_tag = ttk.Label(user_info_wrapper, text="Bot", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14), foreground="red")
+                bot_tag = ttk.Label(user_info_wrapper, text="Bot", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13), foreground="red")
                 bot_tag.configure(background=self.root.style.colors.get("dark"))
                 bot_tag.grid(row=0, column=2, sticky=ttk.W)
 
-            username = ttk.Label(user_info_wrapper, text=f"@{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+            username = ttk.Label(user_info_wrapper, text=f"@{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
             username.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
             username.grid(row=1, column=1, sticky=ttk.W)
             
-            user_id = ttk.Label(user_info_wrapper, text=f"ID: {self.user.id}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+            user_id = ttk.Label(user_info_wrapper, text=f"ID: {self.user.id}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
             user_id.configure(background=self.root.style.colors.get("dark"))
             user_id.grid(row=2, column=1, sticky=ttk.W, pady=(5, 0))
         

@@ -16,13 +16,16 @@ from gui.helpers import Images, Layout, Style, apply_theme
 class GhostGUI:
     def __init__(self, bot_controller):
         self.resize_grip_size = 5
-        self.size = (700 if sys.platform == "darwin" else 800, 530)
+        self.size = (700, 530)
         self.bot_controller = bot_controller
         self.resize_grips = {}
         
         self.root = ttk.tk.Tk()
         self.root.size = self.size
         self.root.title("Ghost")
+
+        if sys.platform != "darwin":
+            self.root.tk.call('tk', 'scaling', 1)
         
         self.cfg      = Config()
         self.notifier = Notifier()
@@ -40,6 +43,7 @@ class GhostGUI:
         self.root.style = ttk.Style()
         # self.root.style.theme_use("darkly")
         self.root.style.load_user_themes(resource_path("data/gui_theme.json"))
+<<<<<<< HEAD
         
         apply_theme(self.root, self.cfg.get("gui_theme") if self.cfg.get("gui_theme") else "ghost")
         
@@ -48,6 +52,14 @@ class GhostGUI:
         self.root.style.configure("TMenubutton",  font=("Host Grotesk",))
         self.root.style.configure("TLabel",       font=("Host Grotesk",))
         self.root.style.configure("TButton",      font=("Host Grotesk",))
+=======
+        self.root.style.theme_use("ghost")
+        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13), bordercolor=Style.ENTRY_BG.value, foreground="#ffffff", borderstyle="flat", borderwidth=0)
+        self.root.style.configure("TCheckbutton", background=self.root.style.colors.get("dark"), font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.root.style.configure("TMenubutton",  font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.root.style.configure("TLabel",       font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.root.style.configure("TButton",      font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+>>>>>>> origin/main
         
         if sys.platform == "darwin":
             self.root.attributes("-transparent", True)

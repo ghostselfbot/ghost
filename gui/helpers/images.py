@@ -72,8 +72,8 @@ class Images:
     def _load_images(self):
         SIZES = {
             "bigger": (23, 23),
-            "icon": (20, 20) if sys.platform == "darwin" else (23, 23),
-            "small": (15, 15) if sys.platform == "darwin" else (18, 18),
+            "icon": (20, 20),
+            "small": (15, 15),
             "smaller": (12, 12),
             "tiny": (10, 10),
             "logo": (50, 50),
