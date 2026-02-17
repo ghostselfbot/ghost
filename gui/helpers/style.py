@@ -180,6 +180,12 @@ themes = {
     },
 }
 
+def get_current_theme_str():
+    for name, theme in themes.items():
+        if theme["style"] == _current_theme:
+            return name
+    return "dark"
+
 def apply_theme_from_dict(theme_dict):
     global _current_theme
     _current_theme = theme_dict
@@ -192,6 +198,10 @@ def reconfigure_ttk_widget_styles(root):
     root.style.configure("TButton",      font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
 
 def apply_theme(root, theme_str: str):
+    if theme_str.lower() == get_current_theme_str().lower():
+        print(f"Theme '{theme_str}' is already applied.")
+        return
+    
     if theme_str.lower() in themes:
         theme = themes[theme_str.lower()]
         root.style.theme_use(theme["ttk_theme"])
