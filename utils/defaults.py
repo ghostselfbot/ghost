@@ -42,7 +42,8 @@ DEFAULT_CONFIG = {
             "name": "privnote"
         }
     },
-    "rich_presence": DEFAULT_RPC
+    "rich_presence": DEFAULT_RPC,
+    "gui_theme": "dark"
 }
 
 DEFAULT_THEME = {

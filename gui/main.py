@@ -11,7 +11,7 @@ from utils.files import resource_path
 
 from gui.pages import HomePage, LoadingPage, SettingsPage, OnboardingPage, ScriptsPage, ToolsPage
 from gui.components import Sidebar, Console, Titlebar, RoundedFrame
-from gui.helpers import Images, Layout, Style
+from gui.helpers import Images, Layout, Style, apply_theme
 
 class GhostGUI:
     def __init__(self, bot_controller):
@@ -23,6 +23,9 @@ class GhostGUI:
         self.root = ttk.tk.Tk()
         self.root.size = self.size
         self.root.title("Ghost")
+        
+        self.cfg      = Config()
+        self.notifier = Notifier()
         
         if sys.platform == "darwin":
             self.root.overrideredirect(False)
@@ -37,8 +40,10 @@ class GhostGUI:
         self.root.style = ttk.Style()
         # self.root.style.theme_use("darkly")
         self.root.style.load_user_themes(resource_path("data/gui_theme.json"))
-        self.root.style.theme_use("ghost")
-        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk",), bordercolor=Style.ENTRY_BG.value, foreground="#ffffff", borderstyle="flat", borderwidth=0)
+        
+        apply_theme(self.root, self.cfg.get("gui_theme") if self.cfg.get("gui_theme") else "ghost")
+        
+        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk",), bordercolor=Style.ENTRY_BG.value, foreground=Style.ENTRY_FG.value, borderstyle="flat", borderwidth=0)
         self.root.style.configure("TCheckbutton", background=self.root.style.colors.get("dark"), font=("Host Grotesk",))
         self.root.style.configure("TMenubutton",  font=("Host Grotesk",))
         self.root.style.configure("TLabel",       font=("Host Grotesk",))
@@ -53,10 +58,8 @@ class GhostGUI:
         # else:
         #     self.root.attributes("-alpha", 1)
         
-        self.cfg      = Config()
-        self.notifier = Notifier()
-        self.images   = Images()
-        self.sidebar  = Sidebar(self.root)
+        self.images  = Images()
+        self.sidebar = Sidebar(self.root)
         
         self.sidebar.add_button("home",     self.draw_home)
         # self.sidebar.add_button("console", self.draw_console)
@@ -74,7 +77,7 @@ class GhostGUI:
         self.onboarding_page = OnboardingPage(self.root, self.run, self.bot_controller)
         self.console         = Console(self.root, self.bot_controller)
         self.home_page       = HomePage(self.root, self.bot_controller, self._restart_bot, self.console)
-        self.settings_page   = SettingsPage(self.root, self.bot_controller)
+        self.settings_page   = SettingsPage(self.root, self.bot_controller, self.draw_settings)
         self.scripts_page    = ScriptsPage(self, self.bot_controller, self.images)
         self.tools_page      = ToolsPage(self.root, self.bot_controller, self.images, self.layout, self._position_resize_grips)
         
@@ -188,12 +191,13 @@ class GhostGUI:
     #     main = self.layout.main()
     #     self.console.draw(main)
         
-    def draw_settings(self):
+    def draw_settings(self, resize_grips=True):
         self.sidebar.set_current_page("settings")
         self.layout.clear()
         main = self.layout.main(scrollable=True)
         self.settings_page.draw(main)
-        self._position_resize_grips()
+        if resize_grips:
+            self._position_resize_grips()
         
     def draw_scripts(self):
         self.sidebar.set_current_page("scripts")

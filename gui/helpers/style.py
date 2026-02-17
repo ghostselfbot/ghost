@@ -171,3 +171,17 @@ themes = {
         "ttk_theme": "purple"
     },
 }
+
+def apply_theme_from_dict(theme_dict):
+    for style in Style:
+        if style.name in theme_dict:
+            style._value_ = theme_dict[style.name]
+
+def apply_theme(root, theme_str: str):
+    if theme_str.lower() in themes:
+        theme = themes[theme_str.lower()]
+        root.style.theme_use(theme["ttk_theme"])
+        apply_theme_from_dict(theme["style"])
+        
+def get_themes():
+    return list(themes.keys())
