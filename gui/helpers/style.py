@@ -3,19 +3,27 @@ from enum import Enum
 
 from utils import Config
 
+from enum import Enum
+
+_current_theme = {}
+
 class Style(Enum):
-    WINDOW_BORDER = "#12121c"
-    SIDEBAR_SELECTED = "#181722"
-    ENTRY_BG = "#1b1b2b"
-    ENTRY_FG = "#ffffff"
-    SETTINGS_PILL_HOVER = "#252534"
-    SETTINGS_PILL_SELECTED = "#2d2d41"
-    DROPDOWN_OPTION_HOVER = "#20202f"
-    DARK_GREY = "#7f7f92"
-    LIGHT_GREY = "#cbcbd2"
-    PRIMARY_BTN_HOVER = "#322bef"
-    MAC_TITLEBAR_INACTIVE = "#454256"
-    TOOL_HOVER = "#1c1c2e"
+    WINDOW_BORDER = "WINDOW_BORDER"
+    SIDEBAR_SELECTED = "SIDEBAR_SELECTED"
+    ENTRY_BG = "ENTRY_BG"
+    ENTRY_FG = "ENTRY_FG"
+    SETTINGS_PILL_HOVER = "SETTINGS_PILL_HOVER"
+    SETTINGS_PILL_SELECTED = "SETTINGS_PILL_SELECTED"
+    DROPDOWN_OPTION_HOVER = "DROPDOWN_OPTION_HOVER"
+    DARK_GREY = "DARK_GREY"
+    LIGHT_GREY = "LIGHT_GREY"
+    PRIMARY_BTN_HOVER = "PRIMARY_BTN_HOVER"
+    MAC_TITLEBAR_INACTIVE = "MAC_TITLEBAR_INACTIVE"
+    TOOL_HOVER = "TOOL_HOVER"
+
+    @property
+    def value(self):
+        return _current_theme.get(self.name)
     
 DARK_THEME = {
     "WINDOW_BORDER": "#12121c",
@@ -173,9 +181,8 @@ themes = {
 }
 
 def apply_theme_from_dict(theme_dict):
-    for style in Style:
-        if style.name in theme_dict:
-            style._value_ = theme_dict[style.name]
+    global _current_theme
+    _current_theme = theme_dict
 
 def reconfigure_ttk_widget_styles(root):
     root.style.configure("TEntry",       background=root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13), bordercolor=Style.ENTRY_BG.value, foreground="#ffffff", borderstyle="flat", borderwidth=0)
