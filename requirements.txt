@@ -17,3 +17,4 @@ pygments
 certifi
 git+https://github.com/ghostselfbot/discord.py-self_embed.git
 bs4
+hPyT
