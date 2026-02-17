@@ -14,7 +14,6 @@ class ToolsPage:
         self.images = images
         self.layout = layout
         self.position_resize_grips = position_resize_grips
-        self.hover_colour = self.root.style.colors.get("secondary")
         
         self.surveillance_page = SurveillancePage(self, root, bot_controller, images, layout)
         self.message_logger_page = MessageLoggerPage(self, root, bot_controller, images, layout)
@@ -104,10 +103,10 @@ class ToolsPage:
         page_wrapper.grid_columnconfigure(0, weight=1)
         page_wrapper.grid_rowconfigure(0, weight=1)
         page_wrapper.grid_rowconfigure(1, weight=1)
-        self._bind_hover_effects(page_wrapper, [page_title, page_wrapper, page_description], self.hover_colour, self.root.style.colors.get("dark"))
-        self._bind_hover_effects(page_title, [page_title, page_wrapper, page_description], self.hover_colour, self.root.style.colors.get("dark"))
-        self._bind_hover_effects(page_description, [page_title, page_wrapper, page_description], self.hover_colour, self.root.style.colors.get("dark"))
-        # self._bind_hover_effects(page_icon, [page_title, page_wrapper, page_icon], self.hover_colour, self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_wrapper, [page_title, page_wrapper, page_description], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_title, [page_title, page_wrapper, page_description], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_description, [page_title, page_wrapper, page_description], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
+        # self._bind_hover_effects(page_icon, [page_title, page_wrapper, page_icon], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
         
         return page_wrapper
         
