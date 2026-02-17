@@ -41,7 +41,7 @@ class UserLookupPage(ToolPage):
                 self.search_entry.insert(0, placeholder_text)
                 self.search_entry.configure(foreground="grey")
         
-        self.search_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk",))
+        self.search_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk", 12))
         self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
         self.search_entry.configure(foreground="grey")
         self.search_entry.insert(0, placeholder_text)

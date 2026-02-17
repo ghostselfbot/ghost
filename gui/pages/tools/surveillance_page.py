@@ -256,7 +256,7 @@ class SurveillancePage(ToolPage):
             entry_wrapper,
             bootstyle="dark.TFrame",
             textvariable=self.search_var,
-            font=("Host Grotesk",)
+            font=("Host Grotesk", 12)
         )
         self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
 

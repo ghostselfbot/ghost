@@ -15,7 +15,7 @@ class Console:
         self.textarea = None
         self.avatar = None
         self.darwin_font_size = 12
-        self.non_darwin_font_size = 10
+        self.non_darwin_font_size = 12
         
     def update(self):
         try:

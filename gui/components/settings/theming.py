@@ -112,7 +112,7 @@ class ThemingPanel(SettingsPanel):
         create_label.configure(background=self.root.style.colors.get("dark"))
         create_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=(10, 0))
         
-        self.create_entry = ttk.Entry(self.body, font=("Host Grotesk",))
+        self.create_entry = ttk.Entry(self.body, font=("Host Grotesk", 12))
         self.create_entry.grid(row=0, column=1, sticky="we", padx=(10, 10), pady=(10, 0))
         self.create_entry.bind("<KeyRelease>", lambda e: self.toggle_create_theme_button(self.create_entry.get().strip() != ""))
         
@@ -160,7 +160,7 @@ class ThemingPanel(SettingsPanel):
         
         for index, (key, value) in enumerate(self.theme_dict.items()):
             padding = (10, 2)
-            entry = ttk.Entry(self.body, font=("Host Grotesk",))
+            entry = ttk.Entry(self.body, font=("Host Grotesk", 12))
             entry.insert(0, value)
 
             if index == 0:
@@ -168,7 +168,7 @@ class ThemingPanel(SettingsPanel):
             elif index == len(self.theme_dict) - 1:
                 padding = (padding[0], (2, 10))
 
-            label = ttk.Label(self.body, text=key.capitalize(), font=("Host Grotesk",))
+            label = ttk.Label(self.body, text=key.capitalize(), font=("Host Grotesk", 12))
             label.configure(background=self.root.style.colors.get("dark"))
 
             label.grid(row=index + 4, column=0, sticky=ttk.W, padx=padding[0], pady=padding[1])

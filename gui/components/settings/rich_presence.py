@@ -140,19 +140,19 @@ class RichPresencePanel(SettingsPanel):
         details_wrapper = RoundedFrame(wrapper, radius=0, background=self.root.style.colors.get("secondary"))
         details_wrapper.grid(row=1, column=1, sticky=ttk.W, padx=(0, 5), pady=5)
         
-        self.name_label = ttk.Label(details_wrapper, text=self.rpc.name or "Ghost", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "bold"))
+        self.name_label = ttk.Label(details_wrapper, text=self.rpc.name or "Ghost", font=("Host Grotesk", 14, "bold"))
         self.name_label.configure(background=self.root.style.colors.get("secondary"))
         self.name_label.grid(row=0, column=0, sticky=ttk.W)
         
-        self.details_label = ttk.Label(details_wrapper, text=self.rpc.details or "", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
+        self.details_label = ttk.Label(details_wrapper, text=self.rpc.details or "", font=("Host Grotesk", 12))
         self.details_label.configure(background=self.root.style.colors.get("secondary"))
         self.details_label.grid(row=1, column=0, sticky=ttk.W)
         
-        self.state_label = ttk.Label(details_wrapper, text=self.rpc.state or "", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
+        self.state_label = ttk.Label(details_wrapper, text=self.rpc.state or "", font=("Host Grotesk", 12))
         self.state_label.configure(background=self.root.style.colors.get("secondary"))
         self.state_label.grid(row=2, column=0, sticky=ttk.W)
         
-        time_elapsed_label = ttk.Label(details_wrapper, text="00:15", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
+        time_elapsed_label = ttk.Label(details_wrapper, text="00:15", font=("Host Grotesk", 12))
         time_elapsed_label.configure(foreground="#68ae7c", background=self.root.style.colors.get("secondary"))
         time_elapsed_label.grid(row=3, column=0, sticky=ttk.W)
         
@@ -235,12 +235,12 @@ class RichPresencePanel(SettingsPanel):
                 entry = ttk.Entry(
                     self.body,
                     textvariable=self.preview_vars[key],
-                    font=("Host Grotesk",)
+                    font=("Host Grotesk", 12)
                 )
             else:
                 entry = ttk.Entry(
                     self.body,
-                    font=("Host Grotesk",)
+                    font=("Host Grotesk", 12)
                 )
                 entry.insert(0, rpc_value)
 

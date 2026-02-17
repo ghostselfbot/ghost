@@ -74,11 +74,11 @@ class OnboardingPage:
                 self.token_entry.insert(0, self.token_entry_placeholder)
                 self.token_entry.configure(foreground="grey", background="#1a1c1c", show="")
         
-        label = ttk.Label(entry_wrapper, text="Token", font=("Host Grotesk",))
+        label = ttk.Label(entry_wrapper, text="Token", font=("Host Grotesk", 12))
         label.configure(background=self.root.style.colors.get("dark"))
         label.grid(row=0, column=0, sticky=ttk.W, padx=(12, 0), pady=(10, 8))
         
-        self.token_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk",))
+        self.token_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk", 12))
         self.token_entry.insert(0, self.token_entry_placeholder)
         self.token_entry.configure(foreground="grey", background="#1a1c1c")
         self.token_entry.bind("<FocusIn>", _focus_in)
@@ -102,11 +102,11 @@ class OnboardingPage:
                 self.prefix_entry.insert(0, self.prefix_entry_placeholder)
                 self.prefix_entry.configure(foreground="grey", background="#1a1c1c")
         
-        label = ttk.Label(entry_wrapper, text="Prefix", font=("Host Grotesk",))
+        label = ttk.Label(entry_wrapper, text="Prefix", font=("Host Grotesk", 12))
         label.configure(background=self.root.style.colors.get("dark"))
         label.grid(row=0, column=0, sticky=ttk.W, padx=(12, 0), pady=(10, 8))
         
-        self.prefix_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk",))
+        self.prefix_entry = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk", 12))
         self.prefix_entry.insert(0, self.prefix_entry_placeholder)
         self.prefix_entry.configure(foreground="grey", background="#1a1c1c")
         self.prefix_entry.bind("<FocusIn>", _focus_in)
