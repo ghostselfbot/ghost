@@ -1,6 +1,9 @@
 import certifi
 import os, sys
 
+if sys.platform == "win32":
+    import hPyT
+
 os.environ["SSL_CERT_FILE"] = certifi.where()
 import ttkbootstrap as ttk
 
@@ -33,6 +36,10 @@ class GhostGUI:
         
         if sys.platform == "win32":
             self.root.iconbitmap(resource_path("data/icon.ico"))
+            hPyT.title_bar.hide(self.root, no_span=True)
+            hPyT.corner_radius.set(self.root, style="round")
+            hPyT.window_dwm.toggle_dwm_transitions(self.root, enabled=True)
+            hPyT.window_frame.minimize(self.root)
         
         self.root.minsize(self.size[0], self.size[1])
         self.root.protocol("WM_DELETE_WINDOW", self.quit)
@@ -265,7 +272,11 @@ class GhostGUI:
 
     def run(self):
         if self.cfg.get("token") == "":
-            self.layout.center_window(self.size[0], self.size[1])
+            if sys.platform == "win32":
+                self.root.after(50, lambda: hPyT.window_frame.restore(self.root))
+                self.root.after(75, lambda: hPyT.window_frame.center(self.root))
+            else:
+                self.layout.center_window(self.size[0], self.size[1])
             # self.layout.resize(450, 372)
             # self.layout.center_window(450, 372)
             self.onboarding_page.draw()
@@ -284,6 +295,10 @@ class GhostGUI:
         self.root.after(25, self.sidebar.disable)
         self.draw_home(start=True)
         
+        if sys.platform == "win32":
+            self.root.after(50, lambda: hPyT.window_frame.restore(self.root))
+            self.root.after(75, lambda: hPyT.window_frame.center(self.root))
+
         self.root.after(100, self._check_bot_started)
         self.root.mainloop()
         

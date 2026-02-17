@@ -32,7 +32,7 @@ class Layout:
         width = self.width - (self.width // 100)
         main = None
 
-        if sys.platform == "darwin":
+        if sys.platform == "darwin" or sys.platform == "win32":
             border = RoundedFrame(
                 self.root,
                 radius=(0, 0, 25, 0),  # ALL corners here
@@ -111,7 +111,7 @@ class Layout:
             if isinstance(widget, ttk.Frame) or isinstance(widget, ScrolledFrame) or isinstance(widget, ttk.Canvas) or isinstance(widget, RoundedFrame):
                 widget.destroy()
 
-        if sys.platform == "darwin":
+        if sys.platform == "darwin" or sys.platform == "win32":
             titlebar = self.titlebar.draw()
             titlebar.pack(fill=ttk.X, side=ttk.TOP)
 
