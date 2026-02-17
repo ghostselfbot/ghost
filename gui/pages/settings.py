@@ -79,7 +79,7 @@ class SettingsPage:
         
         pill = RoundedFrame(parent, radius=10, bootstyle="secondary.TFrame")
         pill.grid(row=0, column=row, sticky=ttk.W, padx=(5, 0 if text != "Snipers" else 5), pady=5)
-        label = ttk.Label(pill, text=text, font=("Host Grotesk", 12 if sys.platform != "darwin" else 14))
+        label = ttk.Label(pill, text=text, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         label.configure(background=self.root.style.colors.get("secondary"))
         label.grid(row=0, column=0, sticky=ttk.W, padx=5, pady=5)
         label.bind("<Button-1>", lambda e: command())

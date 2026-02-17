@@ -1,3 +1,4 @@
+import sys
 import ttkbootstrap as ttk
 import utils.console as console
 from gui.components import SettingsPanel, RoundedFrame
@@ -95,7 +96,7 @@ class SnipersPanel(SettingsPanel):
                 label.configure(background=self.root.style.colors.get("dark"))
                 label.grid(row=0, column=0, sticky=ttk.W, pady=(0, 5))
 
-                textbox = ttk.Entry(wrapper, font=("Host Grotesk", 12))
+                textbox = ttk.Entry(wrapper, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
                 textbox.grid(row=1, column=0, sticky=ttk.EW)
                 wrapper.grid_columnconfigure(0, weight=1)
 

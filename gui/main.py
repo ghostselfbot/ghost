@@ -41,11 +41,11 @@ class GhostGUI:
         # self.root.style.theme_use("darkly")
         self.root.style.load_user_themes(resource_path("data/gui_theme.json"))
         self.root.style.theme_use("ghost")
-        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk", 12), bordercolor=Style.ENTRY_BG.value, foreground="#ffffff", borderstyle="flat", borderwidth=0)
-        self.root.style.configure("TCheckbutton", background=self.root.style.colors.get("dark"), font=("Host Grotesk", 12))
-        self.root.style.configure("TMenubutton",  font=("Host Grotesk", 12))
-        self.root.style.configure("TLabel",       font=("Host Grotesk", 12))
-        self.root.style.configure("TButton",      font=("Host Grotesk", 12))
+        self.root.style.configure("TEntry",       background=self.root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13), bordercolor=Style.ENTRY_BG.value, foreground="#ffffff", borderstyle="flat", borderwidth=0)
+        self.root.style.configure("TCheckbutton", background=self.root.style.colors.get("dark"), font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.root.style.configure("TMenubutton",  font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.root.style.configure("TLabel",       font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.root.style.configure("TButton",      font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         
         if sys.platform == "darwin":
             self.root.attributes("-transparent", True)
