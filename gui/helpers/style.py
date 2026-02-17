@@ -1,4 +1,4 @@
-import json
+import sys
 from enum import Enum
 
 from utils import Config
@@ -181,6 +181,13 @@ def apply_theme(root, theme_str: str):
     if theme_str.lower() in themes:
         theme = themes[theme_str.lower()]
         root.style.theme_use(theme["ttk_theme"])
+        
+        root.style.configure("TEntry",       background=root.style.colors.get("dark"), fieldbackground=Style.ENTRY_BG.value, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13), bordercolor=Style.ENTRY_BG.value, foreground="#ffffff", borderstyle="flat", borderwidth=0)
+        root.style.configure("TCheckbutton", background=root.style.colors.get("dark"), font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        root.style.configure("TMenubutton",  font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        root.style.configure("TLabel",       font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        root.style.configure("TButton",      font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        
         apply_theme_from_dict(theme["style"])
         
 def get_themes():
