@@ -31,7 +31,7 @@ class GhostGUI:
             self.root.overrideredirect(False)
             self.root.withdraw()
         
-        if os.name == "nt":
+        if sys.platform == "win32":
             self.root.iconbitmap(resource_path("data/icon.ico"))
         
         self.root.minsize(self.size[0], self.size[1])
