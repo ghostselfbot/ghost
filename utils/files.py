@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 
 def resource_path(relative_path):
     """ Get the absolute path to a resource, handling PyInstaller builds. """
@@ -52,17 +53,16 @@ def open_path_in_explorer(path):
     path += "/"
     
     if sys.platform == "darwin":
-        os.system(f"open '{path}'")
+        subprocess.run(["open", path], creationflags=subprocess.CREATE_NO_WINDOW)
     elif sys.platform == "win32":
-        path = path.replace('/', '\\')
-        os.system(f'start "" "{path}"')
+        os.startfile(path)
     else:
-        os.system(f"xdg-open '{path}'")
+        subprocess.run(["xdg-open", path], creationflags=subprocess.CREATE_NO_WINDOW)
 
 def open_file_in_editor(file_path):
     if sys.platform == "darwin":
-        os.system(f"open -a TextEdit '{file_path}'")
+        subprocess.run(["open", "-a", "TextEdit", file_path], creationflags=subprocess.CREATE_NO_WINDOW)
     elif sys.platform == "win32":
-        os.system(f"notepad '{file_path}'")
+        subprocess.run(["notepad", file_path], creationflags=subprocess.CREATE_NO_WINDOW)
     else:
-        os.system(f"gedit '{file_path}'")
+        subprocess.run(["gedit", file_path], creationflags=subprocess.CREATE_NO_WINDOW)

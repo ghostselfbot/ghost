@@ -229,7 +229,7 @@ def uninstall_mac_font(font_name):
     '''
     
     try:
-        subprocess.run(['osascript', '-e', script], check=True)
+        subprocess.run(['osascript', '-e', script], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
         print(f"Font '{font_name}' removed from Font Book.")
     except subprocess.CalledProcessError:
         print(f"Failed to remove font '{font_name}' from Font Book.")
