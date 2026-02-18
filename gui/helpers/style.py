@@ -1,3 +1,4 @@
+from logging import root
 import sys
 from enum import Enum
 
@@ -197,6 +198,10 @@ def reconfigure_ttk_widget_styles(root):
     root.style.configure("TLabel",       font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
     root.style.configure("TButton",      font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
 
+    if sys.platform == "darwin":
+        root.attributes("-transparent", True)
+        root.configure(bg="systemTransparent")
+
 def apply_theme(root, theme_str: str):
     # if theme_str.lower() == get_current_theme_str().lower():
     #     print(f"Theme '{theme_str}' is already applied.")
@@ -207,6 +212,9 @@ def apply_theme(root, theme_str: str):
         root.style.theme_use(theme["ttk_theme"])
         apply_theme_from_dict(theme["style"])
         root.after(100, lambda: reconfigure_ttk_widget_styles(root))
+        
+        if hasattr(root, "gui_ref"): 
+            root.after(150, root.gui_ref.refresh_resize_grips)
         
 def get_themes():
     return list(themes.keys())

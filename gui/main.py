@@ -26,6 +26,7 @@ class GhostGUI:
         self.root = ttk.tk.Tk()
         self.root.size = self.size
         self.root.title("Ghost")
+        self.root.gui_ref = self
 
         if sys.platform != "darwin":
             self.root.tk.call('tk', 'scaling', 1)
@@ -122,8 +123,36 @@ class GhostGUI:
         self.root.deiconify()
         self.root.overrideredirect(True)
         
+    def refresh_resize_grips(self):
+        if sys.platform != "darwin":
+            return
+
+        if not self.resize_grips:
+            return
+
+        # Update colors
+        for grip in self.resize_grips.values():
+            try:
+                grip.set_background(Style.WINDOW_BORDER.value)
+                grip.set_parent_background("systemTransparent")
+            except Exception as e:
+                print(f"Error refreshing grip colors: {e}")
+            
+        # self.resize_grips["bottom"].set_corner_radius((0, 0, 25, 25))
+        # self.resize_grips["right"].set_corner_radius((0, 25, 25, 0))
+
+        # Reposition
+        self.root.after(150, self._position_resize_grips)
+
+        # Ensure they stay on top
+        for grip in self.resize_grips.values():
+            ttk.tk.Misc.lift(grip)
+        
     def _create_resize_grips(self):
         if sys.platform != "darwin":
+            return
+        
+        if self.resize_grips:
             return
         
         self.resize_grips = {}
@@ -132,7 +161,8 @@ class GhostGUI:
         bottom = RoundedFrame(
             self.root,
             radius=(0, 0, 25, 25),
-            background=Style.WINDOW_BORDER.value
+            background=Style.WINDOW_BORDER.value,
+            parent_background="systemTransparent"
         )
         bottom.bind("<B1-Motion>", self._resize_window)
         bottom.bind("<Enter>", lambda e: self.root.config(cursor="sb_v_double_arrow"))
@@ -143,33 +173,41 @@ class GhostGUI:
         right = RoundedFrame(
             self.root,
             radius=(0, 25, 25, 0),
-            background=Style.WINDOW_BORDER.value
+            background=Style.WINDOW_BORDER.value,
+            parent_background="systemTransparent"
         )
         right.bind("<B1-Motion>", self._resize_window)
         right.bind("<Enter>", lambda e: self.root.config(cursor="sb_h_double_arrow"))
         right.bind("<Leave>", lambda e: self.root.config(cursor=""))
         self.resize_grips["right"] = right
 
-        self._position_resize_grips()
+        self.root.after(150, self._position_resize_grips)
         
     def _position_resize_grips(self):
         if sys.platform != "darwin":
             return
         
+        if not self.resize_grips and self.cfg.get("token") != "":
+            self._create_resize_grips()
+            return
+        
         w = self.root.winfo_width()
         h = self.root.winfo_height()
-        s = self.resize_grip_size
+        s = self.resize_grip_size + 2
 
-        self.resize_grips["bottom"].place(
-            x=0, y=h - s, width=w, height=s
-        )
+        try:
+            self.resize_grips["bottom"].place(x=0, y=h - s, width=w, height=s)
+            # self.resize_grips["bottom"].set_corner_radius((0, 0, 25, 25))
 
-        self.resize_grips["right"].place(
-            x=w - s, y=0, width=s, height=h
-        )
+            self.resize_grips["right"].place(x=w - s, y=0, width=s, height=h)
+            # self.resize_grips["right"].set_corner_radius((0, 25, 25, 0))
 
-        for grip in self.resize_grips.values():
-            ttk.tk.Misc.lift(grip)
+            for grip in self.resize_grips.values():
+                ttk.tk.Misc.lift(grip)
+        except Exception as e:
+            print("Error positioning grips, resetting grips")
+            self.resize_grips = {}
+            self._create_resize_grips()
             
     def _resize_window(self, event):
         # resize the window based on mouse position, save the new positions so resizing continues smoothly
@@ -179,14 +217,14 @@ class GhostGUI:
         self.root.update_idletasks()
         
         self.size = (self.root.winfo_width(), self.root.winfo_height())
-        self._position_resize_grips()
+        self.root.after(150, self._position_resize_grips)
         
     def draw_home(self, restart=False, start=False):
         self.sidebar.set_current_page("home")
         self.layout.clear()
         main = self.layout.main()
         self.home_page.draw(main, restart=restart, start=start)
-        self._position_resize_grips()
+        self.root.after(150, self._position_resize_grips)
     
     # def draw_console(self):
     #     self.sidebar.set_current_page("console")
@@ -199,21 +237,21 @@ class GhostGUI:
         self.layout.clear()
         main = self.layout.main(scrollable=True)
         self.settings_page.draw(main)
-        self._position_resize_grips()
+        self.root.after(150, self._position_resize_grips)
         
     def draw_scripts(self):
         self.sidebar.set_current_page("scripts")
         self.layout.clear()
         main = self.layout.main()
         self.scripts_page.draw(main)
-        self._position_resize_grips()
+        self.root.after(150, self._position_resize_grips)
         
     def draw_tools(self):
         self.sidebar.set_current_page("tools")
         self.layout.clear()
         main = self.layout.main(scrollable=False)
         self.tools_page.draw(main)
-        self._position_resize_grips()
+        self.root.after(150, self._position_resize_grips)
         
     # def draw_loading(self):
     #     self.layout.hide_titlebar()
@@ -241,15 +279,10 @@ class GhostGUI:
         self.root.after(500, self._check_bot_started)
         
     def _on_bot_ready(self):
-        # self.layout.show_titlebar()
-        # self.layout.unstick_window()
-        # self.loading_page.clear()
-        
         if not self.root.winfo_ismapped():
             self.layout.resize(600, 530)
             self.layout.center_window(600, 530)
         else:
-            # check if the window size is too small
             width, height = self.root.winfo_width(), self.root.winfo_height()
             if width < 600 or height < 530:
                 self.layout.resize(600, 530)
@@ -257,8 +290,9 @@ class GhostGUI:
 
         user = self.bot_controller.get_user()
         self._pre_load_images(user)
+
         self.root.after(50, lambda: self.notifier.send("Ghost", "Ghost has successfully started!"))
-        self.root.after(50, lambda: self.draw_home())
+        self.root.after(75, lambda: self.draw_home())
 
     def _check_bot_started(self):
         if self.bot_controller.bot_running:

@@ -92,6 +92,11 @@ class RoundedFrame(ttk.Canvas):
         self.frame_background = background
         self.on_resize()
         
+    def set_parent_background(self, parent_background):
+        self.parent_background = parent_background
+        self.configure(background=self.parent_background)
+        self.on_resize()
+        
     def set_height(self, height):
         self.configure(height=height)
         self.on_resize()

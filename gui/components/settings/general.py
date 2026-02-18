@@ -54,14 +54,10 @@ class GeneralPanel(SettingsPanel):
         selected_theme = self.gui_theme_entry.value()
         apply_theme(self.root, selected_theme)
         self.cfg.set("gui_theme", selected_theme)
-        self.root.after(100, lambda: self.draw_settings(resize_grips=False))
-        
-        if sys.platform == "darwin":
-            self.root.attributes("-transparent", True)
-            self.root.configure(bg="systemTransparent")
-            
-        # TODO: Fix corner radius on window and resize grips being funny on macOS when changing themes without restarting. Currently requires a restart to fix itself after changing themes, but ideally should update in real time without needing a restart.
-        
+
+        # Redraw settings page
+        self.root.after(100, lambda: self.draw_settings())
+
     def draw(self):
         for index, (key, value) in enumerate(self.config_entries.items()):
             padding = (10, 2)
