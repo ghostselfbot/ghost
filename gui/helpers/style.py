@@ -198,9 +198,9 @@ def reconfigure_ttk_widget_styles(root):
     root.style.configure("TButton",      font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
 
 def apply_theme(root, theme_str: str):
-    if theme_str.lower() == get_current_theme_str().lower():
-        print(f"Theme '{theme_str}' is already applied.")
-        return
+    # if theme_str.lower() == get_current_theme_str().lower():
+    #     print(f"Theme '{theme_str}' is already applied.")
+    #     return
     
     if theme_str.lower() in themes:
         theme = themes[theme_str.lower()]
