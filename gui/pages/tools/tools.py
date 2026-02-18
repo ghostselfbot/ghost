@@ -87,7 +87,7 @@ class ToolsPage:
         page_wrapper = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
         page_wrapper.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
 
-        page_title = ttk.Label(page_wrapper, text=page["name"], font=("Host Grotesk", 14 if sys.platform != "darwin" else 18, "bold"), justify=ttk.CENTER)
+        page_title = ttk.Label(page_wrapper, text=page["name"], font=("Host Grotesk", 18, "bold"), justify=ttk.CENTER)
         page_title.configure(background=self.root.style.colors.get("dark"))
         page_title.grid(row=0, column=0, pady=(25, 5))
         page_title.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
@@ -112,7 +112,7 @@ class ToolsPage:
         return page_wrapper
         
     def draw(self, parent):
-        title = ttk.Label(parent, text="Tools", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
+        title = ttk.Label(parent, text="Tools", font=("Host Grotesk", 24, "bold"))
         title.configure(background=self.root.style.colors.get("bg"))
         # title.pack(pady=(0, 15), anchor=ttk.W)
         title.grid(row=0, column=0, sticky=ttk.W, pady=(0, 15))
