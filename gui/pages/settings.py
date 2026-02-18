@@ -78,7 +78,7 @@ class SettingsPage:
         
         pill = RoundedFrame(parent, radius=10, bootstyle="secondary.TFrame")
         pill.grid(row=0, column=row, sticky=ttk.W, padx=(5, 0 if text != "Snipers" else 5), pady=5)
-        label = ttk.Label(pill, text=text, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        label = ttk.Label(pill, text=text, font=("Host Grotesk", 14))
         label.configure(background=self.root.style.colors.get("secondary"))
         label.grid(row=0, column=0, sticky=ttk.W, padx=5, pady=5)
         label.bind("<Button-1>", lambda e: command())
@@ -100,7 +100,7 @@ class SettingsPage:
             is_selected = pill_key == key
             bg_color = Style.SETTINGS_PILL_SELECTED.value if is_selected else self.root.style.colors.get("secondary")
             pill_components["pill"].set_background(bg_color)
-            pill_components["label"].configure(background=bg_color, font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "bold" if is_selected else "normal"))
+            pill_components["label"].configure(background=bg_color, font=("Host Grotesk", 14, "bold" if is_selected else "normal"))
     
     def draw(self, parent):
         self.parent = parent
@@ -108,7 +108,7 @@ class SettingsPage:
         self.settings_wrapper = ttk.Frame(parent)
         self._create_sections(self.settings_wrapper)
 
-        self.title = ttk.Label(parent, text="Settings", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
+        self.title = ttk.Label(parent, text="Settings", font=("Host Grotesk", 24, "bold"))
         self.title.configure(background=self.root.style.colors.get("bg"))
         self.title.pack(pady=(0, 10), anchor=ttk.W)
 

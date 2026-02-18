@@ -100,7 +100,7 @@ class HomePage:
             avatar.grid(row=0, column=0, sticky=ttk.W, padx=(15, 10), pady=15, rowspan=2)
             
         if not self.restart:
-            display_name = ttk.Label(wrapper, text=self.bot_controller.get_user().display_name, font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
+            display_name = ttk.Label(wrapper, text=self.bot_controller.get_user().display_name, font=("Host Grotesk", 24, "bold"))
             display_name.configure(background=self.root.style.colors.get("secondary"))
             display_name.grid(row=0, column=1, sticky=ttk.W, pady=(15, 0))
 
@@ -115,7 +115,7 @@ class HomePage:
             
             wrapper.grid_columnconfigure(2, weight=1)
         else:
-            self.restart_title = ttk.Label(wrapper, text=f"{self.restart_title_text}...", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"), anchor="center")
+            self.restart_title = ttk.Label(wrapper, text=f"{self.restart_title_text}...", font=("Host Grotesk", 24, "bold"), anchor="center")
             self.restart_title.configure(background=self.root.style.colors.get("secondary"))
             self.restart_title.grid(row=0, column=0, sticky=ttk.NSEW, pady=26, padx=15, columnspan=2)
             wrapper.grid_columnconfigure(0, weight=1)

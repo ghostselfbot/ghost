@@ -318,7 +318,7 @@ class ScriptsPage:
         self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
         self.restart_warning.pack_forget()
         
-        title = ttk.Label(parent, text="Scripts", font=("Host Grotesk", 20 if sys.platform != "darwin" else 24, "bold"))
+        title = ttk.Label(parent, text="Scripts", font=("Host Grotesk", 24, "bold"))
         title.configure(background=self.root.style.colors.get("bg"))
         title.pack(pady=(0, 15), anchor=ttk.W)
         # title.grid(row=0, column=0, sticky=ttk.W, pady=(0, 15))
