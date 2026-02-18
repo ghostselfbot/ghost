@@ -100,10 +100,10 @@ class ToolsPage:
         page_wrapper.grid_columnconfigure(0, weight=1)
         page_wrapper.grid_rowconfigure(0, weight=1)
         page_wrapper.grid_rowconfigure(1, weight=1)
-        self._bind_hover_effects(page_wrapper, [page_title, page_wrapper, page_description], self.hover_colour, self.root.style.colors.get("dark"))
-        self._bind_hover_effects(page_title, [page_title, page_wrapper, page_description], self.hover_colour, self.root.style.colors.get("dark"))
-        self._bind_hover_effects(page_description, [page_title, page_wrapper, page_description], self.hover_colour, self.root.style.colors.get("dark"))
-        # self._bind_hover_effects(page_icon, [page_title, page_wrapper, page_icon], self.hover_colour, self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_wrapper, [page_title, page_wrapper, page_description], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_title, [page_title, page_wrapper, page_description], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_description, [page_title, page_wrapper, page_description], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
+        # self._bind_hover_effects(page_icon, [page_title, page_wrapper, page_icon], Style.TOOL_HOVER.value, self.root.style.colors.get("dark"))
         
         return page_wrapper
         

@@ -14,12 +14,173 @@
 		            "dark": "#12121c",
 		            "bg": "#111017",
 		            "fg": "#ffffff",
-		            "selectbg": "#555555",
+		            "selectbg": "#1f2f4a",
 		            "selectfg": "#ffffff",
 		            "border": "#121111",
 		            "inputfg": "#ffffff",
 		            "inputbg": "#2f2f2f",
 		            "active": "#171726"
+				}
+			}
+		},
+		{
+			"green": {
+				"type": "dark",
+				"colors": {
+					"primary": "#2fd16f",
+					"secondary": "#141f19",
+					"success": "#1ecb5c",
+					"info": "#2bbf9f",
+					"warning": "#f39c12",
+					"danger": "#ff341f",
+					"light": "#ADB5BD",
+					"dark": "#101814",
+					"bg": "#0a0e0c",
+					"fg": "#ffffff",
+					"selectbg": "#1f3a2c",
+					"selectfg": "#ffffff",
+					"border": "#0d1411",
+					"inputfg": "#ffffff",
+					"inputbg": "#1c2621",
+					"active": "#18221d"
+				}
+			}
+		},
+		{
+			"red": {
+				"type": "dark",
+				"colors": {
+					"primary": "#e04848",
+					"secondary": "#1f1416",
+					"success": "#3ecf6b",
+					"info": "#d96c6c",
+					"warning": "#f39c12",
+					"danger": "#ff3b30",
+					"light": "#ADB5BD",
+					"dark": "#180f12",
+					"bg": "#0e0a0c",
+					"fg": "#ffffff",
+					"selectbg": "#3a1f26",
+					"selectfg": "#ffffff",
+					"border": "#140d10",
+					"inputfg": "#ffffff",
+					"inputbg": "#26181c",
+					"active": "#22161a"
+				}
+			}
+		},
+		{
+			"yellow": {
+				"type": "dark",
+				"colors": {
+					"primary": "#f0b429",
+					"secondary": "#1f1a12",
+					"success": "#d4af37",
+					"info": "#e6c15a",
+					"warning": "#ffb020",
+					"danger": "#ff4d3a",
+					"light": "#ADB5BD",
+					"dark": "#18140c",
+					"bg": "#0e0c08",
+					"fg": "#ffffff",
+					"selectbg": "#3a2c12",
+					"selectfg": "#ffffff",
+					"border": "#141108",
+					"inputfg": "#ffffff",
+					"inputbg": "#262012",
+					"active": "#221c10"
+				}
+			}
+		},
+		{
+			"pink": {
+				"type": "dark",
+				"colors": {
+					"primary": "#e056a7",
+					"secondary": "#1f141b",
+					"success": "#3ecf6b",
+					"info": "#d96ca6",
+					"warning": "#f39c12",
+					"danger": "#ff4d6d",
+					"light": "#ADB5BD",
+					"dark": "#180f14",
+					"bg": "#0e0a0d",
+					"fg": "#ffffff",
+					"selectbg": "#3a1f2d",
+					"selectfg": "#ffffff",
+					"border": "#140d12",
+					"inputfg": "#ffffff",
+					"inputbg": "#261823",
+					"active": "#22161e"
+				}
+			}
+		},
+		{
+			"purple": {
+				"type": "dark",
+				"colors": {
+					"primary": "#8a5cf6",
+					"secondary": "#191426",
+					"success": "#3ecf6b",
+					"info": "#a07cff",
+					"warning": "#f39c12",
+					"danger": "#ff4d4d",
+					"light": "#ADB5BD",
+					"dark": "#110e18",
+					"bg": "#0c0a12",
+					"fg": "#ffffff",
+					"selectbg": "#2a1f3a",
+					"selectfg": "#ffffff",
+					"border": "#110d16",
+					"inputfg": "#ffffff",
+					"inputbg": "#1d1826",
+					"active": "#1a1622"
+				}
+			}
+		},
+		{
+			"orange": {
+				"type": "dark",
+				"colors": {
+					"primary": "#f97316",
+					"secondary": "#1f160f",
+					"success": "#3ecf6b",
+					"info": "#ff944d",
+					"warning": "#ffb020",
+					"danger": "#ff4d3a",
+					"light": "#ADB5BD",
+					"dark": "#18110c",
+					"bg": "#0f0b08",
+					"fg": "#ffffff",
+					"selectbg": "#3a2412",
+					"selectfg": "#ffffff",
+					"border": "#140f0a",
+					"inputfg": "#ffffff",
+					"inputbg": "#261b12",
+					"active": "#22170f"
+				}
+			}
+		},
+		{
+			"blue_vibrant": {
+				"type": "dark",
+				"colors": {
+					"primary": "#3b82f6",
+					"secondary": "#151a26",
+					"success": "#3ecf6b",
+					"info": "#4da3ff",
+					"warning": "#f39c12",
+					"danger": "#ff4d4d",
+					"light": "#ADB5BD",
+					"dark": "#0f141c",
+					"bg": "#0b0f16",
+					"fg": "#ffffff",
+					"selectbg": "#1f2f4a",
+					"selectfg": "#ffffff",
+					"border": "#0d121a",
+					"inputfg": "#ffffff",
+					"inputbg": "#18202c",
+					"active": "#141c26"
 				}
 			}
 		}

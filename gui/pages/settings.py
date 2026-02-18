@@ -6,12 +6,13 @@ from gui.helpers import Images, Style
 from utils.config import Config
 
 class SettingsPage:
-    def __init__(self, root, bot_controller):
+    def __init__(self, root, bot_controller, draw_settings):
         self.root = root
         self.bot_controller = bot_controller
         self.width = root.winfo_width()
         self.height = root.winfo_height()
         self.parent = None
+        self.draw_settings = draw_settings
         self.images = Images()
         self.cfg = Config()
         self.cfg.subscribe(self)
@@ -26,8 +27,6 @@ class SettingsPage:
             "snipers": None,
         }
         self.pills = {}
-        self.selected_colour = Style.SETTINGS_PILL_SELECTED.value
-        self.hover_colour = Style.SETTINGS_PILL_HOVER.value
         
     def refresh_config(self):
         if not self.parent:
@@ -47,7 +46,7 @@ class SettingsPage:
     def _create_sections(self, wrapper):
         general_wrapper = ttk.Frame(wrapper)
         
-        self.general = GeneralPanel(self.root, general_wrapper, self.bot_controller, self.images, self.cfg).draw()
+        self.general = GeneralPanel(self.root, general_wrapper, self.bot_controller, self.images, self.cfg, self.draw_settings).draw()
         self.session_spoofing = SessionSpoofingPanel(self.root, general_wrapper, self.images, self.cfg).draw()
         self.snipers = SnipersPanel(self.root, wrapper, self.images, self.cfg).draw()
         self.rpc = RichPresencePanel(self.root, wrapper, self.images, self.cfg, bot_controller=self.bot_controller).draw()
@@ -69,8 +68,8 @@ class SettingsPage:
         def _hover_enter(_, pill, label):
             if pill == self.pills[self.current_page]["pill"]:
                 return
-            pill.set_background(self.hover_colour)
-            label.configure(background=self.hover_colour)
+            pill.set_background(Style.SETTINGS_PILL_HOVER.value)
+            label.configure(background=Style.SETTINGS_PILL_HOVER.value)
         def _hover_leave(_, pill, label):
             if pill == self.pills[self.current_page]["pill"]:
                 return
@@ -99,7 +98,7 @@ class SettingsPage:
         
         for pill_key, pill_components in self.pills.items():
             is_selected = pill_key == key
-            bg_color = self.selected_colour if is_selected else self.root.style.colors.get("secondary")
+            bg_color = Style.SETTINGS_PILL_SELECTED.value if is_selected else self.root.style.colors.get("secondary")
             pill_components["pill"].set_background(bg_color)
             pill_components["label"].configure(background=bg_color, font=("Host Grotesk", 14, "bold" if is_selected else "normal"))
     
