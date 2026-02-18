@@ -18,4 +18,3 @@ certifi
 git+https://github.com/ghostselfbot/discord.py-self_embed.git
 bs4
 hPyT; sys_platform == "win32"
-pyobjc; sys_platform == "darwin"

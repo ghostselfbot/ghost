@@ -8,11 +8,12 @@ from gui.pages.tools.user_lookup_page import UserLookupPage
 from gui.helpers.style import Style
 
 class ToolsPage:
-    def __init__(self, root, bot_controller, images, layout):
+    def __init__(self, root, bot_controller, images, layout, position_resize_grips):
         self.root = root
         self.bot_controller = bot_controller
         self.images = images
         self.layout = layout
+        self.position_resize_grips = position_resize_grips
         self.hover_colour = self.root.style.colors.get("secondary")
         
         self.surveillance_page = SurveillancePage(self, root, bot_controller, images, layout)
@@ -46,6 +47,7 @@ class ToolsPage:
         main = self.layout.main()
         self.surveillance_page.draw(main)
         self.layout.sidebar.set_button_command("tools", self.draw_surveillance)
+        self.position_resize_grips()
         
     def draw_message_logger(self):
         self.layout.sidebar.set_current_page("tools")
@@ -53,6 +55,7 @@ class ToolsPage:
         main = self.layout.main()
         self.message_logger_page.draw(main)
         self.layout.sidebar.set_button_command("tools", self.draw_message_logger)
+        self.position_resize_grips()
         
     def draw_user_lookup(self):
         self.layout.sidebar.set_current_page("tools")
@@ -60,6 +63,7 @@ class ToolsPage:
         main = self.layout.main()
         self.user_lookup_page.draw(main)
         self.layout.sidebar.set_button_command("tools", self.draw_user_lookup)
+        self.position_resize_grips()
         
     def _bind_hover_effects(self, widget, targets, hover_bg, normal_bg):
         def on_enter(_):
@@ -125,3 +129,5 @@ class ToolsPage:
             if col > 1:
                 col = 0
                 row += 1
+                
+        self.position_resize_grips()
