@@ -5,6 +5,9 @@ from gui.helpers import Images
 from gui.components import RoundedFrame, RoundedButton
 from gui.helpers.style import Style
 
+if sys.platform == "darwin":
+    from Cocoa import NSApp
+
 class Sidebar:
     def __init__(self, root):
         self.root = root
@@ -16,6 +19,17 @@ class Sidebar:
         
         root_width = 600
         self.width = root_width // (root_width // 65)
+        
+        if sys.platform == "darwin":
+            self.width -= 1
+        
+    def _on_press(self, event):
+        if sys.platform != "darwin":
+            return
+        
+        ns_window = NSApp().windows()[0]
+        ns_event = NSApp().currentEvent()
+        ns_window.performWindowDragWithEvent_(ns_event)
         
     def add_button(self, page_name, command):
         self.button_cmds[page_name] = command
@@ -47,7 +61,7 @@ class Sidebar:
             background=bg_color
         )
         
-        button_wrapper.grid(row=row, column=0, sticky=ttk.NSEW, pady=(10 if sys.platform == "darwin" or sys.platform == "win32" else 25, 2) if row == 0 else 2, ipady=8, padx=10)
+        button_wrapper.grid(row=row, column=0, sticky=ttk.NSEW, pady=(15 if sys.platform == "darwin" or sys.platform == "win32" else 25, 2) if row == 0 else 2, ipady=8, padx=10)
         
         button = ttk.Label(button_wrapper, image=image, anchor="center", background=bg_color)
         
@@ -96,6 +110,7 @@ class Sidebar:
         self.sidebar.set_width(self.width + 7)
         # self.sidebar.pack(side=ttk.LEFT, fill=ttk.BOTH)
         self.sidebar.grid_propagate(False)
+        self.sidebar.bind("<Button-1>", self._on_press)
     
         self.buttons = {
             "home": self._create_button(self.images.get("home"), "home", self.button_cmds["home"], 0),
