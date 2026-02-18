@@ -219,7 +219,7 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         msg = await ctx.send(file=discord.File(embed_file, filename=embed_file.split("/")[-1]), delete_after=delete_after)
         os.remove(embed_file)
 
-    elif msg_style == "embed" and cfg.get("rich_embed_webhook"):
+    elif msg_style == "embed":
         if title == theme.title:
             title = f"{theme.emoji} {title}"
         # embed = discord.Embed(
