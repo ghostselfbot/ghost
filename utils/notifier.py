@@ -11,9 +11,9 @@ class Notifier:
             # TODO: add notifs for windows
             pass
         elif sys.platform == "linux":
-            subprocess.Popen(["notify-send", title, text])
+            subprocess.Popen(["notify-send", title, text], creationflags=subprocess.CREATE_NO_WINDOW)
         elif sys.platform == "darwin":
             cmd = '''on run argv
   display notification (item 2 of argv) with title (item 1 of argv)
 end run'''
-            subprocess.call(['osascript', '-e', cmd, title, text])
+            subprocess.call(['osascript', '-e', cmd, title, text], creationflags=subprocess.CREATE_NO_WINDOW)

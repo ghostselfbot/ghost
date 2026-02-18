@@ -47,11 +47,11 @@ DEFAULT_CONFIG = {
 }
 
 DEFAULT_THEME = {
-    "title": "ghost selfbot",
+    "title": "Ghost",
     "emoji": "\ud83d\udc7b",
-    "image": "https://ghostt.cc/assets/ghost.png",
-    "colour": "#575757",
-    "footer": "ghost aint dead"
+    "image": "https://ghostt.cc/assets/ghost-2.jpg",
+    "colour": "#ffefea",
+    "footer": "ghostt.cc"
 }
 
 DEFAULT_SCRIPT = """

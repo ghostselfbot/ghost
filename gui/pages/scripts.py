@@ -1,4 +1,5 @@
 import os, sys
+import subprocess
 import ttkbootstrap as ttk
 
 from ttkbootstrap.scrolled import ScrolledFrame
@@ -40,19 +41,19 @@ class ScriptsPage:
         
         if sys.platform == "darwin":
             try:
-                os.system(f"code '{get_application_support()}/scripts/{script}'")
+                subprocess.run(["code", get_application_support() + f"/scripts/{script}"], creationflags=subprocess.CREATE_NO_WINDOW)
             except:
-                os.system(f"open -a TextEdit '{get_application_support()}/scripts/{script}'")
+                subprocess.run(["open", "-a", "TextEdit", get_application_support() + f"/scripts/{script}"], creationflags=subprocess.CREATE_NO_WINDOW)
         elif sys.platform == "win32":
             try:
-                os.system(f"code '{get_application_support()}\\scripts\\{script}'")
+                subprocess.run(["code", get_application_support() + f"\\scripts\\{script}"], creationflags=subprocess.CREATE_NO_WINDOW)
             except:
-                os.system(f"notepad '{get_application_support()}\\scripts\\{script}'")
+                subprocess.run(["notepad", get_application_support() + f"\\scripts\\{script}"], creationflags=subprocess.CREATE_NO_WINDOW)
         else:
             try:
-                os.system(f"subl '{get_application_support()}/scripts/{script}'")
+                subprocess.run(["subl", get_application_support() + f"/scripts/{script}"], creationflags=subprocess.CREATE_NO_WINDOW)
             except:
-                os.system(f"gedit '{get_application_support()}/scripts/{script}'")
+                subprocess.run(["gedit", get_application_support() + f"/scripts/{script}"], creationflags=subprocess.CREATE_NO_WINDOW)
                 
     def _new_scripts_listener(self):
         current_scripts = set(self.cfg.get_scripts())

@@ -183,10 +183,10 @@ class BotController:
             webhook = self._create_webhook(channel.id, sniper.name.capitalize())
             sniper.set_webhook(webhook, notify=False)
             
-        rich_embeds_channel = await webhook_category.create_text_channel("embeds")
-        webhook = self._create_webhook(rich_embeds_channel.id, "Embeds")
-        self.cfg.config["rich_embed_webhook"] = webhook.url
-        self.cfg.save()
+        # rich_embeds_channel = await webhook_category.create_text_channel("embeds")
+        # webhook = self._create_webhook(rich_embeds_channel.id, "Embeds")
+        # self.cfg.config["rich_embed_webhook"] = webhook.url
+        # self.cfg.save()
         
         console.success("Webhooks have been setup!")
         

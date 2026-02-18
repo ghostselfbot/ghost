@@ -176,8 +176,6 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         delete_after = None
 
     msg_style = cfg.get("message_settings")["style"]
-    if msg_style == "embed" and not cfg.get("rich_embed_webhook"):
-        msg_style = "codeblock"
 
     if msg_style == "codeblock" or msg_style == "edited":
         description = re.sub(r"[*_~`]", "", codeblock_desc)
