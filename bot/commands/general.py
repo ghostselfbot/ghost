@@ -12,12 +12,16 @@ class General(commands.Cog):
         self.cfg = config.Config()
 
     @commands.command(name="help", description="A list of all categories.", usage="")
-    async def help(self, ctx, command: str = None):
+    async def help(self, ctx, command: str = None, shared: bool = False):
         cfg = self.cfg
         descriptions = {"codeblock": "", "image": "", "embed": ""}
         cmds = []
+        cogs = self.bot.cogs
+        
+        if shared:
+            cogs = {cog_name: cog for cog_name, cog in cogs.items() if cog_name.lower() in self.bot.allowed_cogs}
 
-        for _, cog in self.bot.cogs.items():
+        for _, cog in cogs.items():
             if cog.description:
                 parts = cog.description.split("\n")
                 if len(parts) > 1:
