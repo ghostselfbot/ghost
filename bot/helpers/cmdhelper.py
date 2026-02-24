@@ -4,6 +4,7 @@ import json
 import asyncio
 import discord
 import requests
+import random
 import discord_self_embed
 
 from . import codeblock
@@ -244,7 +245,7 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         #     embed.set_provider(theme.title)
         
         url = embed.generate_url()
-        msg = await ctx.send(f"[ghostt.cc]({url})", delete_after=delete_after)
+        msg = await ctx.send(f"[ghostt.cc]({url}&v={random.randint(100000, 999999)})", delete_after=delete_after)
 
     if extra_message:
         extra_msg = await ctx.send(extra_message, delete_after=delete_after)
