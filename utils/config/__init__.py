@@ -4,7 +4,7 @@ from .theme import Theme
 from .config import Config
 from .token import Token
 
-VERSION = "4.1.1-dev"
+VERSION = "4.2.0"
 PRODUCTION = True
-MOTD = "gotta love tkinter ;)"
+MOTD = "ghost selfbot ftw"
 CHANGELOG = """"""
