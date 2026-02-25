@@ -221,32 +221,45 @@ class BotController:
     def get_user_from_id(self, user_id):
         return self.bot.get_user(user_id)
 
+    def _download_avatar_async(self, url):
+        def worker():
+            try:
+                response = requests.get(url, timeout=5)
+                response.raise_for_status()
+
+                with self._avatar_lock:
+                    self._avatar_bytes_cache[url] = response.content
+
+            except Exception:
+                pass
+
+        threading.Thread(target=worker, daemon=True).start()
+
     def get_avatar_from_url(self, url, size=50, radius=5):
         try:
             if not url:
                 return None
 
-            url = url.split("?")[0]
-            if url.endswith(".gif"):
-                url = url.replace(".gif", ".png")
-
+            # url = url.split("?")[0]
             cache_key = (url, size, radius)
 
             with self._avatar_lock:
                 if cache_key in self._avatar_cache:
                     return self._avatar_cache[cache_key]
 
-            # reuse downloaded bytes if available
-            with self._avatar_lock:
-                if url in self._avatar_bytes_cache:
-                    content = self._avatar_bytes_cache[url]
-                else:
-                    response = requests.get(url, timeout=5)
-                    response.raise_for_status()
-                    content = response.content
-                    self._avatar_bytes_cache[url] = content
+                content = self._avatar_bytes_cache.get(url)
 
-            image = Image.open(BytesIO(content)).convert("RGBA")
+            # If bytes not cached → trigger async download and return
+            if content is None:
+                self._download_avatar_async(url)
+                return None
+
+            image = Image.open(BytesIO(content))
+
+            if getattr(image, "is_animated", False):
+                image.seek(0)
+
+            image = image.convert("RGBA")
             image = resize_and_sharpen(image, (size, size))
 
             if radius > 0:
