@@ -40,6 +40,11 @@ class GeneralPanel(SettingsPanel):
         except Exception as e:
             console.error(f"Failed to set message style: {e}")
 
+        try:
+            self.cfg.set("message_settings.edit_og", self.edit_og_msg_entry.instate(["selected"]), save=False)
+        except Exception as e:
+            console.error(f"Failed to set edit original message setting: {e}")
+    
         self.cfg.save(notify=False)
         
     def _only_numeric(self, event):
@@ -86,7 +91,7 @@ class GeneralPanel(SettingsPanel):
         message_style_label.configure(background=self.root.style.colors.get("dark"))
         message_style_label.grid(row=len(self.config_entries) + 1, column=0, sticky=ttk.NW, padx=(10, 0), pady=(5, 10))
         
-        self.message_style_entry = DropdownMenu(self.body, options=["codeblock", "image", "embed", "edited"], command=self._set_message_style)
+        self.message_style_entry = DropdownMenu(self.body, options=["codeblock", "image", "embed"], command=self._set_message_style)
         self.message_style_entry.set_selected(self.cfg.get("message_settings.style"))
         self.message_style_entry.draw().grid(row=len(self.config_entries) + 1, column=1, sticky="we", padx=(10, 10), pady=(2, 0), columnspan=3)
         
@@ -97,6 +102,14 @@ class GeneralPanel(SettingsPanel):
         self.gui_theme_entry = DropdownMenu(self.body, options=get_themes(), command=lambda _: self._set_gui_theme())
         self.gui_theme_entry.set_selected(self.cfg.get("gui_theme"))
         self.gui_theme_entry.draw().grid(row=len(self.config_entries) + 2, column=1, sticky="we", padx=(10, 10), pady=(2, 10), columnspan=3)
+        
+        edit_og_msg_label = ttk.Label(self.body, text="Edit original message")
+        edit_og_msg_label.configure(background=self.root.style.colors.get("dark"))
+        edit_og_msg_label.grid(row=len(self.config_entries) + 3, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
+        
+        self.edit_og_msg_entry = ttk.Checkbutton(self.body, command=self._save_cfg, style="success-round-toggle")
+        self.edit_og_msg_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("message_settings.edit_og")))
+        self.edit_og_msg_entry.grid(row=len(self.config_entries) + 3, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10), columnspan=3)
         
         return self.wrapper
     

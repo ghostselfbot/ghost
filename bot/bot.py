@@ -197,7 +197,7 @@ class Ghost(commands.Bot):
                 await self.add_cog(cog(self))
 
     async def on_command(self, ctx):
-        if self.cfg.get("message_settings")["style"] != "edited":
+        if self.cfg.get("message_settings")["edit_og"] == False or self.cfg.get("message_settings")["style"].lower() not in ["codeblock", "embed"]:
             try:
                 await ctx.message.delete()
             except Exception as e:
@@ -210,7 +210,7 @@ class Ghost(commands.Bot):
     async def on_command_error(self, ctx, error):
         console.print_error(str(error))
 
-        if self.cfg.get("message_settings")["style"] != "edited":
+        if self.cfg.get("message_settings")["edit_og"] == False or self.cfg.get("message_settings")["style"].lower() not in ["codeblock", "embed"]:
             try:
                 await ctx.message.delete()
             except Exception as e:

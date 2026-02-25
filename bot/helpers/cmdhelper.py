@@ -178,7 +178,7 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
 
     msg_style = cfg.get("message_settings")["style"]
 
-    if msg_style == "codeblock" or msg_style == "edited":
+    if msg_style == "codeblock":
         description = re.sub(r"[*_~`]", "", codeblock_desc)
         if title == theme.title:
             title = f"{theme.emoji} {title}"
@@ -186,24 +186,27 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         if len(description.split("\n")) == 1:
             extra_title = description
             description = ""
+            
+        if "page" in footer.lower():
+            footer = theme.footer
 
-        if msg_style != "edited":
-            msg = await ctx.send(
-                str(codeblock.Codeblock(
-                    title=title,
-                    description=description,
-                    extra_title=extra_title,
-                    # footer=footer
-                )),
-                delete_after=delete_after
-            )
-        else:
+        if cfg.get("message_settings")["edit_og"] == True:
             msg = await ctx.message.edit(
                 content=str(codeblock.Codeblock(
                     title=title,
                     description=description,
                     extra_title=extra_title,
-                    # footer=footer
+                    footer=footer
+                )),
+                delete_after=delete_after
+            )
+        else:
+            msg = await ctx.send(
+                str(codeblock.Codeblock(
+                    title=title,
+                    description=description,
+                    extra_title=extra_title,
+                    footer=footer
                 )),
                 delete_after=delete_after
             )
@@ -245,7 +248,11 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         #     embed.set_provider(theme.title)
         
         url = embed.generate_url()
-        msg = await ctx.send(f"[ghostt.cc]({url}&v={random.randint(100000, 999999)})", delete_after=delete_after)
+        
+        if cfg.get("message_settings")["edit_og"] == True:
+            msg = await ctx.message.edit(content=f"[ghostt.cc]({url}&v={random.randint(100000, 999999)})", delete_after=delete_after)
+        else:
+            msg = await ctx.send(f"[ghostt.cc]({url}&v={random.randint(100000, 999999)})", delete_after=delete_after)
 
     if extra_message:
         extra_msg = await ctx.send(extra_message, delete_after=delete_after)

@@ -22,7 +22,8 @@ DEFAULT_CONFIG = {
     },
     "message_settings": {
         "auto_delete_delay": 15,
-        "style": "image"
+        "style": "image",
+        "edit_og": False
     },
     "session_spoofing": {
         "enabled": False,
