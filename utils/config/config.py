@@ -64,11 +64,16 @@ class Config:
         if isinstance(self.config["message_settings"]["auto_delete_delay"], str):
             self.config["message_settings"]["auto_delete_delay"] = int(self.config["message_settings"]["auto_delete_delay"])
 
+    def recursive_item_check(self, default, current):
+        for key, value in default.items():
+            if key not in current:
+                current[key] = value
+            elif isinstance(value, dict):
+                self.recursive_item_check(value, current[key])
+
     def check(self):
         # check if the config file is missing any keys
-        for key, value in DEFAULT_CONFIG.items():
-            if key not in self.config:
-                self.config[key] = value
+        self.recursive_item_check(DEFAULT_CONFIG, self.config)
                 
         # check if the theme is missing any keys
         theme = self.get_theme(self.config["theme"])
