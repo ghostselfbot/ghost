@@ -30,7 +30,7 @@ def add_corners(im, rad):
     # Create rounded rectangle mask
     mask = Image.new("L", (w, h), 0)
     draw = ImageDraw.Draw(mask)
-    draw.rounded_rectangle([(0, 0), (w, h)], radius=rad, fill=255)
+    draw.rounded_rectangle([(0, 0), (w - 2, h - 2)], radius=rad, fill=255)
 
     # Combine with existing alpha (if present)
     existing_alpha = im.split()[3]
