@@ -221,20 +221,6 @@ class BotController:
     def get_user_from_id(self, user_id):
         return self.bot.get_user(user_id)
 
-    def _download_avatar_async(self, url):
-        def worker():
-            try:
-                response = requests.get(url, timeout=5)
-                response.raise_for_status()
-
-                with self._avatar_lock:
-                    self._avatar_bytes_cache[url] = response.content
-
-            except Exception:
-                pass
-
-        threading.Thread(target=worker, daemon=True).start()
-
     def get_avatar_from_url(self, url, size=50, radius=5):
         try:
             if not url:
@@ -247,19 +233,25 @@ class BotController:
                 if cache_key in self._avatar_cache:
                     return self._avatar_cache[cache_key]
 
-                content = self._avatar_bytes_cache.get(url)
-
-            # If bytes not cached → trigger async download and return
-            if content is None:
-                self._download_avatar_async(url)
-                return None
+            # Download or reuse bytes
+            with self._avatar_lock:
+                if url in self._avatar_bytes_cache:
+                    content = self._avatar_bytes_cache[url]
+                else:
+                    response = requests.get(url, timeout=5)
+                    response.raise_for_status()
+                    content = response.content
+                    self._avatar_bytes_cache[url] = content
 
             image = Image.open(BytesIO(content))
 
+            # --- HANDLE GIFS PROPERLY ---
             if getattr(image, "is_animated", False):
-                image.seek(0)
+                image.seek(0)  # first frame only
+                image = image.convert("RGBA")
+            else:
+                image = image.convert("RGBA")
 
-            image = image.convert("RGBA")
             image = resize_and_sharpen(image, (size, size))
 
             if radius > 0:
@@ -271,6 +263,10 @@ class BotController:
                 self._avatar_cache[cache_key] = photo
 
             return photo
+
+        except Exception as e:
+            print(f"Error processing avatar from URL {url}: {e}")
+            return None
 
         except Exception as e:
             print(f"Error processing avatar from URL {url}: {e}")
