@@ -194,17 +194,50 @@ class Mod(commands.Cog):
                 "description": description
             })
 
-    @commands.command(name="ban", description="Ban a member from the command server.", usage="[member]")
-    async def ban(self, ctx, member):
+    async def ban_helper(self, ctx, member, action="ban"):
+        user = None
+        
         try:
-            member = ctx.guild.get_member(int(member[3:-1])) if "<@" in member else self.bot.get_user(int(member))
+            if "<@" in member:
+                _id = int(member[2:-1])
+            else:
+                _id = int(member)
+                
+            user = discord.utils.get(self.bot.users, id=_id)
+                
         except Exception as e:
             return await cmdhelper.send_message(ctx, {
                 "title": "Error",
                 "description": f"Failed to find user: {e}",
                 "colour": "ff0000"
             })
+            
+        if user is None:
+            return await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": "Failed to find user.",
+                "colour": "ff0000"
+            })
+            
+        bans = [user async for user in ctx.guild.bans(limit=2000)]
         
+        if action == "ban" and any(ban.user.id == user.id for ban in bans):
+            return await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": f"User {user.name} is already banned.",
+                "colour": "ff0000"
+            })
+        elif action == "unban" and not any(ban.user.id == user.id for ban in bans):
+            return await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": f"User {user.name} is not banned.",
+                "colour": "ff0000"
+            })
+            
+        return user
+
+    @commands.command(name="ban", description="Ban a member from the command server.", usage="[member]")
+    async def ban(self, ctx, member):
         if not ctx.message.author.guild_permissions.ban_members:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
@@ -212,12 +245,16 @@ class Mod(commands.Cog):
                 "colour": "ff0000"
             })
             return
+        
+        user = await self.ban_helper(ctx, member, action="ban")
+        if user is None:
+            return
 
         try:
-            await ctx.guild.ban(member)
+            await ctx.guild.ban(user)
             await cmdhelper.send_message(ctx, {
                 "title": "Ban",
-                "description": f"Banned {member.name}"
+                "description": f"Banned {user.name}"
             })
 
         except Exception as e:
@@ -227,8 +264,8 @@ class Mod(commands.Cog):
                 "colour": "ff0000"
             })
 
-    @commands.command(name="unban", description="Unban a member from the command server.", usage="[id]")
-    async def unban(self, ctx, user_id: int):
+    @commands.command(name="unban", description="Unban a member from the command server.", usage="[user]")
+    async def unban(self, ctx, member):
         if not ctx.message.author.guild_permissions.ban_members:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
@@ -237,31 +274,26 @@ class Mod(commands.Cog):
             })
             return
 
-        resp = requests.get(f"https://discord.com/api/v9/users/{user_id}", headers={
-            "Authorization": f"{self.cfg.get('token')}",
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        })
-
-        user = discord.User(state=self.bot._connection, data=resp.json())
-
-        await ctx.guild.unban(user)
-        await cmdhelper.send_message(ctx, {
-            "title": "Unban",
-            "description": f"Unbanned {user.name}"
-        })
+        user = await self.ban_helper(ctx, member, action="unban")
+        if user is None:
+            return
+        
+        try:
+            await ctx.guild.unban(user)
+            await cmdhelper.send_message(ctx, {
+                "title": "Unban",
+                "description": f"Unbanned {user.name}"
+            })
+            
+        except Exception as e:
+            await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": f"{e}",
+                "colour": "ff0000"
+            })
 
     @commands.command(name="kick", description="Kick a member from the command server.", usage="[member]")
     async def kick(self, ctx, member):
-        try:
-            member = ctx.guild.get_member(int(member[3:-1])) if "<@" in member else self.bot.get_user(int(member))
-        except Exception as e:
-            return await cmdhelper.send_message(ctx, {
-                "title": "Error",
-                "description": f"Failed to find user: {e}",
-                "colour": "ff0000"
-            })
-        
         if not ctx.message.author.guild_permissions.kick_members:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
@@ -269,14 +301,38 @@ class Mod(commands.Cog):
                 "colour": "ff0000"
             })
             return
-
+        
+        user = None
+        
         try:
-            await ctx.guild.kick(member)
-            await cmdhelper.send_message(ctx, {
-                "title": "Kick",
-                "description": f"Kicked {member.name}"
+            if "<@" in member:
+                _id = int(member[2:-1])
+            else:
+                _id = int(member)
+                
+            user = discord.utils.get(self.bot.users, id=_id)
+                
+        except Exception as e:
+            return await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": f"Failed to find user: {e}",
+                "colour": "ff0000"
+            })
+            
+        if user is None:
+            return await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": "Failed to find user.",
+                "colour": "ff0000"
             })
 
+        try:
+            await ctx.guild.kick(user)
+            await cmdhelper.send_message(ctx, {
+                "title": "Kick",
+                "description": f"Kicked {user.name}"
+            })
+            
         except Exception as e:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
