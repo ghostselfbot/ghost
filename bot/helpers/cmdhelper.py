@@ -178,7 +178,7 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
 
     msg_style = cfg.get("message_settings")["style"]
 
-    if msg_style == "codeblock":
+    if msg_style == "codeblock" or (msg_style == "embed" and len(description) > 300):
         description = re.sub(r"[*_~`]", "", codeblock_desc)
         if title == theme.title:
             title = f"{theme.emoji} {title}"
