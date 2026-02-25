@@ -236,8 +236,8 @@ class Mod(commands.Cog):
             
         return user
 
-    @commands.command(name="ban", description="Ban a member from the command server.", usage="[member]")
-    async def ban(self, ctx, member):
+    @commands.command(name="ban", description="Ban a member from the command server.", usage="[member] [reason]")
+    async def ban(self, ctx, member, *, reason=None):
         if not ctx.message.author.guild_permissions.ban_members:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
@@ -251,10 +251,10 @@ class Mod(commands.Cog):
             return
 
         try:
-            await ctx.guild.ban(user)
+            await ctx.guild.ban(user, reason=reason)
             await cmdhelper.send_message(ctx, {
                 "title": "Ban",
-                "description": f"Banned {user.name}"
+                "description": f"Banned {user.name}" + (f" for reason: {reason}" if reason else "")
             })
 
         except Exception as e:
@@ -264,8 +264,8 @@ class Mod(commands.Cog):
                 "colour": "ff0000"
             })
 
-    @commands.command(name="unban", description="Unban a member from the command server.", usage="[user]")
-    async def unban(self, ctx, member):
+    @commands.command(name="unban", description="Unban a member from the command server.", usage="[user] [reason]")
+    async def unban(self, ctx, member, *, reason=None):
         if not ctx.message.author.guild_permissions.ban_members:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
@@ -279,10 +279,10 @@ class Mod(commands.Cog):
             return
         
         try:
-            await ctx.guild.unban(user)
+            await ctx.guild.unban(user, reason=reason)
             await cmdhelper.send_message(ctx, {
                 "title": "Unban",
-                "description": f"Unbanned {user.name}"
+                "description": f"Unbanned {user.name}" + (f" for reason: {reason}" if reason else "")
             })
             
         except Exception as e:
@@ -292,8 +292,8 @@ class Mod(commands.Cog):
                 "colour": "ff0000"
             })
 
-    @commands.command(name="kick", description="Kick a member from the command server.", usage="[member]")
-    async def kick(self, ctx, member):
+    @commands.command(name="kick", description="Kick a member from the command server.", usage="[member] [reason]")
+    async def kick(self, ctx, member, *, reason=None):
         if not ctx.message.author.guild_permissions.kick_members:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
@@ -327,10 +327,10 @@ class Mod(commands.Cog):
             })
 
         try:
-            await ctx.guild.kick(user)
+            await ctx.guild.kick(user, reason=reason)
             await cmdhelper.send_message(ctx, {
                 "title": "Kick",
-                "description": f"Kicked {user.name}"
+                "description": f"Kicked {user.name}" + (f" for reason: {reason}" if reason else "")
             })
             
         except Exception as e:
@@ -340,8 +340,8 @@ class Mod(commands.Cog):
                 "colour": "ff0000"
             })
 
-    @commands.command(name="mute", description="Mute a member.", usage="[member] [length]", aliases=["timeout"])
-    async def mute(self, ctx, member: discord.Member, time: str):
+    @commands.command(name="mute", description="Mute a member.", usage="[member] [length] [reason]", aliases=["timeout"])
+    async def mute(self, ctx, member: discord.Member, time: str, *, reason=None):
         if not ctx.message.author.guild_permissions.mute_members:
             await cmdhelper.send_message(ctx, {
                 "title": "Error",
@@ -372,7 +372,7 @@ class Mod(commands.Cog):
         await member.timeout(length)
         await cmdhelper.send_message(ctx, {
             "title": "Mute",
-            "description": f"Muted {member.name} for {time}"
+            "description": f"Muted {member.name} for {time}" + (f" for reason: {reason}" if reason else "")
         })
 
     @commands.command(name="unmute", description="Unmute a member.", usage="[member]", aliases=["untimeout"])
