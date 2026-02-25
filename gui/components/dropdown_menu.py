@@ -8,6 +8,15 @@ class DropdownMenu:
         self.options = options
         self.selected_option = ttk.StringVar(value=options[0] if options else "")
         self.command = command
+        self.style = None
+        
+        # see if parent has root attribute, if so use it to get the style, otherwise get the style from the parent itself
+        if hasattr(parent, "root") and parent.root and hasattr(parent.root, "style"):
+            self.style = parent.root.style
+        elif hasattr(parent, "style"):
+            self.style = parent.style
+        else:
+            raise ValueError("Parent must have a style attribute or a root attribute with a style")
         
     def _hover_enter(self, wrapper, label):
         wrapper.set_background(Style.DROPDOWN_OPTION_HOVER.value)
@@ -84,12 +93,12 @@ class DropdownMenu:
         self.parent.bind("<Button-1>", self._outside_click, add="+")
         self.frame = RoundedFrame(self.parent, radius=5, bootstyle="secondary.TFrame")
 
-        label = ttk.Label(self.frame, textvariable=self.selected_option, anchor="w", background=self.parent.style.colors.get("secondary"))
+        label = ttk.Label(self.frame, textvariable=self.selected_option, anchor="w", background=self.style.colors.get("secondary"))
         label.pack(fill=ttk.X, padx=10, pady=5)
         label.bind("<Button-1>", self._open_menu)
         self.frame.bind("<Button-1>", self._open_menu)
         
-        self.down_arrow = ttk.Label(self.frame, text="▼", background=self.parent.style.colors.get("secondary"), font=("Host Grotesk", 10))
+        self.down_arrow = ttk.Label(self.frame, text="▼", background=self.style.colors.get("secondary"), font=("Host Grotesk", 10))
         self.down_arrow.place(relx=1.0, rely=0.5, x=-10, y=0, anchor="e")
         self.down_arrow.bind("<Button-1>", self._open_menu)
 
