@@ -362,8 +362,8 @@ class SurveillancePage(ToolPage):
             avatar_label.create_rectangle(0, 50, 100, 200, fill=self.root.style.colors.get("dark"), outline="")
             
             # create an ovel the same size of the avatar but an extra 5px on each side and use the dark background color, this is to create a border
-            avatar_label.create_oval(9, 8, 85, 85, fill=self.root.style.colors.get("dark"), outline="")
-            avatar_label.create_image(65//2 + 15, 65//2 + 14, image=self.user_avatar, anchor="center")
+            avatar_label.create_oval(8, 8, 85, 85, fill=self.root.style.colors.get("dark"), outline="")
+            avatar_label.create_image(65//2 + 15, 65//2 + 15, image=self.user_avatar, anchor="center")
             
             avatar_label.place(x=0, y=85-50, width=100, height=200)
             
