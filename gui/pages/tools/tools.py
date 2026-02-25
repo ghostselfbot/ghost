@@ -115,7 +115,7 @@ class ToolsPage:
         title = ttk.Label(parent, text="Tools", font=("Host Grotesk", 24, "bold"))
         title.configure(background=self.root.style.colors.get("bg"))
         # title.pack(pady=(0, 15), anchor=ttk.W)
-        title.grid(row=0, column=0, sticky=ttk.W, pady=(0, 15))
+        title.grid(row=0, column=0, sticky=ttk.W, pady=(0, 10))
         
         parent.grid_columnconfigure(0, weight=1)
         parent.grid_columnconfigure(1, weight=1)
