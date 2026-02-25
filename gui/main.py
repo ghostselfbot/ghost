@@ -19,7 +19,7 @@ from gui.helpers import Images, Layout, Style, apply_theme
 class GhostGUI:
     def __init__(self, bot_controller):
         self.resize_grip_size = 5
-        self.size = (700, 530)
+        self.size = (750, 530)
         self.bot_controller = bot_controller
         self.resize_grips = {}
         
@@ -101,15 +101,27 @@ class GhostGUI:
             self.root.after(450, self._show_window)
             self.root.after(500, self._window_mapped)
 
-    def _pre_load_images(self, user):
-        print("Pre-loading images...")
+    def _pre_load_user_images(self, user):
+        if not user:
+            return
+        
         avatar_url = user.avatar.url if user and user.avatar else "https://ia600305.us.archive.org/31/items/discordprofilepictures/discordblue.png"
         self.bot_controller.get_avatar_from_url(avatar_url, size=65, radius=65//2)
         self.images.get_majority_color_from_url(avatar_url)
 
+    def _pre_load_images(self):
+        print("Pre-loading images...")
+
         rpc = self.cfg.get_rich_presence()
-        if rpc and rpc.large_image:
+        if rpc.large_image:
             self.images.load_image_from_url(rpc.large_image if rpc.large_image else "https://www.ghostt.cc/assets/ghost.png", (64, 64), 5)
+        
+        try:
+            for theme in self.cfg.get_themes():
+                if theme.image:
+                    self.bot_controller.get_avatar_from_url(theme.image, size=70, radius=5)
+        except Exception as e:
+            print(f"Error pre-loading theme images: {e}")
         
         print("Finished pre-loading images.")
 
@@ -289,7 +301,7 @@ class GhostGUI:
                 self.layout.center_window(600, 530)
 
         user = self.bot_controller.get_user()
-        self._pre_load_images(user)
+        self._pre_load_user_images(user)
 
         self.root.after(50, lambda: self.notifier.send("Ghost", "Ghost has successfully started!"))
         self.root.after(75, lambda: self.draw_home())
@@ -324,6 +336,7 @@ class GhostGUI:
         # self.loading_page.draw()
         self.root.after(25, self.sidebar.disable)
         self.draw_home(start=True)
+        self.root.after(100, self._pre_load_images)
         
         if sys.platform == "win32":
             self.root.after(50, lambda: hPyT.window_frame.restore(self.root))
