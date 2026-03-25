@@ -54,7 +54,18 @@ class Mod(commands.Cog):
         
     @commands.command(name="dmpurge", description="Purge a number of messages in a DM.", usage="[number] [user id]")
     async def dmpurge(self, ctx, number: int, user_id: int):
-        user = self.bot.get_user(user_id)
+        if self.cfg.get("message_settings")["edit_og"]:
+            await cmdhelper.send_message(ctx, {
+                "title": "DM Purge",
+                "description": f"Purging {number} messages..."
+            })
+        else:
+            try:
+                await ctx.message.delete()
+            except:
+                pass
+        
+        user = discord.utils.get(self.bot.users, id=user_id)
         
         if isinstance(user, discord.User):
             latest_msg = [msg async for msg in user.dm_channel.history(limit=1)][0]
