@@ -53,7 +53,7 @@ def open_path_in_explorer(path):
     path += "/"
     
     if sys.platform == "darwin":
-        subprocess.run(["open", path], creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.run(["open", path])
     elif sys.platform == "win32":
         os.startfile(path)
     else:
@@ -61,8 +61,8 @@ def open_path_in_explorer(path):
 
 def open_file_in_editor(file_path):
     if sys.platform == "darwin":
-        subprocess.run(["open", "-a", "TextEdit", file_path], creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.run(["open", "-a", "TextEdit", file_path])
     elif sys.platform == "win32":
         subprocess.run(["notepad", file_path], creationflags=subprocess.CREATE_NO_WINDOW)
     else:
-        subprocess.run(["gedit", file_path], creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.run(["gedit", file_path])
