@@ -83,7 +83,7 @@ class Images:
             "bigger": ["scripts"],
             "small": ["trash", "github", "restart", "checkmark", "left-chevron", "file-signature", "trash-white", "titlebar-ico", "right-chevron-small"],
             "tiny": ["submit", "max", "min", "search", "right-chevron-tiny"],
-            "smaller": ["folder-open", "plus", "reset", "play", "stop", "right-chevron"],
+            "smaller": ["folder-open", "plus", "reset", "play", "stop", "right-chevron", "download"],
             "logo": ["ghost-logo"],
         }
 
@@ -119,7 +119,8 @@ class Images:
             "reset": "data/icons/rotate-left-solid.png",
             "play": "data/icons/play-solid.png",
             "stop": "data/icons/stop-solid.png",
-            "titlebar-ico": "data/icon-win.png"
+            "titlebar-ico": "data/icon-win.png",
+            "download": "data/icons/download-solid.png",
         }
 
         for key, path in ICON_PATHS.items():

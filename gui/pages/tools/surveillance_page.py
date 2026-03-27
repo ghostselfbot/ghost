@@ -1,9 +1,10 @@
-import sys, time
+import sys, time, json, os
 import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.tableview import Tableview
 from gui.components import ToolPage, RoundedFrame, RoundedButton
 from utils.console import get_formatted_time
+from utils.files import open_path_in_explorer, get_data_path
 from gui.helpers.style import Style
 
 class SurveillancePage(ToolPage):
@@ -235,6 +236,51 @@ class SurveillancePage(ToolPage):
         self.reset_button.bind("<Leave>", _hover_leave)
         
         return self.reset_button_wrapper
+    
+    def _download_data(self):
+        if not self.messages_all or self.user_id is None:
+            self.add_log("warning", "No surveillance data to export.")
+            return
+        
+        data_folder = os.path.join(get_data_path(), "surveillance/export")
+        filename = f"surveillance_{self.user_id}_{int(time.time())}.txt"
+        file_path = os.path.join(data_folder, filename)
+        
+        # grab the text from the messages textarea and save it to a file in the export folder with the filename above
+        if self.messages_textarea:
+            try:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(self.messages_textarea.get("1.0", "end").strip())
+            except Exception as e:
+                self.add_log("error", f"Failed to export surveillance data: {e}")
+                return
+        
+        open_path_in_explorer(data_folder)
+        self.add_log("success", f"Exported surveillance data to {filename} in the export folder.")
+    
+    def _draw_download_button(self, parent):
+        def _hover_enter(_):
+            if self.messages_all and self.user_id is not None:
+                download_button.set_background(background=Style.SETTINGS_PILL_HOVER.value)
+                download_icon.configure(background=Style.SETTINGS_PILL_HOVER.value)
+            
+        def _hover_leave(_):
+            download_button.set_background(background=self.root.style.colors.get("dark"))
+            download_icon.configure(background=self.root.style.colors.get("dark"))
+        
+        download_button = RoundedFrame(parent, radius=(10, 10, 10, 10), bootstyle="dark")
+        download_button.bind("<Button-1>", lambda e: self._download_data())
+        download_button.bind("<Enter>", lambda e: _hover_enter(e))
+        download_button.bind("<Leave>", lambda e: _hover_leave(e))
+        
+        download_icon = ttk.Label(download_button, image=self.images.get("download"), style="dark")
+        download_icon.configure(background=self.root.style.colors.get("dark"))
+        download_icon.pack(side=ttk.LEFT, padx=15, pady=14)
+        download_icon.bind("<Button-1>", lambda e: self._download_data())
+        download_icon.bind("<Enter>", lambda e: _hover_enter(e))
+        download_icon.bind("<Leave>", lambda e: _hover_leave(e))
+
+        return download_button
 
     def _draw_search_bar(self, parent):
         entry_wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
@@ -282,6 +328,9 @@ class SurveillancePage(ToolPage):
         
         reset_button = self._draw_reset_button(header)
         reset_button.grid(row=0, column=2, sticky=ttk.E, padx=(5, 0))
+        
+        download_button = self._draw_download_button(header)
+        download_button.grid(row=0, column=3, sticky=ttk.E, padx=(5, 10))
         
         header.grid_columnconfigure(0, weight=1)
         

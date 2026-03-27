@@ -12,7 +12,8 @@ REQUIRED_DIRS = [
     "data",
     "scripts",
     "themes",
-    "data/surveillance"
+    "data/surveillance",
+    "data/surveillance/export",
 ]
 
 REQUIRED_FILES = {
