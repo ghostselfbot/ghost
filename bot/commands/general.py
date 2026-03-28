@@ -66,11 +66,10 @@ class General(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-        cfg = self.cfg
-        latency = requests.get("https://discord.com/api/users/@me", headers={"Authorization": cfg.get("token")}).elapsed.total_seconds()
-        msg = codeblock.Codeblock(f"ping", extra_title=f"Your latency is {round(latency * 1000)}ms")
-
-        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        await cmdhelper.send_message(ctx, {
+            "title": "Pong!",
+            "description": f"Latency: {round(self.bot.latency * 1000)}ms"
+        })
     
     @commands.command(name="search", description="Search for commands.", usage="[query]")
     async def search(self, ctx, query: str, selected_page: int = 1):
