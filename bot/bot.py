@@ -11,6 +11,7 @@ import sys
 os.environ["SSL_CERT_FILE"] = certifi.where()
 from discord.ext import commands, tasks
 
+
 from utils import files
 from utils.config import Config
 import utils.console as console
@@ -42,6 +43,9 @@ class Ghost(commands.Bot):
         self.files = files
         self.allowed_users = []
         self.allowed_cogs = ["fun", "text", "general", "img", "info"]
+
+
+
                 
     async def _setup_scripts(self):
         scripts = self.cfg.get_scripts()
@@ -133,6 +137,7 @@ class Ghost(commands.Bot):
     async def on_ready(self):
         try:
             self.start_time = time.time()
+
             self.cfg.add_token(self.cfg.get("token"), self.user.name, self.user.id)
             await self.load_cogs()
 
