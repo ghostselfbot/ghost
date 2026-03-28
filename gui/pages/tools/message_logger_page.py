@@ -39,7 +39,7 @@ class MessageLoggerPage(ToolPage):
         clear_btn = ttk.Label(wrapper, image=self.images.get("trash"))
         clear_btn.configure(foreground="white")
         clear_btn.bind("<Button-1>", lambda e: self._clear_discord_logs())
-        clear_btn.bind("<Enter>", lambda e: clear_btn.configure(foreground="lightgrey"))
+        clear_btn.bind("<Enter>", lambda e: clear_btn.configure(foreground=Style.LIGHT_GREY.value))
         clear_btn.bind("<Leave>", lambda e: clear_btn.configure(foreground="white"))
         clear_btn.grid(row=0, column=3, sticky=ttk.E, padx=(20, 0))
 

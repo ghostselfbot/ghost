@@ -68,6 +68,7 @@ class GeneralPanel(SettingsPanel):
             padding = (10, 2)
             cfg_value = self.cfg.get(key)
             entry = ttk.Entry(self.body, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13)) if key != "token" else ttk.Entry(self.body, show="*", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+            entry.configure(foreground=self.root.style.colors.get("fg"))
             entry.insert(0, cfg_value)
             entry.bind("<Return>", lambda event: self._save_cfg())
             entry.bind("<FocusOut>", lambda event: self._save_cfg())

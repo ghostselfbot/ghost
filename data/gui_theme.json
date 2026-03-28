@@ -183,6 +183,29 @@
 					"active": "#141c26"
 				}
 			}
+		},
+		{
+			"light": {
+				"type": "light",
+				"colors": {
+					"primary": "#433dfb",
+					"secondary": "#f1f3f6",
+					"success": "#0abf34",
+					"info": "#2b6eff",
+					"warning": "#f39c12",
+					"danger": "#ff341f",
+					"light": "#ADB5BD",
+					"dark": "#f8f8f8",
+					"bg": "#ffffff",
+					"fg": "#000000",
+					"selectbg": "#c0c0c0",
+					"selectfg": "#000000",
+					"border": "#dcdcdc",
+					"inputfg": "#000000",
+					"inputbg": "#f5f5f5",
+					"active": "#e0e0e0"
+				}
+			}
 		}
 	]
 }

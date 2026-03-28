@@ -1,7 +1,7 @@
 import os, sys
 import ttkbootstrap as ttk
 
-from gui.helpers import layout
+from gui.helpers import layout, Style
 from gui.components import RoundedFrame, RoundedButton
 from utils.files import resource_path
 from utils.fonts import load_fonts, get_fonts
@@ -53,7 +53,7 @@ class FontCheckGUI:
         fonts_list_scrollable.config(
             border=0,
             background=self.root.style.colors.get("secondary"),
-            foreground="lightgrey",
+            foreground=Style.LIGHT_GREY.value,
             highlightcolor=self.root.style.colors.get("secondary"),
             highlightbackground=self.root.style.colors.get("secondary"),
         )

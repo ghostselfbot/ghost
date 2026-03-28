@@ -6,7 +6,7 @@ if sys.platform == "win32":
 
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame
-from gui.helpers.style import Style
+from gui.helpers.style import Style, get_current_theme_str
 
 class Titlebar:
     def __init__(self, root, images):
@@ -110,14 +110,14 @@ class Titlebar:
             close_btn.bind("<Enter>", lambda e: close_btn.configure(foreground="#CC4940"))
             close_btn.bind("<Leave>", lambda e: close_btn.configure(foreground="#FF5F57"))
             
-            minimize_btn = ttk.Label(inner_wrapper, text="●", foreground=Style.MAC_TITLEBAR_INACTIVE.value, font=("Arial", 28))
+            minimize_btn = ttk.Label(inner_wrapper, text="●", foreground=Style.MAC_TITLEBAR_INACTIVE.value, font=("Arial", 28 if get_current_theme_str() == "dark" else 25))
             minimize_btn.configure(background=Style.WINDOW_BORDER.value)
             minimize_btn.pack(side=ttk.LEFT, padx=(0, 0))
             # minimize_btn.bind("<Button-1>", lambda e: self._minimize())
             # minimize_btn.bind("<Enter>", lambda e: minimize_btn.configure(foreground="#CC9A26"))
             # minimize_btn.bind("<Leave>", lambda e: minimize_btn.configure(foreground="#FFBD2E"))
             
-            maximize_btn = ttk.Label(inner_wrapper, text="●", foreground=Style.MAC_TITLEBAR_INACTIVE.value, font=("Arial", 28))
+            maximize_btn = ttk.Label(inner_wrapper, text="●", foreground=Style.MAC_TITLEBAR_INACTIVE.value, font=("Arial", 28 if get_current_theme_str() == "dark" else 25))
             maximize_btn.configure(background=Style.WINDOW_BORDER.value)
             maximize_btn.pack(side=ttk.LEFT, padx=(0, 5))
             # maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#20A833"))

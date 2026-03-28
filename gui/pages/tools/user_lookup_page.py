@@ -1,6 +1,7 @@
 import sys
 import ttkbootstrap as ttk
 from gui.components import RoundedFrame, ToolPage
+from gui.helpers import Style
 
 class UserLookupPage(ToolPage):
     def __init__(self, toolspage, root, bot_controller, images, layout):
@@ -80,7 +81,7 @@ class UserLookupPage(ToolPage):
                 bot_tag.grid(row=0, column=2, sticky=ttk.W)
 
             username = ttk.Label(user_info_wrapper, text=f"@{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
-            username.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
+            username.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
             username.grid(row=1, column=1, sticky=ttk.W)
             
             user_id = ttk.Label(user_info_wrapper, text=f"ID: {self.user.id}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))

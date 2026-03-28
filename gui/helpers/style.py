@@ -146,6 +146,21 @@ BLUE_THEME = {
     "TOOL_HOVER": "#16202b"
 }
 
+LIGHT_THEME = {
+    "WINDOW_BORDER": "#f8f8f8",
+    "SIDEBAR_SELECTED": "#e6e6e6",
+    "ENTRY_BG": "#ececec",
+    "ENTRY_FG": "#000000",
+    "SETTINGS_PILL_HOVER": "#e8e8e8",
+    "SETTINGS_PILL_SELECTED": "#ededed",
+    "DROPDOWN_OPTION_HOVER": "#e8e8e8",
+    "DARK_GREY": "#121212",
+    "LIGHT_GREY": "#232323",
+    "PRIMARY_BTN_HOVER": "#6a64fb",
+    "MAC_TITLEBAR_INACTIVE": "#c0c0c0",
+    "TOOL_HOVER": "#f5f5f5"
+}
+
 themes = {
     "dark": {
         "style": DARK_THEME,
@@ -179,6 +194,10 @@ themes = {
         "style": PURPLE_THEME,
         "ttk_theme": "purple"
     },
+    "light": {
+        "style": LIGHT_THEME,
+        "ttk_theme": "light"
+    }
 }
 
 def get_current_theme_str():

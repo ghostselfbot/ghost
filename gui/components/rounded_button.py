@@ -6,7 +6,7 @@ class RoundedButton(ttk.Canvas):
     def __init__(self, parent, radius=(8, 8, 8, 8), text=None, image=None, command=None, **kwargs):
         canvas_kwargs = {}
         for key in kwargs:
-            if key not in ["padx", "pady", "bootstyle", "style"]:
+            if key not in ["padx", "pady", "bootstyle", "style", "foreground", "font"]:
                 canvas_kwargs[key] = kwargs[key]
         super().__init__(parent, highlightthickness=0, bd=0, **canvas_kwargs)
         
@@ -19,6 +19,7 @@ class RoundedButton(ttk.Canvas):
         self.pady = kwargs.get("pady", 0 if sys.platform != "darwin" else 1)
         self.state = "normal"
         self.command = command
+        self.foreground = kwargs.get("foreground") or self.style.lookup(bootstyle, "foreground") or "#ffffff"
 
         self.configure(background=self._get_parent_background())
 
@@ -30,7 +31,7 @@ class RoundedButton(ttk.Canvas):
         self.frame.pack(fill=ttk.BOTH)
 
         # Create the label inside the rounded frame
-        self.button = ttk.Label(self.frame, text=text, image=image, style=bootstyle, anchor="center", borderwidth=0, relief="flat", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13) if not kwargs.get("font") else kwargs.get("font"))
+        self.button = ttk.Label(self.frame, text=text, image=image, style=bootstyle, anchor="center", borderwidth=0, relief="flat", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13) if not kwargs.get("font") else kwargs.get("font"), foreground=self.foreground)
         self.button.pack(fill=ttk.BOTH, expand=True, padx=self.padx, pady=self.pady)
 
         # Bind events for clicking

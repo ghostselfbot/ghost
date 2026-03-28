@@ -5,7 +5,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.dialogs import Messagebox
 from gui.components import RoundedFrame
-from gui.helpers.style import Style
+from gui.helpers.style import Style, get_current_theme_str
 
 # Uncomment the below to enable the dedicated script page.
 # Please be aware this is a work in progress and the current state of the page is laggy and sometimes unresponsive.
@@ -147,16 +147,16 @@ class ScriptsPage:
         def on_focus_in(event):
             if self.search_entry.get() == placeholder_text:
                 self.search_entry.delete(0, ttk.END)
-                self.search_entry.configure(foreground="white")
+                self.search_entry.configure(foreground=self.root.style.colors.get("fg"))
                 
         def on_focus_out(event):
             if self.search_entry.get() == "":
                 self.search_entry.insert(0, placeholder_text)
-                self.search_entry.configure(foreground="grey")
+                self.search_entry.configure(foreground=Style.LIGHT_GREY.value)
         
         self.search_entry = ttk.Entry(entry_wrapper, bootstyle="secondary.TFrame", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
-        self.search_entry.configure(foreground="grey")
+        self.search_entry.configure(foreground=Style.LIGHT_GREY.value)
         self.search_entry.insert(0, placeholder_text)
         self.search_entry.bind("<FocusIn>", on_focus_in)
         self.search_entry.bind("<FocusOut>", on_focus_out)
@@ -208,7 +208,11 @@ class ScriptsPage:
         wrapper.bind("<Enter>", _hover_enter)
         wrapper.bind("<Leave>", _hover_leave)
         
-        plus_button = ttk.Label(wrapper, image=self.images.get("plus"), style="primary")
+        self.plus_button_image = self.images.get("plus")
+        if get_current_theme_str() == "light":
+            self.plus_button_image = self.images.change_image_colour("plus", "#ffffff", tk_image=True)
+        
+        plus_button = ttk.Label(wrapper, image=self.plus_button_image, style="primary")
         plus_button.configure(background=self.root.style.colors.get("primary"))
         plus_button.pack(side=ttk.LEFT, padx=15, pady=14)
         plus_button.bind("<Button-1>", lambda e: self._create_script())

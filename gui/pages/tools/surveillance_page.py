@@ -5,7 +5,7 @@ from ttkbootstrap.tableview import Tableview
 from gui.components import ToolPage, RoundedFrame, RoundedButton
 from utils.console import get_formatted_time
 from utils.files import open_path_in_explorer, get_data_path
-from gui.helpers.style import Style
+from gui.helpers.style import Style, get_current_theme_str
 
 class SurveillancePage(ToolPage):
     def __init__(self, toolspage, root, bot_controller, images, layout):
@@ -84,9 +84,9 @@ class SurveillancePage(ToolPage):
     def _configure_start_stop_button(self, running):
         try:
             if running:
-                self.start_stop_button.configure(image=self.images.get("stop"), bootstyle="danger")
+                self.start_stop_button.configure(image=self.stop_button_image, bootstyle="danger")
             else:
-                self.start_stop_button.configure(image=self.images.get("play"), bootstyle="primary")
+                self.start_stop_button.configure(image=self.play_button_image, bootstyle="primary")
         except Exception as e:
             print(f"Error configuring start/stop button: {e}")
                 
@@ -124,6 +124,11 @@ class SurveillancePage(ToolPage):
             print(f"Error resetting search entry: {e}")
             
     def _disable_reset_button(self):
+        if self.reset_button_image:
+            if get_current_theme_str() == "light":
+                self.reset_button_image = self.images.change_image_colour("reset", "#000000", tk_image=True)
+                self.reset_button.configure(image=self.reset_button_image)
+        
         self.reset_button_disabled = True
         try:
             if hasattr(self, 'reset_button_wrapper') and self.reset_button_wrapper:
@@ -134,6 +139,11 @@ class SurveillancePage(ToolPage):
             print(f"Error disabling reset button: {e}")
 
     def _enable_reset_button(self):
+        if self.reset_button_image:
+            if get_current_theme_str() == "light":
+                self.reset_button_image = self.images.change_image_colour("reset", "#ffffff", tk_image=True)
+                self.reset_button.configure(image=self.reset_button_image)
+        
         self.reset_button_disabled = False
         try:
             if hasattr(self, 'reset_button_wrapper') and self.reset_button_wrapper:
@@ -201,7 +211,13 @@ class SurveillancePage(ToolPage):
         wrapper.bind("<Leave>", _hover_leave)
         wrapper.bind("<Button-1>", lambda e: self._toggle_surveillance())
         
-        self.start_stop_button = ttk.Label(wrapper, image=self.images.get("play"), style="primary")
+        self.play_button_image = self.images.get("play")
+        self.stop_button_image = self.images.get("stop")
+        if get_current_theme_str() == "light":
+            self.play_button_image = self.images.change_image_colour("play", "#ffffff", tk_image=True)
+            self.stop_button_image = self.images.change_image_colour("stop", "#ffffff", tk_image=True)
+        
+        self.start_stop_button = ttk.Label(wrapper, image=self.play_button_image, style="primary")
         self.start_stop_button.configure(background=self.root.style.colors.get("primary"))
         self.start_stop_button.pack(side=ttk.LEFT, padx=15, pady=14)
         self.start_stop_button.bind("<Button-1>", lambda e: self._toggle_surveillance())
@@ -228,7 +244,11 @@ class SurveillancePage(ToolPage):
         self.reset_button_wrapper.bind("<Enter>", _hover_enter)
         self.reset_button_wrapper.bind("<Leave>", _hover_leave)
         
-        self.reset_button = ttk.Label(self.reset_button_wrapper, image=self.images.get("reset"), style="danger" if not self.reset_button_disabled else "dark")
+        self.reset_button_image = self.images.get("reset")
+        if not self.reset_button_disabled and get_current_theme_str() == "light":
+            self.reset_button_image = self.images.change_image_colour("reset", "#ffffff", tk_image=True)
+        
+        self.reset_button = ttk.Label(self.reset_button_wrapper, image=self.reset_button_image, style="danger" if not self.reset_button_disabled else "dark")
         self.reset_button.configure(background=self.root.style.colors.get("danger") if not self.reset_button_disabled else self.root.style.colors.get("dark"))
         self.reset_button.pack(side=ttk.LEFT, padx=15, pady=14)
         self.reset_button.bind("<Button-1>", _reset)
@@ -288,12 +308,12 @@ class SurveillancePage(ToolPage):
         def on_focus_in(event):
             if self.search_entry.get() == self.search_placeholder_text:
                 self.search_entry.delete(0, ttk.END)
-                self.search_entry.configure(foreground="white")
+                self.search_entry.configure(foreground=self.root.style.colors.get("fg"))
 
         def on_focus_out(event):
             if self.search_entry.get() == "":
                 self.search_entry.insert(0, self.search_placeholder_text)
-                self.search_entry.configure(foreground="grey")
+                self.search_entry.configure(foreground=Style.LIGHT_GREY.value)
 
         self.search_var = ttk.StringVar()
         self.search_var.trace_add("write", lambda *args: self._on_search_change())
@@ -307,7 +327,7 @@ class SurveillancePage(ToolPage):
         self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
 
         self.search_entry.insert(0, self.search_placeholder_text)
-        self.search_entry.configure(foreground="grey")
+        self.search_entry.configure(foreground=Style.LIGHT_GREY.value)
         self.search_entry.bind("<FocusIn>", on_focus_in)
         self.search_entry.bind("<FocusOut>", on_focus_out)
 

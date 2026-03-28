@@ -108,7 +108,7 @@ class Console:
         self.textarea.config(
             border=0,
             background=self.root.style.colors.get("dark"),
-            foreground="lightgrey",
+            foreground=Style.LIGHT_GREY.value,
             highlightcolor=self.root.style.colors.get("dark"),
             highlightbackground=self.root.style.colors.get("dark"),
             state="normal"

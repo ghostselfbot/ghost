@@ -5,6 +5,7 @@ import ttkbootstrap as ttk
 import discord
 
 from gui.components import RoundedFrame
+from gui.helpers import Style
 import tkinter.font as tkFont
 
 class MessageLogEntry:
@@ -89,7 +90,7 @@ class MessageLogEntry:
                 text=formatted_time,
                 font=("Host Grotesk", 8 if sys.platform != "darwin" else 10)
             )
-            time_label.configure(background=self.root.style.colors.get("secondary"), foreground="lightgrey")
+            time_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
             time_label.pack(side=ttk.LEFT, padx=(5, 0), pady=(2, 0))
 
             # Channel info
@@ -103,7 +104,7 @@ class MessageLogEntry:
                 text=channel_label_text,
                 font=("Host Grotesk", 8 if sys.platform != "darwin" else 10, "italic")
             )
-            channel_label.configure(background=self.root.style.colors.get("secondary"), foreground="lightgrey")
+            channel_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
             channel_label.pack(fill=ttk.X, pady=(0, 8))
 
             self.content_label = ttk.Text(content_frame, font=("Host Grotesk", 10 if sys.platform != "darwin" else 12), wrap="word", state="normal")
@@ -132,7 +133,7 @@ class MessageLogEntry:
                     text=f"📎 {len(self.message.attachments)} attachment(s)",
                     font=("Host Grotesk", 9, "italic")
                 )
-                attachments_label.configure(background=self.root.style.colors.get("secondary"), foreground="lightgrey")
+                attachments_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
                 attachments_label.pack(fill=ttk.X, pady=(4, 0))
 
             self.frame.bind("<Button-1>", self.on_click)

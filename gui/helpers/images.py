@@ -1,4 +1,4 @@
-from PIL import Image, ImageTk, ImageFilter, ImageEnhance
+from PIL import Image, ImageOps, ImageTk, ImageFilter, ImageEnhance
 import os, sys
 import threading
 import requests
@@ -7,6 +7,7 @@ import requests
 from io import BytesIO
 from collections import Counter
 from bot.helpers import imgembed
+from .style import get_current_theme_str
 
 def resize_and_sharpen(image, size):
     try:
@@ -46,6 +47,7 @@ class Images:
     def _init_images(self):        
         self.images = {}
         self.original_images = {}
+        self.inverted_images = {}
         
         self._url_image_cache = {}        # (url, size, radius) -> PhotoImage
         self._url_color_cache = {}        # url -> hex colour
@@ -135,8 +137,10 @@ class Images:
                 original_image = Image.open(image_path)
                 original_image.info["dpi"] = (300, 300)
                 sharpened_image = resize_and_sharpen(original_image, size)
+                inverted_image = self.change_image_colour(sharpened_image, "#000000")
                 self.images[key] = ImageTk.PhotoImage(sharpened_image)
                 self.original_images[key] = sharpened_image
+                self.inverted_images[key] = ImageTk.PhotoImage(inverted_image)
             else:
                 print(f"Warning: Image file '{image_path}' not found.")
 
@@ -144,7 +148,15 @@ class Images:
         hex_colour = hex_colour.lstrip('#')
         return tuple(int(hex_colour[i:i+2], 16) for i in (0, 2, 4))
 
-    def change_image_colour(self, image, hex_colour):
+    def change_image_colour(self, image, hex_colour, tk_image=False):
+        if isinstance(image, str):
+            # find it in original images
+            if image in self.original_images:
+                image = self.original_images[image]
+            else:
+                print(f"Warning: Image key '{image}' not found in original images.")
+                return None
+        
         rgb_colour = self.hex_to_rgb(hex_colour)
         image = image.convert("RGBA")
         data = image.getdata()
@@ -157,6 +169,9 @@ class Images:
         ]
 
         image.putdata(new_data)
+        
+        if tk_image:
+            return ImageTk.PhotoImage(image)
         return image
 
     def get(self, key, hover_colour=None):
@@ -167,7 +182,8 @@ class Images:
             image = self.change_image_colour(self.original_images[key], hover_colour)
             return ImageTk.PhotoImage(image)
 
-        return self.images.get(key)
+        images = self.inverted_images if get_current_theme_str() == "light" else self.images
+        return images.get(key)
 
     def get_majority_color_from_url(self, image_url: str) -> str:
         with self._url_lock:

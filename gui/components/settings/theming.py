@@ -3,7 +3,7 @@ import ttkbootstrap as ttk
 import utils.console as console
 from utils.files import open_path_in_explorer, get_themes_path
 from gui.components import SettingsPanel, RoundedButton, RoundedFrame, DropdownMenu
-from gui.helpers.style import Style
+from gui.helpers.style import Style, get_current_theme_str
 
 class ThemingPanel(SettingsPanel):
     def __init__(self, root, parent, images, config, width=None, bot_controller=None):
@@ -205,6 +205,7 @@ There are 166 commands!""", font=("Host Grotesk", 12))
         create_label.configure(background=self.root.style.colors.get("dark"))
         
         self.create_entry = ttk.Entry(wrapper, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.create_entry.configure(foreground=self.root.style.colors.get("fg"))
         self.create_entry.grid(row=1, column=0, sticky="we", padx=(10, 5), pady=(10, 0))
         self.create_entry.bind("<KeyRelease>", lambda e: self.toggle_create_theme_button(self.create_entry.get().strip() != ""))
         
@@ -233,6 +234,7 @@ There are 166 commands!""", font=("Host Grotesk", 12))
             row = start_row + (index * 2)
 
             entry = ttk.Entry(wrapper, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+            entry.configure(foreground=self.root.style.colors.get("fg"))
             entry.insert(0, value)
 
             label = ttk.Label(
@@ -264,9 +266,9 @@ There are 166 commands!""", font=("Host Grotesk", 12))
         buttons_frame.grid_columnconfigure(0, weight=1)
         
         save_theme_label = ttk.Label(buttons_frame, text="Remember to save your changes!", font=("Host Grotesk", 12, "italic"))
-        save_theme_label.configure(background=self.root.style.colors.get("dark"), foreground="#cccccc")
-        save_theme_button = RoundedButton(buttons_frame, text="Save", style="success.TButton", command=self._save_theme)
-        delete_theme_button = RoundedButton(buttons_frame, text="Delete", style="danger.TButton", command=self._delete_theme)
+        save_theme_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
+        save_theme_button = RoundedButton(buttons_frame, text="Save", style="success.TButton", command=self._save_theme, foreground="#ffffff")
+        delete_theme_button = RoundedButton(buttons_frame, text="Delete", style="danger.TButton", command=self._delete_theme, foreground="#ffffff")
         # open_folder_button = RoundedButton(buttons_frame, image=self.images.get("folder-open"), style="secondary.TButton", command=lambda _: open_path_in_explorer(get_themes_path()))
         open_folder_button = self._draw_open_folder_button(buttons_frame)
 

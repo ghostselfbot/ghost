@@ -1,7 +1,9 @@
 import sys
 import ttkbootstrap as ttk
+from gui.helpers.style import get_current_theme_str
 import utils.console as console
 from gui.components import SettingsPanel, RoundedButton, RoundedFrame
+from gui.helpers import Style
 
 class RichPresencePanel(SettingsPanel):
     def __init__(self, root, parent, images, config, width=None, bot_controller=None):
@@ -188,7 +190,7 @@ class RichPresencePanel(SettingsPanel):
             display_name.place(relx=0, rely=0)
             
             username = ttk.Label(user_info_wrapper, text=f"{self.user.name}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
-            username.configure(background=self.root.style.colors.get("dark"), foreground="lightgrey")
+            username.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
             username.place(relx=0, rely=0.42 if sys.platform == "darwin" else 0.45)
             
             self._draw_preview(wrapper)
@@ -244,6 +246,7 @@ class RichPresencePanel(SettingsPanel):
                 )
                 entry.insert(0, rpc_value)
 
+            entry.configure(foreground=self.root.style.colors.get("fg"))
             entry.bind("<Return>", lambda event: self._save_rpc())
             entry.bind("<FocusOut>", lambda event: self._save_rpc())
                 
@@ -257,14 +260,14 @@ class RichPresencePanel(SettingsPanel):
             self.rpc_tk_entries[key] = entry
             
         save_label = ttk.Label(self.body, text="A restart is required to apply changes!", font=("Host Grotesk", 12, "italic"))
-        save_label.configure(background=self.root.style.colors.get("dark"), foreground="#cccccc")
+        save_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         save_label.grid(row=len(self.rpc_entries) + 1, column=0, columnspan=2, sticky=ttk.W, padx=(10, 0), pady=10)
         
         # save_rpc_button = ttk.Button(self.body, text="Save", style="success.TButton", command=self._save_rpc)
         # save_rpc_button.grid(row=len(self.rpc_entries) + 1, column=2, sticky=ttk.E, pady=10)
         
         # reset_rpc_button = ttk.Button(self.body, text="Reset", style="danger.TButton", command=self._reset_rpc)
-        reset_rpc_button = RoundedButton(self.body, text="Reset", style="danger.TButton", command=self._reset_rpc)
+        reset_rpc_button = RoundedButton(self.body, text="Reset", style="danger.TButton", command=self._reset_rpc, foreground="#ffffff")
         reset_rpc_button.grid(row=len(self.rpc_entries) + 1, column=3, sticky=ttk.E, padx=(5, 11), pady=10)
         
         self._update_preview()
