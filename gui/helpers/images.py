@@ -249,7 +249,17 @@ class Images:
                     self._url_bytes_cache[image_url] = content
 
             image = Image.open(BytesIO(content)).convert("RGBA")
-            image = resize_and_sharpen(image, size)
+
+            if isinstance(size, int):
+                target_width = size
+            else:
+                target_width = size[0]
+                
+            w, h = image.size
+            aspect_ratio = h / w
+            new_height = int(target_width * aspect_ratio)
+
+            image = resize_and_sharpen(image, (target_width, new_height))
 
             if radius > 0:
                 image = imgembed.add_corners(image, radius)

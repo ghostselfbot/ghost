@@ -95,7 +95,7 @@ class ThemingPanel(SettingsPanel):
             setattr(self.cfg.theme, key, value)
 
         try:
-            self.embed_image = self.bot_controller.get_avatar_from_url(self.cfg.theme.image, size=70, radius=5)
+            self.embed_image = self.images.load_image_from_url(self.cfg.theme.image, size=70, radius=5)
         except Exception:
             self.embed_image = None
 
@@ -191,7 +191,7 @@ There are 166 commands!""", font=("Host Grotesk", 12))
             self.user_avatar = self.bot_controller.get_avatar_from_url(avatar_url, size=40, radius=40//2)
         
         try:
-            self.embed_image = self.bot_controller.get_avatar_from_url(self.cfg.theme.image, size=70, radius=5)
+            self.embed_image = self.images.load_image_from_url(self.cfg.theme.image, size=70, radius=5)
         except Exception as e:
             print(f"Failed to load embed image: {e}")
             self.embed_image = None

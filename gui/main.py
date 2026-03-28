@@ -119,7 +119,7 @@ class GhostGUI:
         try:
             for theme in self.cfg.get_themes():
                 if theme.image:
-                    self.bot_controller.get_avatar_from_url(theme.image, size=70, radius=5)
+                    self.images.load_image_from_url(theme.image, size=70, radius=5)
         except Exception as e:
             print(f"Error pre-loading theme images: {e}")
         
