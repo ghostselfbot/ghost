@@ -3,6 +3,7 @@ import sys
 import certifi
 import multiprocessing
 
+sys.setrecursionlimit(10000)
 os.environ["SSL_CERT_FILE"] = certifi.where()
 
 HEADLESS = "DISPLAY" not in os.environ and sys.platform == "linux"
