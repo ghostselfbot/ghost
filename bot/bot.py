@@ -197,15 +197,23 @@ class Ghost(commands.Bot):
                 await self.add_cog(cog(self))
 
     async def on_command(self, ctx):
+        command = ctx.message.content[len(self.command_prefix):]
+        console.print_cmd(command)
+        self.cfg.add_command_history(command)
+        
         if self.cfg.get("message_settings")["edit_og"] == False or self.cfg.get("message_settings")["style"].lower() not in ["codeblock", "embed"]:
             try:
                 await ctx.message.delete()
             except Exception as e:
                 console.print_error(str(e))
-
-        command = ctx.message.content[len(self.command_prefix):]
-        console.print_cmd(command)
-        self.cfg.add_command_history(command)
+        else:
+            await asyncio.sleep(self.latency)
+            try:
+                msg = await ctx.channel.fetch_message(ctx.message.id)
+                if "benny.fun/api/embed" not in msg.content:
+                    await msg.delete()
+            except Exception as e:
+                console.print_error(str(e))
 
     async def on_command_error(self, ctx, error):
         console.print_error(str(error))
@@ -225,28 +233,28 @@ class Ghost(commands.Bot):
         except Exception as e:
             console.print_error(f"{e}")
             
-    # async def on_message(self, message):
-    #     if message.author.id in self.allowed_users:
-    #         if message.content.startswith(self.command_prefix):
-    #             context = await self.get_context(message)
-    #             command = message.content[len(self.command_prefix):]
-    #             cmd = self.get_command(command.split()[0])
+    async def on_message(self, message):
+        # if message.author.id in self.allowed_users:
+        #     if message.content.startswith(self.command_prefix):
+        #         context = await self.get_context(message)
+        #         command = message.content[len(self.command_prefix):]
+        #         cmd = self.get_command(command.split()[0])
                 
-    #             if cmd:
-    #                 if cmd.cog_name.lower() not in self.allowed_cogs:
-    #                     await cmdhelper.send_message(context, {
-    #                         "title": "Error",
-    #                         "description": "You don't have permission to use this command.",
-    #                         "colour": "#ff0000"
-    #                     })
+        #         if cmd:
+        #             if cmd.cog_name.lower() not in self.allowed_cogs:
+        #                 await cmdhelper.send_message(context, {
+        #                     "title": "Error",
+        #                     "description": "You don't have permission to use this command.",
+        #                     "colour": "#ff0000"
+        #                 })
                         
-    #                 else:
-    #                     if command.lower().startswith("help"):
-    #                         await cmd.__call__(context, *command.split()[1:], shared=True)
-    #                     else:
-    #                         await cmd.__call__(context, *command.split()[1:])
+        #             else:
+        #                 if command.lower().startswith("help"):
+        #                     await cmd.__call__(context, *command.split()[1:], shared=True)
+        #                 else:
+        #                     await cmd.__call__(context, *command.split()[1:])
                         
-    #     await self.process_commands(message)
+        await self.process_commands(message)
             
     async def on_message_delete(self, message):
         if message.author.id == self.user.id:
