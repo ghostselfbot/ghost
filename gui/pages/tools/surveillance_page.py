@@ -295,7 +295,7 @@ class SurveillancePage(ToolPage):
         
         download_icon = ttk.Label(download_button, image=self.images.get("download"), style="dark")
         download_icon.configure(background=self.root.style.colors.get("dark"))
-        download_icon.pack(side=ttk.LEFT, padx=15, pady=14)
+        download_icon.pack(side=ttk.LEFT, padx=(15), pady=14)
         download_icon.bind("<Button-1>", lambda e: self._download_data())
         download_icon.bind("<Enter>", lambda e: _hover_enter(e))
         download_icon.bind("<Leave>", lambda e: _hover_leave(e))
@@ -347,10 +347,10 @@ class SurveillancePage(ToolPage):
         start_stop_button.grid(row=0, column=1, sticky=ttk.E)
         
         reset_button = self._draw_reset_button(header)
-        reset_button.grid(row=0, column=2, sticky=ttk.E, padx=(5, 0))
+        reset_button.grid(row=0, column=2, sticky=ttk.E, padx=(5, 5))
         
         download_button = self._draw_download_button(header)
-        download_button.grid(row=0, column=3, sticky=ttk.E, padx=(5, 10))
+        download_button.grid(row=0, column=3, sticky=ttk.E)
         
         header.grid_columnconfigure(0, weight=1)
         
