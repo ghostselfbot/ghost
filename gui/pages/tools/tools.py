@@ -5,6 +5,7 @@ from gui.components import RoundedFrame
 from gui.pages.tools.surveillance_page import SurveillancePage
 from gui.pages.tools.message_logger_page import MessageLoggerPage
 from gui.pages.tools.user_lookup_page import UserLookupPage
+from gui.pages.tools.password_gen import PasswordGenPage
 from gui.helpers.style import Style
 
 class ToolsPage:
@@ -19,6 +20,7 @@ class ToolsPage:
         self.surveillance_page = SurveillancePage(self, root, bot_controller, images, layout)
         self.message_logger_page = MessageLoggerPage(self, root, bot_controller, images, layout)
         self.user_lookup_page = UserLookupPage(self, root, bot_controller, images, layout)
+        self.password_gen_page = PasswordGenPage(self, root, bot_controller, images, layout)
         
         self.pages = [
             {
@@ -33,6 +35,12 @@ class ToolsPage:
                 "page": self.message_logger_page,
                 "command": self.draw_message_logger
             },
+            {
+                "name": "Password Generator",
+                "description": "Generate strong, random passwords with customizable options",
+                "page": self.password_gen_page,
+                "command": self.draw_password_gen
+            }
             # {
             #     "name": "User Lookup",
             #     "description": "Look up information about a user by their ID",
@@ -40,6 +48,14 @@ class ToolsPage:
             #     "command": self.draw_user_lookup
             # }
         ]
+        
+    def draw_password_gen(self):
+        self.layout.sidebar.set_current_page("tools")
+        self.layout.clear()
+        main = self.layout.main()
+        self.password_gen_page.draw(main)
+        self.layout.sidebar.set_button_command("tools", self.draw_password_gen)
+        self.position_resize_grips()
         
     def draw_surveillance(self):
         self.layout.sidebar.set_current_page("tools")
