@@ -304,6 +304,35 @@ class Util(commands.Cog):
         cfg.save()
         await self.restart(ctx, no_response=True)
 
+    @commands.command(name="st", description="Toggle silent typing.", usage="", aliases=["silenttype", "silenttyping"])
+    async def st(self, ctx):
+        from utils import typing_blocker
+
+        cfg = self.cfg
+        current = cfg.get("message_settings").get("silent_typing", False)
+        new_val = not current
+
+        cfg.set("message_settings.silent_typing", new_val)
+        cfg.save()
+
+        typing_blocker.set_enabled(new_val)
+
+        status = "enabled" if new_val else "disabled"
+        desc = f"Silent typing {status}"
+
+        if not typing_blocker.is_injected():
+            success, msg = typing_blocker.inject()
+            if success:
+                desc += "\nRestart Discord for injection to take effect."
+            else:
+                desc += f"\nInjection failed: {msg}"
+
+        await cmdhelper.send_message(ctx, {
+            "title": "Silent Typing",
+            "description": desc,
+            "colour": "#00ff00" if new_val else "#ff0000"
+        })
+
     @commands.command(name="uptime", description="View the bot's uptime", usage="")
     async def uptime(self, ctx):
         uptime = time.time() - self.bot.start_time
