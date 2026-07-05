@@ -6,7 +6,8 @@ import multiprocessing
 sys.setrecursionlimit(10000)
 os.environ["SSL_CERT_FILE"] = certifi.where()
 
-HEADLESS = "DISPLAY" not in os.environ and sys.platform == "linux"
+# HEADLESS = "DISPLAY" not in os.environ and sys.platform == "linux"
+HEADLESS = True if sys.platform == "linux" else False
 
 if sys.platform == "darwin":
     multiprocessing.set_start_method("fork", force=True)
