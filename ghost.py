@@ -7,7 +7,8 @@ sys.setrecursionlimit(10000)
 os.environ["SSL_CERT_FILE"] = certifi.where()
 
 # HEADLESS = "DISPLAY" not in os.environ and sys.platform == "linux"
-HEADLESS = True if sys.platform == "linux" else False
+# HEADLESS = True if sys.platform == "linux" else False
+HEADLESS = True
 
 if sys.platform == "darwin":
     multiprocessing.set_start_method("fork", force=True)
@@ -45,10 +46,11 @@ def run_cli():
     controller.start()
 
     try:
-        while True:
-            pass
+        controller.join()
     except KeyboardInterrupt:
         console.info("Exiting.")
+        controller.stop()
+        controller.join()
 
 def main():
     get_application_support()

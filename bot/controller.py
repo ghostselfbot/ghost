@@ -126,6 +126,11 @@ class BotController:
         self.stop()
         threading.Timer(3, self.start).start()  # Non-blocking delay before restart
 
+    def join(self):
+        if self.loop:
+            while self.running:
+                time.sleep(1)
+
     def check_setup_webhooks(self):
         if os.path.exists(files.get_application_support() + "/data/cache/CREATE_WEBHOOKS"):
             with open(files.get_application_support() + "/data/cache/CREATE_WEBHOOKS", "r") as f:
