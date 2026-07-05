@@ -1,5 +1,6 @@
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from ttkbootstrap.scrolled import ScrolledFrame
 from gui.components import RoundedFrame
 from gui.helpers.style import Style
@@ -38,7 +39,7 @@ class Layout:
                 radius=(0, 0, 25, 0),  # ALL corners here
                 background=Style.WINDOW_BORDER.value
             )
-            border.pack(fill=ttk.BOTH, expand=True)
+            border.pack(fill=BOTH, expand=True)
 
             outer = RoundedFrame(
                 border,
@@ -46,7 +47,7 @@ class Layout:
                 background=self.root.style.colors.get("bg")
             )
             outer.pack(
-                fill=ttk.BOTH,
+                fill=BOTH,
                 expand=True,
                 padx=(0, 8),
                 pady=(0, 8)
@@ -57,7 +58,7 @@ class Layout:
                 outer,
                 style="TFrame"
             )
-            safe.pack(fill=ttk.BOTH, expand=True, padx=15, pady=15)
+            safe.pack(fill=BOTH, expand=True, padx=15, pady=15)
 
             # INNER: scrolling container (optional)
             if scrollable:
@@ -66,7 +67,7 @@ class Layout:
                     width=width,
                     height=self.height
                 )
-                inner.pack(fill=ttk.BOTH, expand=True)
+                inner.pack(fill=BOTH, expand=True)
                 content_parent = inner
             else:
                 content_parent = safe
@@ -78,7 +79,7 @@ class Layout:
                 height=self.height
             )
             main.pack(
-                fill=ttk.BOTH,
+                fill=BOTH,
                 expand=True,
                 padx=(8, 22) if scrollable else padx,
                 pady=8 if scrollable else pady
@@ -89,13 +90,13 @@ class Layout:
             
             if scrollable:
                 wrapper = ScrolledFrame(self.root, width=width, height=self.height)
-                wrapper.pack(fill=ttk.BOTH, expand=True)
+                wrapper.pack(fill=BOTH, expand=True)
                 
                 # main = ttk.Frame(wrapper)
-                # main.pack(fill=ttk.BOTH, expand=True, padx=23, pady=23)
+                # main.pack(fill=BOTH, expand=True, padx=23, pady=23)
 
             main = ttk.Frame(wrapper, width=width, height=self.height)
-            main.pack(fill=ttk.BOTH, expand=True, padx=(23, 32) if scrollable else 25, pady=23 if scrollable else 25)
+            main.pack(fill=BOTH, expand=True, padx=(23, 32) if scrollable else 25, pady=23 if scrollable else 25)
 
         return main
     
@@ -113,10 +114,10 @@ class Layout:
 
         if sys.platform == "darwin" or sys.platform == "win32":
             titlebar = self.titlebar.draw()
-            titlebar.pack(fill=ttk.X, side=ttk.TOP)
+            titlebar.pack(fill=X, side=TOP)
 
         sidebar = self.sidebar.draw()
-        sidebar.pack(side=ttk.LEFT, fill=ttk.BOTH)
+        sidebar.pack(side=LEFT, fill=BOTH)
         
     hide_titlebar  = lambda self: self.root.overrideredirect(True) if sys.platform != "linux" else None
     show_titlebar  = lambda self: self.root.overrideredirect(False) if sys.platform != "linux" else None

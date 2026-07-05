@@ -1,5 +1,6 @@
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.components.rounded_frame import RoundedFrame
 from gui.helpers.images import Images
 from gui.helpers.style import Style
@@ -85,7 +86,7 @@ class Console:
         if self.avatar:
             avatar_label = ttk.Label(wrapper, image=self.avatar)
             avatar_label.configure(background=self.root.style.colors.get("secondary"))
-            avatar_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 5), pady=5)
+            avatar_label.grid(row=0, column=0, sticky=W, padx=(10, 5), pady=5)
         
         username = ttk.Label(wrapper, text=f"Logged in as {user.name}" if user else "Failed to get user info...", font=("Host Grotesk", 12, "italic"))
         username.configure(background=self.root.style.colors.get("secondary"))

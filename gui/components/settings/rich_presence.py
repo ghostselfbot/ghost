@@ -1,5 +1,6 @@
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.helpers.style import get_current_theme_str
 import utils.console as console
 from gui.components import SettingsPanel, RoundedButton, RoundedFrame
@@ -99,14 +100,14 @@ class RichPresencePanel(SettingsPanel):
 
             if details:
                 self.details_label.configure(text=details)
-                self.details_label.grid(row=row, column=0, sticky=ttk.W)
+                self.details_label.grid(row=row, column=0, sticky=W)
                 row += 1
             else:
                 self.details_label.grid_remove()
 
             if state:
                 self.state_label.configure(text=state)
-                self.state_label.grid(row=row, column=0, sticky=ttk.W)
+                self.state_label.grid(row=row, column=0, sticky=W)
                 row += 1
             else:
                 self.state_label.grid_remove()
@@ -122,11 +123,11 @@ class RichPresencePanel(SettingsPanel):
         
     def _draw_preview(self, parent):
         wrapper = RoundedFrame(parent, radius=15, background=self.root.style.colors.get("secondary"))
-        wrapper.pack(fill=ttk.X, expand=False, pady=(10, 0), padx=10)
+        wrapper.pack(fill=X, expand=False, pady=(10, 0), padx=10)
         
         playing_label = ttk.Label(wrapper, text="Playing", font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
         playing_label.configure(background=self.root.style.colors.get("secondary"))
-        playing_label.grid(row=0, column=0, sticky=ttk.W, padx=(5, 5), pady=(5, 0))
+        playing_label.grid(row=0, column=0, sticky=W, padx=(5, 5), pady=(5, 0))
         
         large_image = self.images.load_image_from_url(self.rpc.large_image if self.rpc.large_image else "https://www.ghostt.cc/assets/ghost.png", (64, 64), 5)
         self.large_image_label = ttk.Label(wrapper, image=large_image, background=self.root.style.colors.get("secondary"))
@@ -140,33 +141,33 @@ class RichPresencePanel(SettingsPanel):
         # self.small_image_label.lift() 
         
         details_wrapper = RoundedFrame(wrapper, radius=0, background=self.root.style.colors.get("secondary"))
-        details_wrapper.grid(row=1, column=1, sticky=ttk.W, padx=(0, 5), pady=5)
+        details_wrapper.grid(row=1, column=1, sticky=W, padx=(0, 5), pady=5)
         
         self.name_label = ttk.Label(details_wrapper, text=self.rpc.name or "Ghost", font=("Host Grotesk", 14, "bold"))
         self.name_label.configure(background=self.root.style.colors.get("secondary"))
-        self.name_label.grid(row=0, column=0, sticky=ttk.W)
+        self.name_label.grid(row=0, column=0, sticky=W)
         
         self.details_label = ttk.Label(details_wrapper, text=self.rpc.details or "", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.details_label.configure(background=self.root.style.colors.get("secondary"))
-        self.details_label.grid(row=1, column=0, sticky=ttk.W)
+        self.details_label.grid(row=1, column=0, sticky=W)
         
         self.state_label = ttk.Label(details_wrapper, text=self.rpc.state or "", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.state_label.configure(background=self.root.style.colors.get("secondary"))
-        self.state_label.grid(row=2, column=0, sticky=ttk.W)
+        self.state_label.grid(row=2, column=0, sticky=W)
         
         time_elapsed_label = ttk.Label(details_wrapper, text="00:15", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         time_elapsed_label.configure(foreground="#68ae7c", background=self.root.style.colors.get("secondary"))
-        time_elapsed_label.grid(row=3, column=0, sticky=ttk.W)
+        time_elapsed_label.grid(row=3, column=0, sticky=W)
         
     def _draw_user_wrapper(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame", custom_size=True)
         wrapper.set_width(225)
-        wrapper.grid(row=1, column=1, sticky=ttk.NSEW, padx=(10, 0))
+        wrapper.grid(row=1, column=1, sticky=NSEW, padx=(10, 0))
         
         if self.user_avatar:
             accent_colour_banner = RoundedFrame(wrapper, radius=(15, 15, 0, 0), background=self.user_banner_colour, parent_background=self.root.style.colors.get("bg"))
             accent_colour_banner.set_height(85)
-            accent_colour_banner.pack(side=ttk.TOP, fill=ttk.X)
+            accent_colour_banner.pack(side=TOP, fill=X)
             accent_colour_banner.columnconfigure(0, weight=1)
             
             avatar_label = ttk.Canvas(wrapper, width=100, height=200, background=self.user_banner_colour, highlightthickness=0)
@@ -182,7 +183,7 @@ class RichPresencePanel(SettingsPanel):
             
         if self.user:
             user_info_wrapper = ttk.Frame(wrapper, style="dark.TFrame")
-            user_info_wrapper.pack(side=ttk.TOP, fill=ttk.X, pady=(35, 0), padx=(10, 10))
+            user_info_wrapper.pack(side=TOP, fill=X, pady=(35, 0), padx=(10, 10))
             user_info_wrapper.configure(height=50)
             
             display_name = ttk.Label(user_info_wrapper, text=self.user.display_name, font=("Host Grotesk", 16 if sys.platform != "darwin" else 18, "bold"))
@@ -204,11 +205,11 @@ class RichPresencePanel(SettingsPanel):
         
         toggle_label = ttk.Label(toggle_wrapper, text="Enable Rich Presence")
         toggle_label.configure(background=self.root.style.colors.get("dark"))
-        toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
+        toggle_label.grid(row=0, column=0, sticky=W, padx=(10, 0), pady=10)
         toggle_label.bind("<Button-1>", lambda e: self.toggle_checkbox.invoke())
         
         self.toggle_checkbox = ttk.Checkbutton(toggle_wrapper, text="", style="success-round-toggle")
-        self.toggle_checkbox.grid(row=0, column=1, sticky=ttk.E, padx=(0, 10), pady=10)
+        self.toggle_checkbox.grid(row=0, column=1, sticky=E, padx=(0, 10), pady=10)
         self.toggle_checkbox.configure(command=self._save_rpc)
         
         toggle_wrapper.grid_columnconfigure(0, weight=1)
@@ -253,7 +254,7 @@ class RichPresencePanel(SettingsPanel):
             label = ttk.Label(self.body, text=value)
             label.configure(background=self.root.style.colors.get("dark"))
             
-            label.grid(row=index + 1, column=0, sticky=ttk.W, padx=padding[0], pady=(padding[1] + 8 if index == 1 else padding[1], padding[1]))
+            label.grid(row=index + 1, column=0, sticky=W, padx=padding[0], pady=(padding[1] + 8 if index == 1 else padding[1], padding[1]))
             entry.grid(row=index + 1, column=1, sticky="we", padx=padding[0], pady=(padding[1] + 8 if index == 1 else padding[1], padding[1]), columnspan=3)
             
             self.body.grid_columnconfigure(1, weight=1)
@@ -261,14 +262,14 @@ class RichPresencePanel(SettingsPanel):
             
         save_label = ttk.Label(self.body, text="A restart is required to apply changes!", font=("Host Grotesk", 12, "italic"))
         save_label.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
-        save_label.grid(row=len(self.rpc_entries) + 1, column=0, columnspan=2, sticky=ttk.W, padx=(10, 0), pady=10)
+        save_label.grid(row=len(self.rpc_entries) + 1, column=0, columnspan=2, sticky=W, padx=(10, 0), pady=10)
         
         # save_rpc_button = ttk.Button(self.body, text="Save", style="success.TButton", command=self._save_rpc)
-        # save_rpc_button.grid(row=len(self.rpc_entries) + 1, column=2, sticky=ttk.E, pady=10)
+        # save_rpc_button.grid(row=len(self.rpc_entries) + 1, column=2, sticky=E, pady=10)
         
         # reset_rpc_button = ttk.Button(self.body, text="Reset", style="danger.TButton", command=self._reset_rpc)
         reset_rpc_button = RoundedButton(self.body, text="Reset", style="danger.TButton", command=self._reset_rpc, foreground="#ffffff")
-        reset_rpc_button.grid(row=len(self.rpc_entries) + 1, column=3, sticky=ttk.E, padx=(5, 11), pady=10)
+        reset_rpc_button.grid(row=len(self.rpc_entries) + 1, column=3, sticky=E, padx=(5, 11), pady=10)
         
         self._update_preview()
         return self.wrapper

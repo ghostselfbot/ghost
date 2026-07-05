@@ -2,6 +2,7 @@ import sys
 import time
 import math
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 import discord
 
 from gui.components import RoundedFrame
@@ -49,15 +50,15 @@ class MessageLogEntry:
                 bootstyle="secondary.TFrame",
                 parent_background=self.root.style.colors.get("dark")
             )
-            self.frame.pack(fill=ttk.X, pady=(0, 8), padx=(0, 8), expand=True)
+            self.frame.pack(fill=X, pady=(0, 8), padx=(0, 8), expand=True)
 
             # Inner content
             content_frame = ttk.Frame(self.frame, style="secondary.TFrame")
-            content_frame.pack(fill=ttk.BOTH, expand=True, padx=(12, 20), pady=10)
+            content_frame.pack(fill=BOTH, expand=True, padx=(12, 20), pady=10)
 
             # Author line
             author_frame = ttk.Frame(content_frame, style="secondary.TFrame")
-            author_frame.pack(fill=ttk.X, pady=(0, 8))
+            author_frame.pack(fill=X, pady=(0, 8))
 
             # Avatar
             if self.author.avatar:
@@ -72,7 +73,7 @@ class MessageLogEntry:
                 if self.avatars[self.author.id]:
                     avatar_label = ttk.Label(author_frame, image=self.avatars[self.author.id])
                     avatar_label.configure(background=self.root.style.colors.get("secondary"))
-                    avatar_label.pack(side=ttk.LEFT, padx=(0, 5))
+                    avatar_label.pack(side=LEFT, padx=(0, 5))
 
             # Author name
             author_label = ttk.Label(
@@ -81,7 +82,7 @@ class MessageLogEntry:
                 font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "bold")
             )
             author_label.configure(background=self.root.style.colors.get("secondary"), foreground="white")
-            author_label.pack(side=ttk.LEFT)
+            author_label.pack(side=LEFT)
 
             # Time
             formatted_time = time.strftime("%H:%M:%S", time.localtime(self.delete_time))
@@ -91,7 +92,7 @@ class MessageLogEntry:
                 font=("Host Grotesk", 8 if sys.platform != "darwin" else 10)
             )
             time_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
-            time_label.pack(side=ttk.LEFT, padx=(5, 0), pady=(2, 0))
+            time_label.pack(side=LEFT, padx=(5, 0), pady=(2, 0))
 
             # Channel info
             channel_label_text = (
@@ -105,7 +106,7 @@ class MessageLogEntry:
                 font=("Host Grotesk", 8 if sys.platform != "darwin" else 10, "italic")
             )
             channel_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
-            channel_label.pack(fill=ttk.X, pady=(0, 8))
+            channel_label.pack(fill=X, pady=(0, 8))
 
             self.content_label = ttk.Text(content_frame, font=("Host Grotesk", 10 if sys.platform != "darwin" else 12), wrap="word", state="normal")
             self.content_label.insert("1.0", self.message.content or "[No text content]")
@@ -117,7 +118,7 @@ class MessageLogEntry:
                 highlightthickness=0
             )
             
-            self.content_label.pack(fill=ttk.X)
+            self.content_label.pack(fill=X)
             
             self.root.after(100, lambda: self._autoresize_text(self.content_label))
             self.content_label.bind("<Configure>", lambda e: self._autoresize_text(self.content_label))
@@ -134,7 +135,7 @@ class MessageLogEntry:
                     font=("Host Grotesk", 9, "italic")
                 )
                 attachments_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
-                attachments_label.pack(fill=ttk.X, pady=(4, 0))
+                attachments_label.pack(fill=X, pady=(4, 0))
 
             self.frame.bind("<Button-1>", self.on_click)
 

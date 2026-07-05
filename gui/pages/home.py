@@ -1,5 +1,6 @@
 import webbrowser, discord, sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 import tkinter.font as tkFont
 from ttkbootstrap.scrolled import ScrolledFrame
 from gui.components import RoundedFrame, RoundedButton
@@ -78,7 +79,7 @@ class HomePage:
         restart_label = ttk.Label(frame, image=self.images.get("restart"), anchor="center")
         restart_label.configure(background=self.root.style.colors.get("primary") if not disabled else self.root.style.colors.get("disabled"))
         # restart_label.configure(background=self.root.style.colors.get("secondary"))
-        restart_label.pack(anchor="center", fill=ttk.BOTH, expand=False, padx=25, pady=10)
+        restart_label.pack(anchor="center", fill=BOTH, expand=False, padx=25, pady=10)
         
         if not disabled:
             restart_label.bind("<Button-1>", lambda e: self._restart_bot())
@@ -92,24 +93,24 @@ class HomePage:
         
     def _draw_header(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="secondary.TFrame")
-        wrapper.pack(fill=ttk.BOTH, expand=False, pady=(0, 10))
+        wrapper.pack(fill=BOTH, expand=False, pady=(0, 10))
         
         if self.avatar and not self.restart:
             avatar = ttk.Label(wrapper, image=self.avatar)
             avatar.configure(background=self.root.style.colors.get("secondary"))
-            avatar.grid(row=0, column=0, sticky=ttk.W, padx=(15, 10), pady=15, rowspan=2)
+            avatar.grid(row=0, column=0, sticky=W, padx=(15, 10), pady=15, rowspan=2)
             
         if not self.restart:
             display_name = ttk.Label(wrapper, text=self.bot_controller.get_user().display_name, font=("Host Grotesk", 24, "bold"))
             display_name.configure(background=self.root.style.colors.get("secondary"))
-            display_name.grid(row=0, column=1, sticky=ttk.W, pady=(15, 0))
+            display_name.grid(row=0, column=1, sticky=W, pady=(15, 0))
 
             username = ttk.Label(wrapper, text=self.bot_controller.get_user().name, font=("Host Grotesk", 14 if sys.platform != "darwin" else 16, "italic"))
             username.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
-            username.grid(row=1, column=1, sticky=ttk.W, pady=(0, 15))
+            username.grid(row=1, column=1, sticky=W, pady=(0, 15))
             
             # restart_btn = self._draw_restart_button(wrapper)
-            # restart_btn.grid(row=0, column=3, rowspan=2, sticky=ttk.EW, padx=(10, 16), pady=(10, 10))
+            # restart_btn.grid(row=0, column=3, rowspan=2, sticky=EW, padx=(10, 16), pady=(10, 10))
             
             self.restart_image = self.images.get("restart")
             
@@ -117,20 +118,20 @@ class HomePage:
                 self.restart_image = self.images.change_image_colour("restart", "#ffffff", tk_image=True)
                 
             restart_btn = RoundedButton(wrapper, radius=8, bootstyle="primary.TButton", command=lambda _: self._restart_bot(), image=self.restart_image, padx=15, pady=6)
-            restart_btn.grid(row=0, column=3, rowspan=2, sticky=ttk.EW, padx=(10, 16), pady=(10, 10))
+            restart_btn.grid(row=0, column=3, rowspan=2, sticky=EW, padx=(10, 16), pady=(10, 10))
             
             wrapper.grid_columnconfigure(2, weight=1)
         else:
             self.restart_title = ttk.Label(wrapper, text=f"{self.restart_title_text}...", font=("Host Grotesk", 24, "bold"), anchor="center")
             self.restart_title.configure(background=self.root.style.colors.get("secondary"))
-            self.restart_title.grid(row=0, column=0, sticky=ttk.NSEW, pady=26, padx=15, columnspan=2)
+            self.restart_title.grid(row=0, column=0, sticky=NSEW, pady=26, padx=15, columnspan=2)
             wrapper.grid_columnconfigure(0, weight=1)
             self.root.after(750, self._update_restart_title)
     
     def _draw_details_wrapper(self, parent):
         wrapper = ttk.Frame(parent, width=self.width)
         wrapper.configure(style="default.TLabel")
-        wrapper.pack(fill=ttk.BOTH, expand=False, pady=(10, 0))
+        wrapper.pack(fill=BOTH, expand=False, pady=(10, 0))
         
         wrapper.grid_rowconfigure(0, weight=1)
         wrapper.grid_columnconfigure(0, weight=1)
@@ -140,69 +141,69 @@ class HomePage:
     
     def _draw_account_details(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
-        wrapper.grid(row=0, column=0, sticky=ttk.NSEW, padx=(0, 5), pady=(0, 5))
+        wrapper.grid(row=0, column=0, sticky=NSEW, padx=(0, 5), pady=(0, 5))
         
         if self.restart:
             return
         
         title = ttk.Label(wrapper, text="Discord", font=("Host Grotesk", 14 if sys.platform != "darwin" else 18, "bold"))
         title.configure(background=self.root.style.colors.get("dark"))
-        title.grid(row=0, column=0, sticky=ttk.W, padx=10, pady=(10, 0))
+        title.grid(row=0, column=0, sticky=W, padx=10, pady=(10, 0))
         
         ttk.Separator(wrapper, orient="horizontal").grid(row=1, column=0, columnspan=2, sticky="we", padx=(10, 10), pady=5)
         wrapper.grid_columnconfigure(1, weight=1)
         
         self.friends_label = ttk.Label(wrapper, text=f"Friends: {len(self.bot_controller.get_friends())}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.friends_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
-        self.friends_label.grid(row=2, column=0, sticky=ttk.W, padx=10, pady=(5, 0))
+        self.friends_label.grid(row=2, column=0, sticky=W, padx=10, pady=(5, 0))
         
         self.guilds_label = ttk.Label(wrapper, text=f"Guilds: {len(self.bot_controller.get_guilds())}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.guilds_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
-        self.guilds_label.grid(row=3, column=0, sticky=ttk.W, padx=10, pady=(0, 10))
+        self.guilds_label.grid(row=3, column=0, sticky=W, padx=10, pady=(0, 10))
         
     def _draw_bot_details(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
-        wrapper.grid(row=0, column=1, sticky=ttk.NSEW, padx=(5, 0), pady=(0, 5))
+        wrapper.grid(row=0, column=1, sticky=NSEW, padx=(5, 0), pady=(0, 5))
         
         if self.restart:
             return
         
         title = ttk.Label(wrapper, text="Ghost", font=("Host Grotesk", 14 if sys.platform != "darwin" else 18, "bold"))
         title.configure(background=self.root.style.colors.get("dark"))
-        title.grid(row=0, column=0, sticky=ttk.W, padx=10, pady=(10, 0))
+        title.grid(row=0, column=0, sticky=W, padx=10, pady=(10, 0))
         
         ttk.Separator(wrapper, orient="horizontal").grid(row=1, column=0, columnspan=2, sticky="we", padx=(10, 10), pady=5)
         wrapper.grid_columnconfigure(1, weight=1)
         
         version = ttk.Label(wrapper, text=f"Version: {VERSION}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         version.configure(background=self.root.style.colors.get("dark"))
-        version.grid(row=2, column=0, sticky=ttk.W, padx=(10, 0), pady=(5, 0))    
+        version.grid(row=2, column=0, sticky=W, padx=(10, 0), pady=(5, 0))    
         
         self.uptime_label = ttk.Label(wrapper, text=f"Uptime: {self.bot_controller.get_uptime()}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.uptime_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
-        self.uptime_label.grid(row=3, column=0, sticky=ttk.W, padx=(10, 0))
+        self.uptime_label.grid(row=3, column=0, sticky=W, padx=(10, 0))
         
         self.latency_label = ttk.Label(wrapper, text=f"Latency: {self.bot_controller.get_latency()}", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
         self.latency_label.configure(background=self.root.style.colors.get("dark"), foreground="white" if not self.restart else Style.LIGHT_GREY.value)
-        self.latency_label.grid(row=4, column=0, sticky=ttk.W, padx=(10, 0), pady=(0, 10))
+        self.latency_label.grid(row=4, column=0, sticky=W, padx=(10, 0), pady=(0, 10))
         
     def _draw_details(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
-        wrapper.pack(fill=ttk.BOTH, expand=False, pady=(0, 10))
+        wrapper.pack(fill=BOTH, expand=False, pady=(0, 10))
 
         font = ("Host Grotesk", 14)
         
         version = ttk.Label(wrapper, text=f"Ghost v{VERSION}", font=font)
         version.configure(background=self.root.style.colors.get("dark"))
-        version.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
+        version.grid(row=0, column=0, sticky=W, padx=(10, 0), pady=10)
         
         self.uptime_label = ttk.Label(wrapper, text=f"Uptime: {self.bot_controller.get_uptime()}", font=font)
         self.uptime_label.configure(background=self.root.style.colors.get("dark"))
-        self.uptime_label.grid(row=0, column=1, sticky=ttk.E, padx=(10, 0), pady=10)
+        self.uptime_label.grid(row=0, column=1, sticky=E, padx=(10, 0), pady=10)
         
         self.latency_label = ttk.Label(wrapper, text=f"Latency: {self.bot_controller.get_latency()}", font=font)
         self.latency_label.configure(background=self.root.style.colors.get("dark"))
-        self.latency_label.grid(row=0, column=2, sticky=ttk.E, padx=10, pady=10)
+        self.latency_label.grid(row=0, column=2, sticky=E, padx=10, pady=10)
         
         wrapper.grid_columnconfigure(1, weight=1)
         

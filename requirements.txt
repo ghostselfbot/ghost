@@ -3,11 +3,11 @@ colorama
 git+https://github.com/dolfies/discord.py-self.git
 Faker
 requests
-pillow
+pillow>=11
 pystyle
 psutil
 pycryptodome
-ttkbootstrap==1.14.2
+ttkbootstrap==1.20.4
 pyinstaller
 # git+https://github.com/tomlin7/cupcake.git
 cupcake-editor

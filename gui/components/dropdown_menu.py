@@ -1,4 +1,5 @@
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.components import RoundedFrame
 from gui.helpers.style import Style
 
@@ -44,11 +45,11 @@ class DropdownMenu:
             index += 1
             
             wrapper = RoundedFrame(self.frame, radius=8, background=self.parent.style.colors.get("secondary"))
-            wrapper.pack(fill=ttk.X, padx=5, pady=(4, 5 if index == len(self.options) else 0))
+            wrapper.pack(fill=X, padx=5, pady=(4, 5 if index == len(self.options) else 0))
             wrapper.bind("<Button-1>", lambda e, opt=option: self._on_option_selected(opt))
             
             label = ttk.Label(wrapper, text=option, background=self.parent.style.colors.get("secondary"), anchor="w")
-            label.pack(fill=ttk.X, padx=5, pady=2)
+            label.pack(fill=X, padx=5, pady=2)
             label.bind("<Button-1>", lambda e, opt=option: self._on_option_selected(opt))
             
             label.bind("<Enter>", lambda e, w=wrapper, l=label: self._hover_enter(w, l))
@@ -64,7 +65,7 @@ class DropdownMenu:
             widget.destroy()
             
         label = ttk.Label(self.frame, textvariable=self.selected_option, anchor="w", background=self.parent.style.colors.get("secondary"))
-        label.pack(fill=ttk.X, padx=10, pady=5)
+        label.pack(fill=X, padx=10, pady=5)
         label.bind("<Button-1>", self._open_menu)
         self.frame.bind("<Button-1>", self._open_menu)
         
@@ -94,7 +95,7 @@ class DropdownMenu:
         self.frame = RoundedFrame(self.parent, radius=5, bootstyle="secondary.TFrame")
 
         label = ttk.Label(self.frame, textvariable=self.selected_option, anchor="w", background=self.style.colors.get("secondary"))
-        label.pack(fill=ttk.X, padx=10, pady=5)
+        label.pack(fill=X, padx=10, pady=5)
         label.bind("<Button-1>", self._open_menu)
         self.frame.bind("<Button-1>", self._open_menu)
         

@@ -1,5 +1,6 @@
 import sys, time, json, os
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.tableview import Tableview
 from gui.components import ToolPage, RoundedFrame, RoundedButton
@@ -43,7 +44,7 @@ class SurveillancePage(ToolPage):
         if self.user_wrapper:
             self.user_wrapper.destroy()
         self.user_wrapper = self._draw_user_wrapper(self.user_progress_wrapper)
-        self.user_wrapper.pack(side=ttk.BOTTOM, fill=ttk.BOTH, expand=True)
+        self.user_wrapper.pack(side=BOTTOM, fill=BOTH, expand=True)
         self.user_wrapper.set_width(200)
 
     def _check_mutual_guilds(self):
@@ -98,7 +99,7 @@ class SurveillancePage(ToolPage):
             self.root.after(50, lambda: self._configure_start_stop_button(True))
 
             if not self.search_button.winfo_ismapped():
-                self.search_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 10), pady=10)
+                self.search_button.grid(row=0, column=2, sticky=E, padx=(0, 10), pady=10)
         else:
             self.search_placeholder_text = "Search a Discord user ID..."
             self.messages_textarea_updating = False
@@ -111,14 +112,14 @@ class SurveillancePage(ToolPage):
         if not self.surveillance.running and len(self.messages_all) > 0:
             self.search_placeholder_text = "Search for a message..."
             if not self.search_button.winfo_ismapped():
-                self.search_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 10), pady=10)
+                self.search_button.grid(row=0, column=2, sticky=E, padx=(0, 10), pady=10)
         # elif self.surveillance.running and len(self.messages_all) > 0:
         #     self.search_placeholder_text = "Search for a message..."
                 
         try:
             self.search_entry.configure(foreground="grey")
             self.search_var.set("")
-            self.search_entry.delete(0, ttk.END)
+            self.search_entry.delete(0, END)
             self.search_entry.insert(0, self.search_placeholder_text)
         except Exception as e:
             print(f"Error resetting search entry: {e}")
@@ -219,7 +220,7 @@ class SurveillancePage(ToolPage):
         
         self.start_stop_button = ttk.Label(wrapper, image=self.play_button_image, style="primary")
         self.start_stop_button.configure(background=self.root.style.colors.get("primary"))
-        self.start_stop_button.pack(side=ttk.LEFT, padx=15, pady=14)
+        self.start_stop_button.pack(side=LEFT, padx=15, pady=14)
         self.start_stop_button.bind("<Button-1>", lambda e: self._toggle_surveillance())
         self.start_stop_button.bind("<Enter>", _hover_enter)
         self.start_stop_button.bind("<Leave>", _hover_leave)
@@ -250,7 +251,7 @@ class SurveillancePage(ToolPage):
         
         self.reset_button = ttk.Label(self.reset_button_wrapper, image=self.reset_button_image, style="danger" if not self.reset_button_disabled else "dark")
         self.reset_button.configure(background=self.root.style.colors.get("danger") if not self.reset_button_disabled else self.root.style.colors.get("dark"))
-        self.reset_button.pack(side=ttk.LEFT, padx=15, pady=14)
+        self.reset_button.pack(side=LEFT, padx=15, pady=14)
         self.reset_button.bind("<Button-1>", _reset)
         self.reset_button.bind("<Enter>", _hover_enter)
         self.reset_button.bind("<Leave>", _hover_leave)
@@ -295,7 +296,7 @@ class SurveillancePage(ToolPage):
         
         download_icon = ttk.Label(download_button, image=self.images.get("download"), style="dark")
         download_icon.configure(background=self.root.style.colors.get("dark"))
-        download_icon.pack(side=ttk.LEFT, padx=(15), pady=14)
+        download_icon.pack(side=LEFT, padx=(15), pady=14)
         download_icon.bind("<Button-1>", lambda e: self._download_data())
         download_icon.bind("<Enter>", lambda e: _hover_enter(e))
         download_icon.bind("<Leave>", lambda e: _hover_leave(e))
@@ -307,7 +308,7 @@ class SurveillancePage(ToolPage):
 
         def on_focus_in(event):
             if self.search_entry.get() == self.search_placeholder_text:
-                self.search_entry.delete(0, ttk.END)
+                self.search_entry.delete(0, END)
                 self.search_entry.configure(foreground=self.root.style.colors.get("fg"))
 
         def on_focus_out(event):
@@ -324,7 +325,7 @@ class SurveillancePage(ToolPage):
             textvariable=self.search_var,
             font=("Host Grotesk", 12 if sys.platform != "darwin" else 13)
         )
-        self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
+        self.search_entry.grid(row=0, column=0, sticky=EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
 
         self.search_entry.insert(0, self.search_placeholder_text)
         self.search_entry.configure(foreground=Style.LIGHT_GREY.value)
@@ -341,16 +342,16 @@ class SurveillancePage(ToolPage):
         header = ttk.Frame(parent)
         
         search_bar = self._draw_search_bar(header)
-        search_bar.grid(row=0, column=0, sticky=ttk.EW, padx=(0, 5))
+        search_bar.grid(row=0, column=0, sticky=EW, padx=(0, 5))
         
         start_stop_button = self._draw_start_stop_button(header)
-        start_stop_button.grid(row=0, column=1, sticky=ttk.E)
+        start_stop_button.grid(row=0, column=1, sticky=E)
         
         reset_button = self._draw_reset_button(header)
-        reset_button.grid(row=0, column=2, sticky=ttk.E, padx=(5, 5))
+        reset_button.grid(row=0, column=2, sticky=E, padx=(5, 5))
         
         download_button = self._draw_download_button(header)
-        download_button.grid(row=0, column=3, sticky=ttk.E)
+        download_button.grid(row=0, column=3, sticky=E)
         
         header.grid_columnconfigure(0, weight=1)
         
@@ -422,7 +423,7 @@ class SurveillancePage(ToolPage):
         if self.user_avatar:
             accent_colour_banner = RoundedFrame(wrapper, radius=(15, 15, 0, 0), background=self.user_banner_colour, parent_background=self.root.style.colors.get("bg"))
             accent_colour_banner.set_height(85)
-            accent_colour_banner.pack(side=ttk.TOP, fill=ttk.X)
+            accent_colour_banner.pack(side=TOP, fill=X)
             accent_colour_banner.columnconfigure(0, weight=1)
             
             avatar_label = ttk.Canvas(wrapper, width=100, height=200, background=self.user_banner_colour, highlightthickness=0)
@@ -438,7 +439,7 @@ class SurveillancePage(ToolPage):
             
         if self.user:
             user_info_wrapper = ttk.Frame(wrapper, style="dark.TFrame")
-            user_info_wrapper.pack(side=ttk.TOP, fill=ttk.X, pady=(35, 0), padx=(10, 10))
+            user_info_wrapper.pack(side=TOP, fill=X, pady=(35, 0), padx=(10, 10))
             user_info_wrapper.configure(height=50)
             
             display_name = ttk.Label(user_info_wrapper, text=self.user.display_name, font=("Host Grotesk", 16 if sys.platform != "darwin" else 18, "bold"))
@@ -452,21 +453,21 @@ class SurveillancePage(ToolPage):
             if self.mutual_guilds:
                 mutual_guilds_subtitle = ttk.Label(wrapper, text="Mutual Guilds", font=("Host Grotesk", 12 if sys.platform != "darwin" else 14, "bold"))
                 mutual_guilds_subtitle.configure(background=self.root.style.colors.get("dark"), foreground="white")
-                mutual_guilds_subtitle.pack(side=ttk.TOP, fill=ttk.X, padx=10)
+                mutual_guilds_subtitle.pack(side=TOP, fill=X, padx=10)
                 
                 guilds_wrapper = ScrolledFrame(wrapper, bootstyle="dark.TFrame", autohide=True)
                 guilds_wrapper.container.configure(style="dark.TFrame")
-                guilds_wrapper.pack(side=ttk.TOP, fill=ttk.BOTH, pady=(3, 10), padx=(10, 10), expand=True)
+                guilds_wrapper.pack(side=TOP, fill=BOTH, pady=(3, 10), padx=(10, 10), expand=True)
                 guilds_wrapper.columnconfigure(0, weight=1)
                 
                 row = 0
                 for guild in self.mutual_guilds:
                     guild_frame = RoundedFrame(guilds_wrapper, radius=5, bootstyle="secondary.TFrame")
-                    guild_frame.grid(row=row, column=0, sticky=ttk.EW, pady=(0, 5))
+                    guild_frame.grid(row=row, column=0, sticky=EW, pady=(0, 5))
                     
                     guild_label = ttk.Label(guild_frame, text=guild.name, font=("Host Grotesk", 10 if sys.platform != "darwin" else 12))
                     guild_label.configure(background=self.root.style.colors.get("secondary"), foreground="white")
-                    guild_label.grid(row=0, column=0, sticky=ttk.EW, padx=5, pady=5)
+                    guild_label.grid(row=0, column=0, sticky=EW, padx=5, pady=5)
                     guild_frame.grid_columnconfigure(0, weight=1)
                     
                     row += 1
@@ -491,7 +492,7 @@ class SurveillancePage(ToolPage):
             # if self.search_entry:
             #     self.search_entry.configure(foreground="grey")
             #     self.search_var.set("")  # Resets the actual entry content
-            #     self.search_entry.delete(0, ttk.END)
+            #     self.search_entry.delete(0, END)
             #     self.search_entry.insert(0, self.search_placeholder_text)
 
             print("Messages fully cleared.")
@@ -611,10 +612,10 @@ class SurveillancePage(ToolPage):
         self.wrapper = wrapper
         
         header = self._draw_header(wrapper)
-        header.pack(side=ttk.TOP, fill=ttk.X, pady=(0, 10))
+        header.pack(side=TOP, fill=X, pady=(0, 10))
 
         self.msgs_logs_wrapper = ttk.Frame(wrapper)
-        self.msgs_logs_wrapper.pack(side=ttk.LEFT, fill=ttk.BOTH, expand=True, padx=(0, 5))
+        self.msgs_logs_wrapper.pack(side=LEFT, fill=BOTH, expand=True, padx=(0, 5))
         self.msgs_logs_wrapper.columnconfigure(0, weight=1)
         self.msgs_logs_wrapper.rowconfigure(0, weight=1)
         self.msgs_logs_wrapper.rowconfigure(1, weight=0)
@@ -627,16 +628,16 @@ class SurveillancePage(ToolPage):
         self.log_wrapper.grid(row=1, column=0, sticky="ew")
 
         self.user_progress_wrapper = ttk.Frame(wrapper)
-        self.user_progress_wrapper.pack(side=ttk.RIGHT, fill=ttk.Y, expand=False, padx=(5, 0))
+        self.user_progress_wrapper.pack(side=RIGHT, fill=Y, expand=False, padx=(5, 0))
         
         self.progress_wrapper = self._draw_progress_wrapper(self.user_progress_wrapper)
         self.progress_wrapper.set_height(55)
         self.progress_wrapper.set_width(200)  # fixed width
-        self.progress_wrapper.pack(side=ttk.TOP, fill=ttk.X, pady=(0, 10))
+        self.progress_wrapper.pack(side=TOP, fill=X, pady=(0, 10))
 
         self.user_wrapper = self._draw_user_wrapper(self.user_progress_wrapper)
         self.user_wrapper.set_width(200)  # fixed width
-        self.user_wrapper.pack(side=ttk.BOTTOM, fill=ttk.BOTH, expand=True)
+        self.user_wrapper.pack(side=BOTTOM, fill=BOTH, expand=True)
         
         self.update()
         

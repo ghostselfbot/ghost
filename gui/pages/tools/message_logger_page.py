@@ -1,5 +1,6 @@
 import webbrowser, discord, sys, time
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 import tkinter.font as tkFont
 from ttkbootstrap.scrolled import ScrolledFrame
 from gui.components import RoundedFrame, ToolPage
@@ -25,15 +26,15 @@ class MessageLoggerPage(ToolPage):
         wrapper = ttk.Frame(parent)
 
         tools_label = ttk.Label(wrapper, text="Tools", font=("Host Grotesk", 24, "bold"), foreground=Style.LIGHT_GREY.value)
-        tools_label.grid(row=0, column=0, sticky=ttk.W)
+        tools_label.grid(row=0, column=0, sticky=W)
         tools_label.bind("<Button-1>", lambda e: self.go_back())
 
         back_button = ttk.Label(wrapper, image=self.images.get("right-chevron-small"))
         back_button.bind("<Button-1>", lambda e: self.go_back())
-        back_button.grid(row=0, column=1, sticky=ttk.W, padx=(10, 10))
+        back_button.grid(row=0, column=1, sticky=W, padx=(10, 10))
 
         page_name = ttk.Label(wrapper, text=self.title, font=("Host Grotesk", 24, "bold"))
-        page_name.grid(row=0, column=2, sticky=ttk.W)
+        page_name.grid(row=0, column=2, sticky=W)
         page_name.bind("<Button-1>", lambda e: self.go_back())
 
         clear_btn = ttk.Label(wrapper, image=self.images.get("trash"))
@@ -41,7 +42,7 @@ class MessageLoggerPage(ToolPage):
         clear_btn.bind("<Button-1>", lambda e: self._clear_discord_logs())
         clear_btn.bind("<Enter>", lambda e: clear_btn.configure(foreground=Style.LIGHT_GREY.value))
         clear_btn.bind("<Leave>", lambda e: clear_btn.configure(foreground="white"))
-        clear_btn.grid(row=0, column=3, sticky=ttk.E, padx=(20, 0))
+        clear_btn.grid(row=0, column=3, sticky=E, padx=(20, 0))
 
         wrapper.grid_columnconfigure(2, weight=1)
 
@@ -143,7 +144,7 @@ class MessageLoggerPage(ToolPage):
         self.root.bind("<Configure>", self._update_wraplength)
         
         self.discord_logs_inner_wrapper = ttk.Frame(wrapper)
-        self.discord_logs_inner_wrapper.pack(fill=ttk.BOTH, expand=True, padx=10, pady=(10, 10))
+        self.discord_logs_inner_wrapper.pack(fill=BOTH, expand=True, padx=10, pady=(10, 10))
 
         canvas = ttk.Canvas(self.discord_logs_inner_wrapper)
         scrollbar = ttk.Scrollbar(self.discord_logs_inner_wrapper, orient="vertical", command=canvas.yview)

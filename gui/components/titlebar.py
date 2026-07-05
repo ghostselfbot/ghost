@@ -5,6 +5,7 @@ if sys.platform == "win32":
     import hPyT
 
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.components import RoundedFrame
 from gui.helpers.style import Style, get_current_theme_str
 
@@ -105,21 +106,21 @@ class Titlebar:
 
             close_btn = ttk.Label(inner_wrapper, text="●", foreground="#FF5F57", font=("Arial", 25))
             close_btn.configure(background=Style.WINDOW_BORDER.value)
-            close_btn.pack(side=ttk.LEFT, padx=(0, 0))
+            close_btn.pack(side=LEFT, padx=(0, 0))
             close_btn.bind("<Button-1>", lambda e: self._close())
             close_btn.bind("<Enter>", lambda e: close_btn.configure(foreground="#CC4940"))
             close_btn.bind("<Leave>", lambda e: close_btn.configure(foreground="#FF5F57"))
             
             minimize_btn = ttk.Label(inner_wrapper, text="●", foreground=Style.MAC_TITLEBAR_INACTIVE.value, font=("Arial", 28 if get_current_theme_str() == "dark" else 25))
             minimize_btn.configure(background=Style.WINDOW_BORDER.value)
-            minimize_btn.pack(side=ttk.LEFT, padx=(0, 0))
+            minimize_btn.pack(side=LEFT, padx=(0, 0))
             # minimize_btn.bind("<Button-1>", lambda e: self._minimize())
             # minimize_btn.bind("<Enter>", lambda e: minimize_btn.configure(foreground="#CC9A26"))
             # minimize_btn.bind("<Leave>", lambda e: minimize_btn.configure(foreground="#FFBD2E"))
             
             maximize_btn = ttk.Label(inner_wrapper, text="●", foreground=Style.MAC_TITLEBAR_INACTIVE.value, font=("Arial", 28 if get_current_theme_str() == "dark" else 25))
             maximize_btn.configure(background=Style.WINDOW_BORDER.value)
-            maximize_btn.pack(side=ttk.LEFT, padx=(0, 5))
+            maximize_btn.pack(side=LEFT, padx=(0, 5))
             # maximize_btn.bind("<Enter>", lambda e: maximize_btn.configure(foreground="#20A833"))
             # maximize_btn.bind("<Leave>", lambda e: maximize_btn.configure(foreground="#28C940"))
             # maximize_btn.bind("<Button-1>", lambda e: self._maximize())
@@ -127,11 +128,11 @@ class Titlebar:
         else:
             ico = ttk.Label(inner_wrapper, image=self.images.images["titlebar-ico"])
             ico.configure(background=Style.WINDOW_BORDER.value)
-            ico.pack(side=ttk.LEFT, padx=(5, 0))
+            ico.pack(side=LEFT, padx=(5, 0))
 
             title = ttk.Label(inner_wrapper, text="Ghost", font=("Host Grotesk", 12))
             title.configure(background=Style.WINDOW_BORDER.value)
-            title.pack(side=ttk.LEFT, padx=(5, 0))
+            title.pack(side=LEFT, padx=(5, 0))
             
             def close_btn_enter(e):
                 close_btn.configure(background=Style.SETTINGS_PILL_HOVER.value, foreground=self.root.style.colors.get("fg"))
@@ -142,14 +143,14 @@ class Titlebar:
                 close_btn_wrapper.set_background(Style.WINDOW_BORDER.value)
 
             close_btn_wrapper = RoundedFrame(inner_wrapper, radius=10, background=Style.WINDOW_BORDER.value)
-            close_btn_wrapper.pack(side=ttk.RIGHT)
+            close_btn_wrapper.pack(side=RIGHT)
             close_btn_wrapper.bind("<Button-1>", lambda e: self._close())
             close_btn_wrapper.bind("<Enter>", close_btn_enter)
             close_btn_wrapper.bind("<Leave>", close_btn_leave)
 
             close_btn = ttk.Label(close_btn_wrapper, text="⨉", font=("Arial", 13))
             close_btn.configure(background=Style.WINDOW_BORDER.value, foreground=self.root.style.colors.get("fg"))
-            close_btn.pack(fill=ttk.BOTH, expand=True, padx=8, pady=4)
+            close_btn.pack(fill=BOTH, expand=True, padx=8, pady=4)
             close_btn.bind("<Button-1>", lambda e: self.root.quit())
             close_btn.bind("<Enter>", close_btn_enter)
             close_btn.bind("<Leave>", close_btn_leave)
@@ -163,17 +164,17 @@ class Titlebar:
                 minimize_btn_wrapper.set_background(Style.WINDOW_BORDER.value)
 
             minimize_btn_wrapper = RoundedFrame(inner_wrapper, radius=10, background=Style.WINDOW_BORDER.value)
-            minimize_btn_wrapper.pack(side=ttk.RIGHT)
+            minimize_btn_wrapper.pack(side=RIGHT)
             minimize_btn_wrapper.bind("<Button-1>", lambda e: self._minimize())
             minimize_btn_wrapper.bind("<Enter>", minimize_btn_enter)
             minimize_btn_wrapper.bind("<Leave>", minimize_btn_leave)
 
             minimize_btn = ttk.Label(minimize_btn_wrapper, text="—", font=("Arial", 10))
             minimize_btn.configure(background=Style.WINDOW_BORDER.value, foreground=self.root.style.colors.get("fg"))
-            minimize_btn.pack(fill=ttk.BOTH, expand=True, padx=8, pady=5)
+            minimize_btn.pack(fill=BOTH, expand=True, padx=8, pady=5)
             minimize_btn.bind("<Button-1>", lambda e: self._minimize())
             minimize_btn.bind("<Enter>", minimize_btn_enter)
             minimize_btn.bind("<Leave>", minimize_btn_leave)
 
-        inner_wrapper.pack(fill=ttk.BOTH, expand=True, pady=pady, padx=padx)
+        inner_wrapper.pack(fill=BOTH, expand=True, pady=pady, padx=padx)
         return titlebar

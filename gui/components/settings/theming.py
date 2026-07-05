@@ -1,5 +1,7 @@
 import sys
+import tkinter.font as tkfont
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 import utils.console as console
 from utils.files import open_path_in_explorer, get_themes_path
 from gui.components import SettingsPanel, RoundedButton, RoundedFrame, DropdownMenu
@@ -70,7 +72,7 @@ class ThemingPanel(SettingsPanel):
         
         open_folder_button = ttk.Label(wrapper, image=self.images.get("folder-open"), style="secondary")
         open_folder_button.configure(background=self.root.style.colors.get("secondary"))
-        open_folder_button.pack(side=ttk.LEFT, padx=10, pady=7)
+        open_folder_button.pack(side=LEFT, padx=10, pady=7)
         open_folder_button.bind("<Button-1>", lambda e: open_path_in_explorer(get_themes_path()))
         open_folder_button.bind("<Enter>", _hover_enter)
         open_folder_button.bind("<Leave>", _hover_leave)
@@ -108,7 +110,7 @@ class ThemingPanel(SettingsPanel):
         canvas = self.preview_canvas
         canvas.delete("all")
 
-        font = ttk.font.Font(family="Host Grotesk", size=12)
+        font = tkfont.Font(family="Host Grotesk", size=12)
 
         if self.user_avatar:
             canvas.create_image(25, 25, image=self.user_avatar, anchor="center")
@@ -124,7 +126,7 @@ class ThemingPanel(SettingsPanel):
         current_row = 0
 
         colour_strip = RoundedFrame(embed_wrapper, radius=(8, 0, 0, 8), width=5, background=self.cfg.theme.colour or "#5865F2")
-        colour_strip.grid(row=0, column=0, sticky=ttk.NS, rowspan=3)
+        colour_strip.grid(row=0, column=0, sticky=NS, rowspan=3)
 
         title_text = self.cfg.theme.title or ""
         emoji_text = self.cfg.theme.emoji or ""
@@ -132,7 +134,7 @@ class ThemingPanel(SettingsPanel):
         if title_text:
             title = ttk.Label(embed_wrapper, text=f"{emoji_text} {title_text}".strip(), font=("Host Grotesk", 14, "bold"))
             title.configure(background=self.root.style.colors.get("secondary"), foreground=self.root.style.colors.get("fg"))
-            title.grid(row=current_row, column=1, sticky=ttk.NW, padx=10, pady=(8, 5))
+            title.grid(row=current_row, column=1, sticky=NW, padx=10, pady=(8, 5))
             current_row += 1
 
         description = ttk.Label(embed_wrapper, text=""".abuse ~ Abusive commands
@@ -149,7 +151,7 @@ class ThemingPanel(SettingsPanel):
 
 There are 166 commands!""", font=("Host Grotesk", 12))
         description.configure(background=self.root.style.colors.get("secondary"), foreground=self.root.style.colors.get("fg"))
-        description.grid(row=current_row, column=1, sticky=ttk.NW, padx=10, pady=(0 if title_text else 8, 10))
+        description.grid(row=current_row, column=1, sticky=NW, padx=10, pady=(0 if title_text else 8, 10))
         current_row += 1
 
         footer_text = getattr(self.cfg.theme, "footer", "") or ""
@@ -157,24 +159,24 @@ There are 166 commands!""", font=("Host Grotesk", 12))
         if footer_text:
             footer_label = ttk.Label(embed_wrapper, text=footer_text, font=("Host Grotesk", 12))
             footer_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
-            footer_label.grid(row=current_row, column=1, sticky=ttk.W, padx=10, pady=(0, 10))
+            footer_label.grid(row=current_row, column=1, sticky=W, padx=10, pady=(0, 10))
             current_row += 1
             
         if self.embed_image:
             embed_image_label = ttk.Label(embed_wrapper, image=self.embed_image)
             embed_image_label.configure(background=self.root.style.colors.get("secondary"))
-            embed_image_label.grid(row=0, column=2, rowspan=current_row, sticky=ttk.NE, padx=10, pady=10)
+            embed_image_label.grid(row=0, column=2, rowspan=current_row, sticky=NE, padx=10, pady=10)
             
     def draw_preview(self, parent):
         wrapper = RoundedFrame(parent, radius=10,
                             background=self.root.style.colors.get("dark"))
-        wrapper.grid(row=0, column=1, sticky=ttk.NS, padx=(10, 0))
+        wrapper.grid(row=0, column=1, sticky=NS, padx=(10, 0))
         wrapper.grid_propagate(True)
 
         self.preview_canvas = ttk.Canvas(wrapper, highlightthickness=0, width=360)
         self.preview_canvas.configure(
             background=self.root.style.colors.get("dark"))
-        self.preview_canvas.pack(fill=ttk.BOTH, expand=True, padx=10, pady=10)
+        self.preview_canvas.pack(fill=BOTH, expand=True, padx=10, pady=10)
 
         self._draw_preview_contents()
         
@@ -182,7 +184,7 @@ There are 166 commands!""", font=("Host Grotesk", 12))
         self.body.grid_remove()
         
         wrapper = RoundedFrame(self.wrapper, radius=10, background=self.root.style.colors.get("dark"))
-        wrapper.grid(row=0, column=0, sticky=ttk.NSEW)
+        wrapper.grid(row=0, column=0, sticky=NSEW)
         wrapper.grid_columnconfigure(0, weight=1)
         
         self.user = self.bot_controller.get_user()
@@ -210,7 +212,7 @@ There are 166 commands!""", font=("Host Grotesk", 12))
         self.create_entry.bind("<KeyRelease>", lambda e: self.toggle_create_theme_button(self.create_entry.get().strip() != ""))
         
         self.create_button = RoundedButton(wrapper, text="+", command=lambda _: self._create_theme(self.create_entry.get()), style="success.TButton", pady=2)
-        self.create_button.grid(row=1, column=1, sticky=ttk.E, padx=(0, 10), pady=(10, 0))
+        self.create_button.grid(row=1, column=1, sticky=E, padx=(0, 10), pady=(10, 0))
         self.create_button.set_state("disabled")
         
         #-------
@@ -244,7 +246,7 @@ There are 166 commands!""", font=("Host Grotesk", 12))
             )
             label.configure(background=self.root.style.colors.get("dark"))
 
-            label.grid(row=row, column=0, sticky=ttk.W, padx=10, pady=(0, 2))
+            label.grid(row=row, column=0, sticky=W, padx=10, pady=(0, 2))
             entry.grid(row=row + 1, column=0, columnspan=2, sticky="we", padx=10, pady=(0, 10))
 
             entry.bind("<KeyRelease>", self._schedule_preview_update)
@@ -272,10 +274,10 @@ There are 166 commands!""", font=("Host Grotesk", 12))
         # open_folder_button = RoundedButton(buttons_frame, image=self.images.get("folder-open"), style="secondary.TButton", command=lambda _: open_path_in_explorer(get_themes_path()))
         open_folder_button = self._draw_open_folder_button(buttons_frame)
 
-        # save_theme_label.grid(row=0, column=0, columnspan=2, sticky=ttk.W, padx=(10, 0), pady=(0, 10))
-        save_theme_button.grid(row=0, column=1, sticky=ttk.E, pady=(0, 10))
-        delete_theme_button.grid(row=0, column=2, sticky=ttk.E, padx=5, pady=(0, 10))
-        open_folder_button.grid(row=0, column=3, sticky=ttk.E, padx=(0, 11), pady=(0, 10))
+        # save_theme_label.grid(row=0, column=0, columnspan=2, sticky=W, padx=(10, 0), pady=(0, 10))
+        save_theme_button.grid(row=0, column=1, sticky=E, pady=(0, 10))
+        delete_theme_button.grid(row=0, column=2, sticky=E, padx=5, pady=(0, 10))
+        open_folder_button.grid(row=0, column=3, sticky=E, padx=(0, 11), pady=(0, 10))
         
         self.draw_preview(self.wrapper)
         

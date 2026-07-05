@@ -1,5 +1,6 @@
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 import utils.console as console
 from gui.components import SettingsPanel, RoundedFrame
 
@@ -31,11 +32,11 @@ class SnipersPanel(SettingsPanel):
         self.snipers_tk_entries[sniper.name] = {}
 
         header = ttk.Frame(card, style="dark.TFrame")
-        header.grid(row=0, column=0, sticky=ttk.NSEW, pady=(10, 10), padx=10)
+        header.grid(row=0, column=0, sticky=NSEW, pady=(10, 10), padx=10)
 
         title = ttk.Label(header, text=sniper.name.capitalize() + " Sniper", font=("Host Grotesk", 18, "bold"))
         title.configure(background=self.root.style.colors.get("dark"))
-        title.grid(row=0, column=0, sticky=ttk.NSEW)
+        title.grid(row=0, column=0, sticky=NSEW)
 
         entries = [
             {
@@ -61,11 +62,11 @@ class SnipersPanel(SettingsPanel):
         for i, entry in enumerate(entries):
             if entry["type"] == "checkbox":
                 checkbox_wrapper = RoundedFrame(card, radius=8, bootstyle="secondary.TFrame")
-                checkbox_wrapper.grid(row=i + 1, column=0, sticky=ttk.NSEW, padx=10, pady=(0, 5))
+                checkbox_wrapper.grid(row=i + 1, column=0, sticky=NSEW, padx=10, pady=(0, 5))
 
                 label = ttk.Label(checkbox_wrapper, text=" " + entry["label"])
                 label.configure(background=self.root.style.colors.get("secondary"))
-                label.grid(row=0, column=0, sticky=ttk.W, pady=10, padx=(8, 0))
+                label.grid(row=0, column=0, sticky=W, pady=10, padx=(8, 0))
 
                 var = ttk.BooleanVar(value=entry["value"])
                 
@@ -76,7 +77,7 @@ class SnipersPanel(SettingsPanel):
                     command=lambda sniper_name=sniper.name: self._save_sniper(sniper_name),
                     tristatevalue=None
                 )
-                checkbox.grid(row=0, column=1, sticky=ttk.E, pady=10, padx=(0, 10))
+                checkbox.grid(row=0, column=1, sticky=E, pady=10, padx=(0, 10))
                 checkbox_wrapper.grid_columnconfigure(0, weight=1)
 
                 self.snipers_tk_entries[sniper.name][entry["config_key"]] = var
@@ -90,27 +91,27 @@ class SnipersPanel(SettingsPanel):
                 
             else:
                 wrapper = RoundedFrame(card, radius=8, bootstyle="dark.TFrame")
-                wrapper.grid(row=i + 1, column=0, sticky=ttk.NSEW, padx=10, pady=(10, 10))
+                wrapper.grid(row=i + 1, column=0, sticky=NSEW, padx=10, pady=(10, 10))
 
                 label = ttk.Label(wrapper, text=entry["label"])
                 label.configure(background=self.root.style.colors.get("dark"))
-                label.grid(row=0, column=0, sticky=ttk.W, pady=(0, 5))
+                label.grid(row=0, column=0, sticky=W, pady=(0, 5))
 
                 textbox = ttk.Entry(wrapper, font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
-                textbox.grid(row=1, column=0, sticky=ttk.EW)
+                textbox.grid(row=1, column=0, sticky=EW)
                 wrapper.grid_columnconfigure(0, weight=1)
 
                 placeholder_color = "#6c757d"  # subtle grey
                 normal_color = self.root.style.colors.get("fg")
 
                 def set_placeholder(entry_widget):
-                    entry_widget.delete(0, ttk.END)
+                    entry_widget.delete(0, END)
                     entry_widget.insert(0, self.placeholder)
                     entry_widget.configure(foreground=placeholder_color)
 
                 def clear_placeholder(entry_widget):
                     if entry_widget.get() == self.placeholder:
-                        entry_widget.delete(0, ttk.END)
+                        entry_widget.delete(0, END)
                         entry_widget.configure(foreground=normal_color)
 
                 def on_focus_in(event, entry_widget=textbox):
@@ -151,7 +152,7 @@ class SnipersPanel(SettingsPanel):
         
         for sniper in self.snipers:
             card = self._draw_card(sniper)
-            card.grid(row=row, column=0, sticky=ttk.NSEW, padx=0, pady=(0, 10))
+            card.grid(row=row, column=0, sticky=NSEW, padx=0, pady=(0, 10))
             
             row += 1
         

@@ -5,6 +5,7 @@ if sys.platform == "win32":
     import hPyT
 
 os.environ["SSL_CERT_FILE"] = certifi.where()
+import tkinter as tk
 import ttkbootstrap as ttk
 
 from utils.notifier import Notifier
@@ -23,7 +24,7 @@ class GhostGUI:
         self.bot_controller = bot_controller
         self.resize_grips = {}
         
-        self.root = ttk.tk.Tk()
+        self.root = tk.Tk()
         self.root.size = self.size
         self.root.title("Ghost")
         self.root.gui_ref = self
@@ -158,7 +159,7 @@ class GhostGUI:
 
         # Ensure they stay on top
         for grip in self.resize_grips.values():
-            ttk.tk.Misc.lift(grip)
+            tk.Misc.lift(grip)
         
     def _create_resize_grips(self):
         if sys.platform != "darwin":
@@ -215,7 +216,7 @@ class GhostGUI:
             # self.resize_grips["right"].set_corner_radius((0, 25, 25, 0))
 
             for grip in self.resize_grips.values():
-                ttk.tk.Misc.lift(grip)
+                tk.Misc.lift(grip)
         except Exception as e:
             print("Error positioning grips, resetting grips")
             self.resize_grips = {}

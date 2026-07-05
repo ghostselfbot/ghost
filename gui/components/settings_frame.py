@@ -1,5 +1,6 @@
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.components import RoundedFrame
 from utils.config import Config
 
@@ -28,7 +29,7 @@ class SettingsFrame:
             self.body.pack_forget()
         else:
             self.header.set_corner_radius((15, 15, 0, 0))
-            self.body.pack(fill=ttk.BOTH, expand=False)
+            self.body.pack(fill=BOTH, expand=False)
         
     def _hover_enter(self, _):
         self.header.set_background(background=self.hover_colour)
@@ -42,15 +43,15 @@ class SettingsFrame:
         
     def _draw_header(self, parent):
         self.header = RoundedFrame(parent, radius=(15, 15, 0, 0), bootstyle="secondary.TFrame")
-        self.header.pack(fill=ttk.BOTH, expand=False)
+        self.header.pack(fill=BOTH, expand=False)
         
         self.title = ttk.Label(self.header, text=self.header_text, font=("Host Grotesk", 14 if sys.platform != "darwin" else 18, "bold"))
         self.title.configure(background=self.root.style.colors.get("secondary"))
-        self.title.grid(row=0, column=0, sticky=ttk.NSEW, padx=15, pady=10)
+        self.title.grid(row=0, column=0, sticky=NSEW, padx=15, pady=10)
         
         self.icon = ttk.Label(self.header, image=self.header_icon)
         self.icon.configure(background=self.root.style.colors.get("secondary"))
-        self.icon.grid(row=0, column=2, sticky=ttk.E, padx=(0, 15), pady=10)
+        self.icon.grid(row=0, column=2, sticky=E, padx=(0, 15), pady=10)
         
         self.header.grid_columnconfigure(1, weight=1)
         
@@ -62,7 +63,7 @@ class SettingsFrame:
         
     def _draw_body(self, parent):
         frame = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
-        # frame.pack(fill=ttk.BOTH, expand=False)
+        # frame.pack(fill=BOTH, expand=False)
         frame.grid(column=0, row=1, sticky="nsew")
         parent.grid_columnconfigure(0, weight=1)
         
@@ -74,7 +75,7 @@ class SettingsFrame:
         else:
             wrapper = ttk.Frame(self.parent, takefocus=True)
         wrapper.configure(style="default.TLabel")
-        # wrapper.pack(fill=ttk.BOTH, expand=True)
+        # wrapper.pack(fill=BOTH, expand=True)
         # wrapper.grid(column=0, row=0, sticky="nsew")
         
         # self._draw_header(wrapper)

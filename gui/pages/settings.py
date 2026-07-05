@@ -1,5 +1,6 @@
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.components.settings import GeneralPanel, ThemingPanel, APIsPanel, SessionSpoofingPanel, RichPresencePanel, SnipersPanel
 from gui.components import RoundedFrame, DropdownMenu
 from gui.helpers import Images, Style
@@ -53,9 +54,9 @@ class SettingsPage:
         self.apis = APIsPanel(self.root, general_wrapper, self.images, self.cfg).draw()
         self.theming = ThemingPanel(self.root, wrapper, self.images, self.cfg, bot_controller=self.bot_controller).draw()
         
-        self.general.pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
-        self.session_spoofing.pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
-        self.apis.pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+        self.general.pack(fill=BOTH, expand=True, pady=(0, 10))
+        self.session_spoofing.pack(fill=BOTH, expand=True, pady=(0, 10))
+        self.apis.pack(fill=BOTH, expand=True, pady=(0, 10))
         
         self.pages["general"] = general_wrapper
         self.pages["theming"] = self.theming
@@ -77,10 +78,10 @@ class SettingsPage:
             label.configure(background=self.root.style.colors.get("secondary"))
         
         pill = RoundedFrame(parent, radius=10, bootstyle="secondary.TFrame")
-        pill.grid(row=0, column=row, sticky=ttk.W, padx=(5, 0 if text != "Snipers" else 5), pady=5)
+        pill.grid(row=0, column=row, sticky=W, padx=(5, 0 if text != "Snipers" else 5), pady=5)
         label = ttk.Label(pill, text=text, font=("Host Grotesk", 14))
         label.configure(background=self.root.style.colors.get("secondary"))
-        label.grid(row=0, column=0, sticky=ttk.W, padx=5, pady=5)
+        label.grid(row=0, column=0, sticky=W, padx=5, pady=5)
         label.bind("<Button-1>", lambda e: command())
         pill.bind("<Button-1>", lambda e: command())
         pill.bind("<Enter>", lambda e: _hover_enter(e, pill, label))
@@ -93,7 +94,7 @@ class SettingsPage:
         if key != self.current_page:
             for page in self.pages.values():
                 page.pack_forget()
-            self.pages[key].pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+            self.pages[key].pack(fill=BOTH, expand=True, pady=(0, 10))
             self.current_page = key
         
         for pill_key, pill_components in self.pills.items():
@@ -110,10 +111,10 @@ class SettingsPage:
 
         self.title = ttk.Label(parent, text="Settings", font=("Host Grotesk", 24, "bold"))
         self.title.configure(background=self.root.style.colors.get("bg"))
-        self.title.pack(pady=(0, 10), anchor=ttk.W)
+        self.title.pack(pady=(0, 10), anchor=W)
 
         self.pages_wrapper = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
-        self.pages_wrapper.pack(anchor=ttk.W)
+        self.pages_wrapper.pack(anchor=W)
         
         self._create_pill(self.pages_wrapper, "General", 0, lambda: self.toggle("general"))
         self._create_pill(self.pages_wrapper, "Theming", 1, lambda: self.toggle("theming"))
@@ -124,6 +125,6 @@ class SettingsPage:
         
         # -------
         
-        self.settings_wrapper.pack(fill=ttk.BOTH, expand=True, pady=(10, 0))
-        self.pages[self.current_page].pack(fill=ttk.BOTH, expand=True, pady=(0, 10))
+        self.settings_wrapper.pack(fill=BOTH, expand=True, pady=(10, 0))
+        self.pages[self.current_page].pack(fill=BOTH, expand=True, pady=(0, 10))
         self.toggle(self.current_page)

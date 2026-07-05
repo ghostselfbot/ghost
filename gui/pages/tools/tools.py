@@ -1,5 +1,6 @@
 import os, sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 
 from gui.components import RoundedFrame
 from gui.pages.tools.surveillance_page import SurveillancePage
@@ -103,19 +104,19 @@ class ToolsPage:
         page_wrapper = RoundedFrame(parent, radius=15, bootstyle="dark.TFrame")
         page_wrapper.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
 
-        page_title = ttk.Label(page_wrapper, text=page["name"], font=("Host Grotesk", 18, "bold"), justify=ttk.CENTER)
+        page_title = ttk.Label(page_wrapper, text=page["name"], font=("Host Grotesk", 18, "bold"), justify=CENTER)
         page_title.configure(background=self.root.style.colors.get("dark"))
         page_title.grid(row=0, column=0, pady=(25, 5))
         page_title.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
 
-        page_description = ttk.Label(page_wrapper, text=page["description"], wraplength=175, justify=ttk.CENTER)
+        page_description = ttk.Label(page_wrapper, text=page["description"], wraplength=175, justify=CENTER)
         page_description.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         page_description.grid(row=1, column=0, pady=(0, 25))
         page_description.bind("<Button-1>", lambda e, cmd=page["command"]: cmd())
         
         # page_icon = ttk.Label(page_wrapper, image=self.images.get("right-chevron"))
         # page_icon.configure(background=self.root.style.colors.get("dark"))
-        # page_icon.grid(row=0, column=1, sticky=ttk.E, padx=(0, 20), pady=15)
+        # page_icon.grid(row=0, column=1, sticky=E, padx=(0, 20), pady=15)
         
         page_wrapper.grid_columnconfigure(0, weight=1)
         page_wrapper.grid_rowconfigure(0, weight=1)
@@ -130,8 +131,8 @@ class ToolsPage:
     def draw(self, parent):
         title = ttk.Label(parent, text="Tools", font=("Host Grotesk", 24, "bold"))
         title.configure(background=self.root.style.colors.get("bg"))
-        # title.pack(pady=(0, 15), anchor=ttk.W)
-        title.grid(row=0, column=0, sticky=ttk.W, pady=(0, 10))
+        # title.pack(pady=(0, 15), anchor=W)
+        title.grid(row=0, column=0, sticky=W, pady=(0, 10))
         
         parent.grid_columnconfigure(0, weight=1)
         parent.grid_columnconfigure(1, weight=1)
@@ -140,7 +141,7 @@ class ToolsPage:
         row, col = 1, 0
         for page in self.pages:
             card = self._draw_page_card(parent, page)
-            card.grid(row=row, column=col, sticky=ttk.NSEW, padx=(0, 5) if col == 0 else (5, 0), pady=5)
+            card.grid(row=row, column=col, sticky=NSEW, padx=(0, 5) if col == 0 else (5, 0), pady=5)
             col += 1
             if col > 1:
                 col = 0

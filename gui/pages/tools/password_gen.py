@@ -2,6 +2,7 @@ import sys
 import string
 import random
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.components import RoundedFrame, ToolPage, RoundedButton
 from gui.helpers import Style
 
@@ -23,26 +24,26 @@ class PasswordGenPage(ToolPage):
             # set generated password text to "Copied!" for 1.5 seconds
             original_text = self.generated_password.get()
             self.generated_password.configure(state="normal")
-            self.generated_password.delete(0, ttk.END)
+            self.generated_password.delete(0, END)
             self.generated_password.insert(0, "Copied!")
             self.generated_password.configure(state="readonly")
-            self.root.after(1500, lambda: self.generated_password.configure(state="normal") or self.generated_password.delete(0, ttk.END) or self.generated_password.insert(0, original_text) or self.generated_password.configure(state="readonly"))
+            self.root.after(1500, lambda: self.generated_password.configure(state="normal") or self.generated_password.delete(0, END) or self.generated_password.insert(0, original_text) or self.generated_password.configure(state="readonly"))
         
     def draw_password_field(self, parent):
         entry_wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
-        entry_wrapper.pack(fill=ttk.BOTH, pady=(0, 10))
+        entry_wrapper.pack(fill=BOTH, pady=(0, 10))
         
         self.generated_password = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
-        self.generated_password.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
+        self.generated_password.grid(row=0, column=0, sticky=EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
         self.generated_password.insert(0, "Click 'Generate' to create a password")
         self.generated_password.configure(state="readonly")
         
         copy_button = ttk.Label(entry_wrapper, image=self.images.get("copy"), style="dark.TButton")
-        copy_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 0), pady=10)
+        copy_button.grid(row=0, column=2, sticky=E, padx=(0, 0), pady=10)
         copy_button.bind("<Button-1>", lambda e: self.copy_to_clipboard())
         
         reset_button = ttk.Label(entry_wrapper, image=self.images.get("reset"), style="dark.TButton")
-        reset_button.grid(row=0, column=3, sticky=ttk.E, padx=(0, 10), pady=10)
+        reset_button.grid(row=0, column=3, sticky=E, padx=(0, 10), pady=10)
         reset_button.bind("<Button-1>", lambda e: self.generate_password())
         
         entry_wrapper.columnconfigure(1, weight=1)
@@ -63,7 +64,7 @@ class PasswordGenPage(ToolPage):
         
         password = ''.join(random.choice(character_pool) for _ in range(self.password_length))
         self.generated_password.configure(state="normal")
-        self.generated_password.delete(0, ttk.END)
+        self.generated_password.delete(0, END)
         self.generated_password.insert(0, password)
         self.generated_password.configure(state="readonly")
         
@@ -117,58 +118,58 @@ class PasswordGenPage(ToolPage):
         
     def draw_options(self, parent):
         options_wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
-        options_wrapper.pack(fill=ttk.BOTH)
+        options_wrapper.pack(fill=BOTH)
         options_wrapper.columnconfigure(1, weight=1)
         
         # password strength
         strength_wrapper = ttk.Frame(options_wrapper, bootstyle="dark.TFrame")
-        strength_wrapper.grid(row=0, column=0, sticky=ttk.EW, padx=18, pady=(15, 5), columnspan=2)
+        strength_wrapper.grid(row=0, column=0, sticky=EW, padx=18, pady=(15, 5), columnspan=2)
         strength_wrapper.columnconfigure(0, weight=1)
         
         self.strength_label = ttk.Label(strength_wrapper, text="Strong", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
-        self.strength_label.grid(row=0, column=1, sticky=ttk.W, padx=(15, 0))
+        self.strength_label.grid(row=0, column=1, sticky=W, padx=(15, 0))
         self.strength_bar = ttk.Progressbar(strength_wrapper, bootstyle="success", maximum=100, value=80)
-        self.strength_bar.grid(row=0, column=0, sticky=ttk.EW)
+        self.strength_bar.grid(row=0, column=0, sticky=EW)
         
         # password length
         self.length_label = ttk.Label(options_wrapper, text=f"Password Length {self.password_length}", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
-        self.length_label.grid(row=1, column=0, sticky=ttk.W, padx=18, pady=(5, 5))
-        length_slider = ttk.Scale(options_wrapper, from_=4, to=48, orient=ttk.HORIZONTAL, command=self.update_password_length)
+        self.length_label.grid(row=1, column=0, sticky=W, padx=18, pady=(5, 5))
+        length_slider = ttk.Scale(options_wrapper, from_=4, to=48, orient=HORIZONTAL, command=self.update_password_length)
         length_slider.bind("<ButtonRelease-1>", self.on_slider_release)
         length_slider.set(self.password_length)
-        length_slider.grid(row=1, column=1, sticky=ttk.EW, padx=18, pady=(5, 5))
+        length_slider.grid(row=1, column=1, sticky=EW, padx=18, pady=(5, 5))
         
         # uppercase, lowercase, numbers, symbols
         self.uppercase_var = ttk.BooleanVar(value=self.include_uppercase)
         self.uppercase_var.trace_add("write", self.on_option_change)
         uppercase_label = ttk.Label(options_wrapper, text="Include Uppercase Letters", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
-        uppercase_label.grid(row=2, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
+        uppercase_label.grid(row=2, column=0, sticky=W, padx=(18, 0), pady=(5, 5))
         uppercase_check = ttk.Checkbutton(options_wrapper, variable=self.uppercase_var, bootstyle="success-round-toggle", command=self.on_option_change)
-        uppercase_check.grid(row=2, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
+        uppercase_check.grid(row=2, column=1, sticky=E, padx=18, pady=(5, 5))
         
         self.lowercase_var = ttk.BooleanVar(value=self.include_lowercase)
         self.lowercase_var.trace_add("write", self.on_option_change)
         lowercase_label = ttk.Label(options_wrapper, text="Include Lowercase Letters", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
-        lowercase_label.grid(row=3, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
+        lowercase_label.grid(row=3, column=0, sticky=W, padx=(18, 0), pady=(5, 5))
         lowercase_check = ttk.Checkbutton(options_wrapper, variable=self.lowercase_var, bootstyle="success-round-toggle", command=self.on_option_change)
-        lowercase_check.grid(row=3, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
+        lowercase_check.grid(row=3, column=1, sticky=E, padx=18, pady=(5, 5))
         
         self.numbers_var = ttk.BooleanVar(value=self.include_numbers)
         self.numbers_var.trace_add("write", self.on_option_change)
         numbers_label = ttk.Label(options_wrapper, text="Include Numbers", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
-        numbers_label.grid(row=4, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
+        numbers_label.grid(row=4, column=0, sticky=W, padx=(18, 0), pady=(5, 5))
         numbers_check = ttk.Checkbutton(options_wrapper, variable=self.numbers_var, bootstyle="success-round-toggle", command=self.on_option_change)
-        numbers_check.grid(row=4, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
+        numbers_check.grid(row=4, column=1, sticky=E, padx=18, pady=(5, 5))
         
         self.symbols_var = ttk.BooleanVar(value=self.include_symbols)
         self.symbols_var.trace_add("write", self.on_option_change)
         symbols_label = ttk.Label(options_wrapper, text="Include Symbols", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
-        symbols_label.grid(row=5, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 15))
+        symbols_label.grid(row=5, column=0, sticky=W, padx=(18, 0), pady=(5, 15))
         symbols_check = ttk.Checkbutton(options_wrapper, variable=self.symbols_var, bootstyle="success-round-toggle", command=self.on_option_change)
-        symbols_check.grid(row=5, column=1, sticky=ttk.E, padx=18, pady=(5, 15))
+        symbols_check.grid(row=5, column=1, sticky=E, padx=18, pady=(5, 15))
         
         # generate_button = RoundedButton(options_wrapper, text="Generate", bootstyle="success.TButton", command=self.generate_password)
-        # generate_button.grid(row=6, column=1, columnspan=2, pady=(0, 15), padx=18, sticky=ttk.E)
+        # generate_button.grid(row=6, column=1, columnspan=2, pady=(0, 15), padx=18, sticky=E)
         
     def draw_content(self, wrapper):
         self.draw_password_field(wrapper)

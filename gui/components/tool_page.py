@@ -1,6 +1,7 @@
 import abc
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from gui.components import RoundedFrame
 from gui.helpers.style import Style
 
@@ -25,15 +26,15 @@ class ToolPage:
         wrapper = ttk.Frame(parent)
 
         tools_label = ttk.Label(wrapper, text="Tools", font=("Host Grotesk", 24, "bold"), foreground=Style.LIGHT_GREY.value)
-        tools_label.grid(row=0, column=0, sticky=ttk.W)
+        tools_label.grid(row=0, column=0, sticky=W)
         tools_label.bind("<Button-1>", lambda e: self.go_back())
 
         back_button = ttk.Label(wrapper, image=self.images.get("right-chevron-small"))
         back_button.bind("<Button-1>", lambda e: self.go_back())
-        back_button.grid(row=0, column=1, sticky=ttk.W, padx=(10, 10))
+        back_button.grid(row=0, column=1, sticky=W, padx=(10, 10))
 
         page_name = ttk.Label(wrapper, text=self.title, font=("Host Grotesk", 24, "bold"))
-        page_name.grid(row=0, column=2, sticky=ttk.W)
+        page_name.grid(row=0, column=2, sticky=W)
         page_name.bind("<Button-1>", lambda e: self.go_back())
 
         return wrapper
@@ -41,14 +42,14 @@ class ToolPage:
     def draw(self, parent):
         # Draw shared navigation
         navigation = self.draw_navigation(parent)
-        navigation.pack(side=ttk.TOP, fill=ttk.X, pady=(0, 10))
+        navigation.pack(side=TOP, fill=X, pady=(0, 10))
 
         # Create shared content wrapper
         if self.frame:
             wrapper = RoundedFrame(parent, radius=10, style="dark.TFrame")
         else:
             wrapper = ttk.Frame(parent)
-        wrapper.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True, pady=(10, 0))
+        wrapper.pack(side=TOP, fill=BOTH, expand=True, pady=(10, 0))
 
         # Call subclass-specific content render
         self.draw_content(wrapper)

@@ -1,5 +1,6 @@
 import sys
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 import utils.console as console
 from gui.components import SettingsPanel, RoundedFrame, DropdownMenu
 
@@ -33,12 +34,12 @@ class SessionSpoofingPanel(SettingsPanel):
     def draw(self):
         toggle_label = ttk.Label(self.body, text="Enable Session Spoofing")
         toggle_label.configure(background=self.root.style.colors.get("dark"))
-        toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=(15, 5))
+        toggle_label.grid(row=0, column=0, sticky=W, padx=(10, 0), pady=(15, 5))
         toggle_label.bind("<Button-1>", lambda e: self.checkbox.invoke())
         
         self.checkbox = ttk.Checkbutton(self.body, text="", style="success-round-toggle")
-        # self.checkbox.grid(row=0, column=0, columnspan=2, sticky=ttk.W, padx=(13, 0), pady=(15, 0))
-        self.checkbox.grid(row=0, column=1, sticky=ttk.E, padx=(0, 10), pady=(10, 5))
+        # self.checkbox.grid(row=0, column=0, columnspan=2, sticky=W, padx=(13, 0), pady=(15, 0))
+        self.checkbox.grid(row=0, column=1, sticky=E, padx=(0, 10), pady=(10, 5))
         self.checkbox.configure(command=self._save_session_spoofing)
         
         self.body.grid_columnconfigure(0, weight=1)
@@ -50,7 +51,7 @@ class SessionSpoofingPanel(SettingsPanel):
                 
         device_label = ttk.Label(self.body, text="Session spoofing device")
         device_label.configure(background=self.root.style.colors.get("dark"))
-        device_label.grid(row=1, column=0, sticky=ttk.NW, padx=(10, 0), pady=(10, 10))
+        device_label.grid(row=1, column=0, sticky=NW, padx=(10, 0), pady=(10, 10))
         
         # device_select_menu = ttk.Menubutton(self.body, textvariable=self.selected_device, bootstyle="secondary")
         # device_select_menu.menu = ttk.Menu(device_select_menu, tearoff=0)
@@ -64,11 +65,11 @@ class SessionSpoofingPanel(SettingsPanel):
         device_select_menu.draw().grid(row=1, column=1, sticky="we", padx=(10, 10), pady=(5, 10))
         
         # save_button = ttk.Button(self.body, text="Save", style="success.TButton", command=self._save_session_spoofing)
-        # save_button.grid(row=2, column=1, sticky=ttk.E, padx=(0, 11), pady=10)
+        # save_button.grid(row=2, column=1, sticky=E, padx=(0, 11), pady=10)
         
         # restart_required_label = ttk.Label(self.body, text="A restart is required to apply changes!", font=("Host Grotesk", 12, "italic"))
         # restart_required_label.configure(background=self.root.style.colors.get("dark"), foreground="#cccccc")
-        # restart_required_label.grid(row=2, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
+        # restart_required_label.grid(row=2, column=0, sticky=W, padx=(10, 0), pady=10)
 
         self.body.grid_columnconfigure(1, weight=1)
         

@@ -1,6 +1,7 @@
 import os, sys
 import subprocess
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.dialogs import Messagebox
@@ -62,7 +63,7 @@ class ScriptsPage:
         if current_scripts != previous_scripts:
             try:
                 if not self.restart_warning.winfo_ismapped():
-                    self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
+                    self.restart_warning.pack(fill=X, side=TOP, pady=(10, 0))
             except:
                 pass
         else:
@@ -81,7 +82,7 @@ class ScriptsPage:
         for script in files:
             if script not in current_scripts:
                 script_frame = self._draw_script_frame(self.scripts_wrapper, script)
-                script_frame.pack(fill=ttk.X, pady=5)
+                script_frame.pack(fill=X, pady=5)
                 self.script_frames.append({
                     "name": script,
                     "frame": script_frame
@@ -131,22 +132,22 @@ class ScriptsPage:
        
         if search_query == "":
             for frame in self.script_frames:
-                frame["frame"].pack(fill=ttk.X, pady=5)
+                frame["frame"].pack(fill=X, pady=5)
             return
             
         for frame in self.script_frames:
             if search_query.lower() in frame["name"].lower():
-                frame["frame"].pack(fill=ttk.X, pady=5)
+                frame["frame"].pack(fill=X, pady=5)
         
     def _draw_search_bar(self, parent):
         entry_wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="secondary.TFrame")
-        # entry_wrapper.pack(fill=ttk.BOTH)
+        # entry_wrapper.pack(fill=BOTH)
         
         placeholder_text = "Search local scripts..."
         
         def on_focus_in(event):
             if self.search_entry.get() == placeholder_text:
-                self.search_entry.delete(0, ttk.END)
+                self.search_entry.delete(0, END)
                 self.search_entry.configure(foreground=self.root.style.colors.get("fg"))
                 
         def on_focus_out(event):
@@ -155,7 +156,7 @@ class ScriptsPage:
                 self.search_entry.configure(foreground=Style.LIGHT_GREY.value)
         
         self.search_entry = ttk.Entry(entry_wrapper, bootstyle="secondary.TFrame", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
-        self.search_entry.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
+        self.search_entry.grid(row=0, column=0, sticky=EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
         self.search_entry.configure(foreground=Style.LIGHT_GREY.value)
         self.search_entry.insert(0, placeholder_text)
         self.search_entry.bind("<FocusIn>", on_focus_in)
@@ -164,7 +165,7 @@ class ScriptsPage:
         # self.search_entry.bind("<Key>", self._search_scripts)
         
         search_button = ttk.Label(entry_wrapper, image=self.images.get("search"), style="secondary.TButton")
-        search_button.grid(row=0, column=2, sticky=ttk.E, padx=(0, 10), pady=10)
+        search_button.grid(row=0, column=2, sticky=E, padx=(0, 10), pady=10)
         search_button.bind("<Button-1>", self._search_scripts)
         
         entry_wrapper.columnconfigure(1, weight=1)
@@ -187,7 +188,7 @@ class ScriptsPage:
         
         open_folder_button = ttk.Label(wrapper, image=self.images.get("folder-open"), style="secondary")
         open_folder_button.configure(background=self.root.style.colors.get("secondary"))
-        open_folder_button.pack(side=ttk.LEFT, padx=15, pady=14)
+        open_folder_button.pack(side=LEFT, padx=15, pady=14)
         open_folder_button.bind("<Button-1>", lambda e: open_path_in_explorer(get_application_support() + "/scripts"))
         open_folder_button.bind("<Enter>", _hover_enter)
         open_folder_button.bind("<Leave>", _hover_leave)
@@ -214,7 +215,7 @@ class ScriptsPage:
         
         plus_button = ttk.Label(wrapper, image=self.plus_button_image, style="primary")
         plus_button.configure(background=self.root.style.colors.get("primary"))
-        plus_button.pack(side=ttk.LEFT, padx=15, pady=14)
+        plus_button.pack(side=LEFT, padx=15, pady=14)
         plus_button.bind("<Button-1>", lambda e: self._create_script())
         plus_button.bind("<Enter>", _hover_enter)
         plus_button.bind("<Leave>", _hover_leave)
@@ -225,13 +226,13 @@ class ScriptsPage:
         header = ttk.Frame(parent)
         
         search_bar = self._draw_search_bar(header)
-        search_bar.grid(row=0, column=0, sticky=ttk.EW, padx=(0, 5))
+        search_bar.grid(row=0, column=0, sticky=EW, padx=(0, 5))
         
         open_folder_button = self._draw_open_folder_button(header)
-        open_folder_button.grid(row=0, column=1, sticky=ttk.E)
+        open_folder_button.grid(row=0, column=1, sticky=E)
         
         plus_button = self._draw_plus_button(header)
-        plus_button.grid(row=0, column=2, sticky=ttk.E, padx=(5, 0))
+        plus_button.grid(row=0, column=2, sticky=E, padx=(5, 0))
         
         header.grid_columnconfigure(0, weight=1)
         
@@ -242,15 +243,15 @@ class ScriptsPage:
 
         frame = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
         inner_wrapper = ttk.Frame(frame, style="dark.TFrame")
-        inner_wrapper.pack(fill=ttk.BOTH, padx=(15, 10), pady=10)
+        inner_wrapper.pack(fill=BOTH, padx=(15, 10), pady=10)
 
         script_name = ttk.Label(inner_wrapper, text=script, font=("Host Grotesk", 14 if sys.platform != "darwin" else 16, "bold"))
         script_name.configure(background=self.root.style.colors.get("dark"))
-        script_name.grid(row=0, column=0, sticky=ttk.W)
+        script_name.grid(row=0, column=0, sticky=W)
         inner_wrapper.columnconfigure(0, weight=1)
 
         button_wrapper = ttk.Frame(inner_wrapper, style="dark.TFrame", width=60, height=20)
-        button_wrapper.grid(row=0, column=1, sticky=ttk.E)
+        button_wrapper.grid(row=0, column=1, sticky=E)
 
         self.hover_images = {}
         buttons = {
@@ -293,14 +294,14 @@ class ScriptsPage:
     def _draw_scripts(self, parent):
         scripts = self.cfg.get_scripts()
         self.scripts_wrapper = ScrolledFrame(parent, width=parent.winfo_width(), height=parent.winfo_height())
-        self.scripts_wrapper.pack(fill=ttk.BOTH, expand=True)
+        self.scripts_wrapper.pack(fill=BOTH, expand=True)
         
         self.scripts_wrapper.hide_scrollbars()
         self.scripts_wrapper.enable_scrolling()
         
         for script in scripts:
             script_frame = self._draw_script_frame(self.scripts_wrapper, script)
-            script_frame.pack(fill=ttk.X, pady=5)
+            script_frame.pack(fill=X, pady=5)
             
             self.script_frames.append({
                 "name": script,
@@ -310,28 +311,28 @@ class ScriptsPage:
     def _draw_restart_warning(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="warning.TFrame")
         inner_wrapper = ttk.Frame(wrapper, style="warning.TFrame")
-        inner_wrapper.pack(fill=ttk.BOTH, padx=15, pady=10, expand=True)
+        inner_wrapper.pack(fill=BOTH, padx=15, pady=10, expand=True)
         
         warning_label = ttk.Label(inner_wrapper, text="A restart is required to apply changes!", font=("Host Grotesk", 14 if sys.platform != "darwin" else 16, "bold"), anchor="center")
         warning_label.configure(background=self.root.style.colors.get("warning"))
-        warning_label.pack(fill=ttk.BOTH, expand=True)
+        warning_label.pack(fill=BOTH, expand=True)
         
         return wrapper
     
     def draw(self, parent):
         self.restart_warning = self._draw_restart_warning(parent)
-        self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
+        self.restart_warning.pack(fill=X, side=TOP, pady=(10, 0))
         self.restart_warning.pack_forget()
         
         title = ttk.Label(parent, text="Scripts", font=("Host Grotesk", 24, "bold"))
         title.configure(background=self.root.style.colors.get("bg"))
-        title.pack(pady=(0, 15), anchor=ttk.W)
-        # title.grid(row=0, column=0, sticky=ttk.W, pady=(0, 15))
+        title.pack(pady=(0, 15), anchor=W)
+        # title.grid(row=0, column=0, sticky=W, pady=(0, 15))
         
         header = self._draw_header(parent)
-        header.pack(fill=ttk.X)
+        header.pack(fill=X)
         
-        ttk.Separator(parent, orient="horizontal").pack(fill=ttk.X, pady=(20, 16), padx=4)
+        ttk.Separator(parent, orient="horizontal").pack(fill=X, pady=(20, 16), padx=4)
         
         self._draw_scripts(parent)
         self._listen_to_directory()
