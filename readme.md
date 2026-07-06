@@ -19,7 +19,7 @@ Use the commands below to run Ghost from source code. If you're using Windows, d
 ```bash
 git clone https://github.com/ghostselfbot/ghost
 cd ghost
-python3 -m venv .venv # create venv (requires Python 3.10+)
+python3 -m venv .venv # create venv (requires Python 3.10-3.13)
 source .venv/bin/activate # or on Windows: .\.venv\Scripts\activate
 pip install -r requirements.txt
 python3 ghost.py
