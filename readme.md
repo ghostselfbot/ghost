@@ -29,7 +29,7 @@ If you're using macOS or Linux, run the command below to get a compiled binary.
 curl -sSL https://www.ghostt.cc/assets/unix-install.sh | bash
 ```
 Follow [this guide](https://gist.github.com/bennyscripts/49ecc1eade1796ee1d7cad9d165ffe67) on how to get your account token!  
-> _Ghost requires Python 3.10+_
+> _Ghost requires Python 3.10-3.13_
 
 <!--
 <br>
