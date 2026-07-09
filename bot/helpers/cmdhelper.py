@@ -219,7 +219,9 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
         embed_file = embed2.save()
 
         msg = await ctx.send(file=discord.File(embed_file, filename=embed_file.split("/")[-1]), delete_after=delete_after)
-        os.remove(embed_file)
+        await asyncio.sleep(1)  # Wait for a second before deleting the file to ensure it's not in use
+        if os.path.exists(embed_file):
+            os.remove(embed_file)
 
     elif msg_style == "embed":
         if title == theme.title:
