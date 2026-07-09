@@ -4,7 +4,7 @@ from .theme import Theme
 from .config import Config
 from .token import Token
 
-VERSION = "4.2.1"
+VERSION = "4.2.2"
 PRODUCTION = True
-MOTD = "last update 4 months ago ;("
+MOTD = "lil hotfix cuz i forgor bugs"
 CHANGELOG = """"""
