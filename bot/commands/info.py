@@ -109,24 +109,37 @@ class Info(commands.Cog):
                 delete_after=self.cfg.get("message_settings")["auto_delete_delay"]
             )
 
-    @commands.command(name="serverinfo", description="Get information about the server.", aliases=["si"], usage="")
-    async def serverinfo(self, ctx):
+    @commands.command(name="serverinfo", description="Get information about the server.", aliases=["si"], usage="[id]")
+    async def serverinfo(self, ctx, guild_id: int = None):
+        if guild_id is None:
+            guild = ctx.guild
+        else:
+            guild = discord.utils.get(self.bot.guilds, id=guild_id)
+
+        if not guild:
+            await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": "You're not part of this guild so I can't provide information.",
+                "colour": "#ff0000"
+            })
+            return
+
         info = {
-            "ID": ctx.guild.id,
-            "Name": ctx.guild.name,
-            "Owner": ctx.guild.owner,
-            # "Region": ctx.guild.region,
-            "Members": len(ctx.guild.members),
-            "Roles": len(ctx.guild.roles),
-            "Channels": len(ctx.guild.channels),
-            "Created at": ctx.guild.created_at
+            "ID": guild.id,
+            "Name": guild.name,
+            "Owner": guild.owner,
+            # "Region": guild.region,
+            "Members": len(guild.members),
+            "Roles": len(guild.roles),
+            "Channels": len(guild.channels),
+            "Created at": guild.created_at
         }
 
         await cmdhelper.send_message(ctx, {
             "title": "Server Info",
             "description": "\n".join([f"**{key}:** {value}" for key, value in info.items()]),
             "codeblock_desc": "\n".join([f"{key}{' ' * (10 - len(key))} :: {value}" for key, value in info.items()]),
-            "thumbnail": ctx.guild.icon.url
+            "thumbnail": guild.icon.url
         })
 
     @commands.command(name="servericon", description="Get the icon of the server.")
