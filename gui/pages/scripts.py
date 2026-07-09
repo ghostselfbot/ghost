@@ -24,6 +24,10 @@ class ScriptsPage:
         self.images = images
         self.cfg = Config()
         self.script_frames = []
+        self._scripts_page_token = 0
+
+    def _is_current_scripts_page(self, token):
+        return token == self._scripts_page_token and hasattr(self, "scripts_wrapper") and self.scripts_wrapper.winfo_exists()
     
     def _open_editor(self, script):
         # Uncomment the below to enable the dedicated script page.
@@ -55,7 +59,10 @@ class ScriptsPage:
             except:
                 subprocess.run(["gedit", get_application_support() + f"/scripts/{script}"], creationflags=subprocess.CREATE_NO_WINDOW)
                 
-    def _new_scripts_listener(self):
+    def _new_scripts_listener(self, token):
+        if not self._is_current_scripts_page(token):
+            return
+
         current_scripts = set(self.cfg.get_scripts())
         previous_scripts = set(self.bot_controller.startup_scripts)
 
@@ -72,20 +79,27 @@ class ScriptsPage:
             except:
                 pass
 
-        self.root.after(1000, self._new_scripts_listener)
+        self.root.after(1000, lambda: self._new_scripts_listener(token))
                 
-    def _listen_to_directory(self):
+    def _listen_to_directory(self, token):
+        if not self._is_current_scripts_page(token):
+            return
+
+        self.script_frames = [frame for frame in self.script_frames if frame["frame"].winfo_exists()]
         current_scripts = [script["name"] for script in self.script_frames]
         files = self.cfg.get_scripts()
 
         for script in files:
             if script not in current_scripts:
-                script_frame = self._draw_script_frame(self.scripts_wrapper, script)
-                script_frame.pack(fill=ttk.X, pady=5)
-                self.script_frames.append({
-                    "name": script,
-                    "frame": script_frame
-                })
+                try:
+                    script_frame = self._draw_script_frame(self.scripts_wrapper, script)
+                    script_frame.pack(fill=ttk.X, pady=5)
+                    self.script_frames.append({
+                        "name": script,
+                        "frame": script_frame
+                    })
+                except Exception as e:
+                    print(f"Error drawing script frame for {script}, probably on different page: {e}")
                 
         for script in current_scripts:
             if script not in files:
@@ -96,7 +110,7 @@ class ScriptsPage:
                         self.script_frames.remove(frame)
                         break
                 
-        self.root.after(500, self._listen_to_directory)
+        self.root.after(500, lambda: self._listen_to_directory(token))
                 
     def _delete_script(self, script):
         if str(Messagebox.yesno("Are you sure you want to delete this script?", title="Ghost")).lower() == "yes":
@@ -121,10 +135,15 @@ class ScriptsPage:
         self.gui.draw_scripts()
         
     def _search_scripts(self, event):
+        if not hasattr(self, "scripts_wrapper") or not self.scripts_wrapper.winfo_exists():
+            return
+
         search_query = self.search_entry.get()
         
         if search_query == "Search local scripts...":
             return
+
+        self.script_frames = [frame for frame in self.script_frames if frame["frame"].winfo_exists()]
         
         for frame in self.script_frames:
             frame["frame"].pack_forget()
@@ -299,13 +318,16 @@ class ScriptsPage:
         self.scripts_wrapper.enable_scrolling()
         
         for script in scripts:
-            script_frame = self._draw_script_frame(self.scripts_wrapper, script)
-            script_frame.pack(fill=ttk.X, pady=5)
-            
-            self.script_frames.append({
-                "name": script,
-                "frame": script_frame
-            })
+            try:
+                script_frame = self._draw_script_frame(self.scripts_wrapper, script)
+                script_frame.pack(fill=ttk.X, pady=5)
+                
+                self.script_frames.append({
+                    "name": script,
+                    "frame": script_frame
+                })
+            except Exception as e:
+                print(f"Error drawing script frame for {script}, probably on different page: {e}")
             
     def _draw_restart_warning(self, parent):
         wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="warning.TFrame")
@@ -319,6 +341,9 @@ class ScriptsPage:
         return wrapper
     
     def draw(self, parent):
+        self._scripts_page_token += 1
+        token = self._scripts_page_token
+        self.script_frames = []
         self.restart_warning = self._draw_restart_warning(parent)
         self.restart_warning.pack(fill=ttk.X, side=ttk.TOP, pady=(10, 0))
         self.restart_warning.pack_forget()
@@ -334,5 +359,5 @@ class ScriptsPage:
         ttk.Separator(parent, orient="horizontal").pack(fill=ttk.X, pady=(20, 16), padx=4)
         
         self._draw_scripts(parent)
-        self._listen_to_directory()
-        self._new_scripts_listener()
+        self._listen_to_directory(token)
+        self._new_scripts_listener(token)
