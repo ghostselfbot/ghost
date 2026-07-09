@@ -119,9 +119,29 @@ class Embed:
         self.thumbnail_gif = False
         self.waves = Image.open(files.resource_path("data/waves.png")).convert("RGBA")
 
+    def _get_thumbnail_response(self, url: str):
+        fallback_url = "https://raw.githubusercontent.com/GhostSelfbot/Branding/main/ghost.png"
+
+        for candidate_url in (url, fallback_url):
+            if candidate_url == "":
+                continue
+
+            try:
+                response = requests.get(candidate_url, timeout=10)
+                response.raise_for_status()
+                return response
+            except Exception:
+                continue
+
+        return None
+
     def set_thumbnail(self, url = ""): 
         self.thumbnail = url
-        self.thumbnail_resp = requests.get(url)
+        self.thumbnail_resp = self._get_thumbnail_response(url)
+
+        if self.thumbnail_resp is None:
+            self.thumbnail = ""
+
     def set_image(self, url = ""): self.image = url
     def set_footer(self, text = "", icon_url = ""): self.footer = text
     def set_author(self, name = "", icon_url = "", url = ""): pass
@@ -173,7 +193,7 @@ class Embed:
             draw.text((70, 62), self.title, (255, 255, 255), font=self.title_font)
 
     def draw_thumbnail(self, template, draw):
-        if self.thumbnail != "":
+        if self.thumbnail != "" and self.thumbnail_resp is not None:
             try:
                 logo = Image.open(BytesIO(self.thumbnail_resp.content))
                 logo = crop_center_square(logo)
@@ -322,6 +342,9 @@ class Embed:
     def draw_animated(self):
         self.setup_dimensions()
 
+        if self.thumbnail_resp is None:
+            raise ValueError("thumbnail response is unavailable")
+
         thumbnail = Image.open(BytesIO(self.thumbnail_resp.content))
 
         base = self.build_static_base()
@@ -349,6 +372,14 @@ class Embed:
         return frames, duration * 1.5
 
     def save(self):
+        if self.thumbnail_resp is None:
+            file_name = f"embed-{random.randint(1000, 9999)}.png"
+            path = os.path.join(files.get_cache_path(), file_name)  # comment this out if youre running the script directly
+            final = self.draw()
+            final.thumbnail((self.width // 2, self.height // 2), Image.LANCZOS)
+            final.save(path, optimize=True, quality=20)
+            return path
+
         thumbnail_is_gif = getattr(Image.open(BytesIO(self.thumbnail_resp.content)), "is_animated", False)
         extension = ".gif" if thumbnail_is_gif else ".png"
         file_name = f"embed-{random.randint(1000, 9999)}{extension}"
