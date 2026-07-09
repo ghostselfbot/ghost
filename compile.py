@@ -5,25 +5,17 @@ import plistlib
 
 from utils.config import VERSION
 
-
-def patch_macos_plist(app_name):
-    plist_path = os.path.join("dist", f"{app_name}.app", "Contents", "Info.plist")
-
-    if not os.path.exists(plist_path):
-        print("Info.plist not found, skipping version patch")
-        return
-
-    with open(plist_path, "rb") as f:
-        plist = plistlib.load(f)
-
-    plist["CFBundleShortVersionString"] = VERSION  # About menu
-    plist["CFBundleVersion"] = VERSION              # build number
-
-    with open(plist_path, "wb") as f:
-        plistlib.dump(plist, f)
-
-    print(f"Patched Info.plist with version {VERSION}")
-
+def sign_macos_app(path):
+    print(f"🔏 Signing macOS app at {path}...")
+    subprocess.run([
+        "codesign",
+        "--deep",
+        "--force",
+        "--verbose",
+        "--sign",
+        "-",
+        path
+    ], check=True)
 
 def build():
     system = platform.system()
@@ -69,8 +61,8 @@ def build():
     subprocess.run(args, check=True)
 
     if system == "Darwin":
-        patch_macos_plist(name)
-
+        app_path = os.path.join("dist", "Ghost.app")
+        sign_macos_app(app_path)
 
 if __name__ == "__main__":
     build()
