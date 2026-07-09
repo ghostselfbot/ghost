@@ -4,7 +4,7 @@ from .theme import Theme
 from .config import Config
 from .token import Token
 
-VERSION = "4.2.1-dev"
-PRODUCTION = False
-MOTD = "ghost selfbot ftw"
+VERSION = "4.2.1"
+PRODUCTION = True
+MOTD = "last update 4 months ago ;("
 CHANGELOG = """"""
