@@ -210,8 +210,8 @@ class Ghost(commands.Bot):
             await asyncio.sleep(self.latency)
             try:
                 msg = await ctx.channel.fetch_message(ctx.message.id)
-                if "benny.fun/api/embed" not in msg.content:
-                    await msg.delete()
+                # if "benny.fun/api/embed" not in msg.content:
+                #     await msg.delete()
             except Exception as e:
                 console.print_error(str(e))
 
