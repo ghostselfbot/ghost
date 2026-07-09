@@ -18,7 +18,7 @@ if getattr(sys, 'frozen', False):
 
 from utils.files import get_application_support
 from utils.config import Config
-from utils import startup_check, check_fonts, console
+from utils import startup_check, check_fonts, console, load_fonts
 from bot.controller import BotController
 
 if not HEADLESS:
@@ -71,7 +71,8 @@ def main():
     elif check_fonts():
         run_gui()
     else:
-        FontCheckGUI().run()
+        # FontCheckGUI().run()
+        load_fonts()
         run_gui()
 
 if __name__ == "__main__":
