@@ -1,6 +1,7 @@
 import random
 import requests
 import re
+import os
 
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont, ImageChops
@@ -350,7 +351,8 @@ class Embed:
     def save(self):
         thumbnail_is_gif = getattr(Image.open(BytesIO(self.thumbnail_resp.content)), "is_animated", False)
         extension = ".gif" if thumbnail_is_gif else ".png"
-        path = f"embed-{random.randint(1000, 9999)}" + extension  # comment this out if youre running the script directly
+        file_name = f"embed-{random.randint(1000, 9999)}{extension}"
+        path = os.path.join(files.get_cache_path(), file_name)  # comment this out if youre running the script directly
         # path = "embed.png" # uncomment this if youre running the script directly
         
         if thumbnail_is_gif:
@@ -361,7 +363,7 @@ class Embed:
             final.thumbnail((self.width // 2, self.height // 2), Image.LANCZOS)
             # final = final.resize((self.width // 2, self.height // 2), Image.LANCZOS)
             final.save(path, optimize=True, quality=20)
-            
+
         return path
 
 
