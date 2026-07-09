@@ -15,7 +15,7 @@ Ghost has 150+ commands and a completely custom built GUI for endless customisat
 -->
 
 ## Getting Started
-Use the commands below to run Ghost from source code. If you're using Windows, download the binary in the latest release.
+Use the commands below to run Ghost from source code. If you're using Windows or macOS, download the binary in the latest release.
 ```bash
 git clone https://github.com/ghostselfbot/ghost
 cd ghost
@@ -23,6 +23,10 @@ python3 -m venv .venv # create venv (requires Python 3.10-3.13)
 source .venv/bin/activate # or on Windows: .\.venv\Scripts\activate
 pip install -r requirements.txt
 python3 ghost.py
+```
+To force CLI mode from any platform, pass `--headless`:
+```bash
+python3 ghost.py --headless
 ```
 If you're using macOS or Linux, run the command below to get a compiled binary.
 ```bash

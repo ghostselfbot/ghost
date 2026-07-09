@@ -2,13 +2,10 @@ import os
 import sys
 import certifi
 import multiprocessing
+import argparse
 
 sys.setrecursionlimit(10000)
 os.environ["SSL_CERT_FILE"] = certifi.where()
-
-# HEADLESS = "DISPLAY" not in os.environ and sys.platform == "linux"
-HEADLESS = True if sys.platform == "linux" else False
-# HEADLESS = True # debugging
 
 if sys.platform == "darwin":
     multiprocessing.set_start_method("fork", force=True)
@@ -21,11 +18,19 @@ from utils.config import Config
 from utils import startup_check, check_fonts, console, load_fonts
 from bot.controller import BotController
 
-if not HEADLESS:
-    from gui.main import GhostGUI
-    from gui.font_check import FontCheckGUI
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Ghost selfbot launcher")
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help="Force CLI mode instead of the GUI",
+    )
+    return parser.parse_args()
 
 def run_gui():
+    from gui.main import GhostGUI
+
     cfg = Config()
     controller = BotController()
     GhostGUI(controller).run()
@@ -53,12 +58,15 @@ def run_cli():
         controller.join()
 
 def main():
+    args = parse_args()
+    headless = args.headless or sys.platform == "linux"
+
     get_application_support()
     startup_check.check()
     cfg = Config()
     cfg.check()
 
-    if HEADLESS:
+    if headless:
         console.info("Running in headless (CLI) mode.")
         run_cli()
         return
