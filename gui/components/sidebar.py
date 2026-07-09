@@ -93,26 +93,28 @@ class Sidebar:
         # self.sidebar = ttk.Frame(self.root, width=self.width, height=self.root.winfo_height(), style="dark.TFrame")
         self.sidebar = RoundedFrame(self.root, radius=(0, 0, 0, 25), background=Style.WINDOW_BORDER.value)
         self.sidebar.set_height(self.root.winfo_height())
-        self.sidebar.set_width(self.width + 7)
+        self.sidebar.set_width(self.width + 7 if self.current_page != "onboarding" else 8)
         # self.sidebar.pack(side=ttk.LEFT, fill=ttk.BOTH)
         self.sidebar.grid_propagate(False)
-    
-        self.buttons = {
-            "home": self._create_button(self.images.get("home"), "home", self.button_cmds["home"], 0),
-            # "console": self._create_button(self.images.get("console"), "console", self.button_cmds["console"], 1),
-            "settings": self._create_button(self.images.get("settings"), "settings", self.button_cmds["settings"], 1),
-            "tools": self._create_button(self.images.get("tools"), "tools", self.button_cmds["tools"], 2),
-            "scripts": self._create_button(self.images.get("scripts"), "scripts", self.button_cmds["scripts"], 3),
-        }
-            
-        logout_btn = ttk.Label(self.sidebar, image=self.images.get("logout"), background=Style.WINDOW_BORDER.value, anchor="center")
-        logout_btn.bind("<Button-1>", lambda e: self._quit())
-        logout_btn.bind("<Enter>", lambda e: self._hover_enter(logout_btn, "logout"))
-        logout_btn.bind("<Leave>", lambda e: self._hover_leave(logout_btn, "logout"))
-        # logout_btn.grid(row=len(self.buttons) + 2, column=0, sticky=ttk.NSEW, pady=10, ipady=12)
         
-        self.sidebar.grid_rowconfigure(len(self.buttons) + 1, weight=1)
-        self.sidebar.grid_columnconfigure(0, weight=1)
+        if self.current_page != "onboarding":
+
+            self.buttons = {
+                "home": self._create_button(self.images.get("home"), "home", self.button_cmds["home"], 0),
+                # "console": self._create_button(self.images.get("console"), "console", self.button_cmds["console"], 1),
+                "settings": self._create_button(self.images.get("settings"), "settings", self.button_cmds["settings"], 1),
+                "tools": self._create_button(self.images.get("tools"), "tools", self.button_cmds["tools"], 2),
+                "scripts": self._create_button(self.images.get("scripts"), "scripts", self.button_cmds["scripts"], 3),
+            }
+                
+            logout_btn = ttk.Label(self.sidebar, image=self.images.get("logout"), background=Style.WINDOW_BORDER.value, anchor="center")
+            logout_btn.bind("<Button-1>", lambda e: self._quit())
+            logout_btn.bind("<Enter>", lambda e: self._hover_enter(logout_btn, "logout"))
+            logout_btn.bind("<Leave>", lambda e: self._hover_leave(logout_btn, "logout"))
+            # logout_btn.grid(row=len(self.buttons) + 2, column=0, sticky=ttk.NSEW, pady=10, ipady=12)
+            
+            self.sidebar.grid_rowconfigure(len(self.buttons) + 1, weight=1)
+            self.sidebar.grid_columnconfigure(0, weight=1)
         
         return self.sidebar
         

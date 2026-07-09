@@ -101,6 +101,8 @@ class GhostGUI:
             self.root.after(450, self._show_window)
             self.root.after(500, self._window_mapped)
 
+        self.layout.center_window(self.size[0], self.size[1])
+
     def _pre_load_user_images(self, user):
         if not user:
             return
@@ -237,6 +239,13 @@ class GhostGUI:
         main = self.layout.main()
         self.home_page.draw(main, restart=restart, start=start)
         self.root.after(150, self._position_resize_grips)
+        
+    def draw_onboarding(self):
+        self.sidebar.set_current_page("onboarding")
+        self.layout.clear()
+        main = self.layout.main(scrollable=False)
+        self.onboarding_page.draw(main)
+        self.root.after(150, self._position_resize_grips)
     
     # def draw_console(self):
     #     self.sidebar.set_current_page("console")
@@ -312,23 +321,19 @@ class GhostGUI:
         else:
             self.root.after(500, self._check_bot_started)
 
-    def run(self):
+    def run(self, preserve_position=False):
+        if not preserve_position:
+            self.layout.center_window(self.size[0], self.size[1])
+        
         if self.cfg.get("token") == "":
-            if sys.platform == "win32":
-                self.root.after(50, lambda: hPyT.window_frame.restore(self.root))
-                self.root.after(75, lambda: hPyT.window_frame.center(self.root))
-            else:
-                self.layout.center_window(self.size[0], self.size[1])
-            # self.layout.resize(450, 372)
-            # self.layout.center_window(450, 372)
-            self.onboarding_page.draw()
+        # if True:
+            self.draw_onboarding()
             self.root.mainloop()
             return
         
         if not self.bot_controller.running:
             self.bot_controller.start()
         
-        self.layout.center_window(self.size[0], self.size[1])
         # self.layout.hide_titlebar()
         # self.layout.stick_window()
         # self.layout.resize(400, 90)
