@@ -23,7 +23,7 @@ FONTS = [resource_path(f"data/fonts/{path}") for path in os.listdir(resource_pat
 SYSTEM_FONT_DIR = {
     "darwin": os.path.expanduser("~/Library/Fonts"),
     "win32": os.path.expandvars("%WINDIR%\\Fonts"),
-    "linux": "/usr/share/fonts",
+    "linux": os.path.expanduser("~/.local/share/fonts/"),
 }
 
 if sys.platform == "win32":
@@ -85,7 +85,7 @@ def already_installed(font_path):
     if system_platform == "darwin":
         font_dir = os.path.expanduser("~/Library/Fonts")
     elif system_platform == "win32":
-        font_dir = "C:\\Windows\\Fonts"
+        font_dir = os.path.expandvars("%WINDIR%\\Fonts")
         
         # Check if the font is in the registry
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, FONTS_REG_PATH) as key:
