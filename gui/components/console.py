@@ -62,18 +62,18 @@ class Console:
         self.update()
         
     def _load_tags(self):
-        self.textarea.tag_config("timestamp", foreground=Style.DARK_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("log_text",  foreground=Style.LIGHT_GREY.value, font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
+        self.textarea.tag_config("timestamp", foreground=Style.DARK_GREY.value, font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("log_text",  foreground=Style.LIGHT_GREY.value, font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
         
-        self.textarea.tag_config("prefix_sniper",  foreground="red",     font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("sniper_key",     foreground="#eceb18", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("prefix_command", foreground="#0b91ff", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("prefix_info",    foreground="#2aefef", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("prefix_success", foreground="#4fee4c", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("prefix_warning", foreground="#eceb18", font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("prefix_error",   foreground="red",     font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("prefix_cli",     foreground="pink",    font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
-        self.textarea.tag_config("prefix_rpc",     foreground="pink",    font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size))
+        self.textarea.tag_config("prefix_sniper",  foreground="red",     font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("sniper_key",     foreground="#eceb18", font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_command", foreground="#0b91ff", font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_info",    foreground="#2aefef", font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_success", foreground="#4fee4c", font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_warning", foreground="#eceb18", font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_error",   foreground="red",     font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_cli",     foreground="pink",    font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_rpc",     foreground="pink",    font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
     
     def _draw_footer(self, parent):
         """ Draw the footer with user info and clear button. """
@@ -103,7 +103,7 @@ class Console:
         wrapper.pack(side="top", fill="both", expand=True)
 
         self.textarea = ttk.Text(wrapper, wrap="word", height=20,
-            font=("JetBrainsMono NF Bold", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size)
+            font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold")
         )
         self.textarea.config(
             border=0,
