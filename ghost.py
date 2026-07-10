@@ -65,6 +65,7 @@ def main():
     startup_check.check()
     cfg = Config()
     cfg.check()
+    load_fonts()
 
     if headless:
         console.info("Running in headless (CLI) mode.")

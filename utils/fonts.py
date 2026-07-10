@@ -83,9 +83,9 @@ def already_installed(font_path):
 
     # Check if the font exists in the system font directories
     if system_platform == "darwin":
-        font_dir = os.path.expanduser("~/Library/Fonts")
+        font_dir = SYSTEM_FONT_DIR["darwin"]
     elif system_platform == "win32":
-        font_dir = os.path.expandvars("%WINDIR%\\Fonts")
+        font_dir = SYSTEM_FONT_DIR["win32"]
         
         # Check if the font is in the registry
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, FONTS_REG_PATH) as key:
@@ -96,7 +96,7 @@ def already_installed(font_path):
                 pass
         
     elif system_platform == "linux":
-        font_dir = "/usr/share/fonts"
+        font_dir = SYSTEM_FONT_DIR["linux"]
     else:
         return False  # Unsupported platform
     
@@ -126,7 +126,7 @@ def load_custom_font(font_path):
 
     # Define where to install the font based on the platform
     if system_platform == "darwin":
-        install_dir = os.path.expanduser("~/Library/Fonts")
+        install_dir = SYSTEM_FONT_DIR["darwin"]
     elif system_platform == "win32":
         # copy the font to the Windows Fonts folder
         dst_path = os.path.join(os.environ['SystemRoot'], 'Fonts',
@@ -161,7 +161,7 @@ def load_custom_font(font_path):
             winreg.SetValueEx(key, fontname, 0, winreg.REG_SZ, filename)
         
     elif system_platform == "linux":
-        install_dir = "/usr/share/fonts"
+        install_dir = SYSTEM_FONT_DIR["linux"]
     else:
         print(f"Unsupported platform: {system_platform}")
         return
@@ -195,7 +195,7 @@ def uninstall_fonts():
 
         # Uninstall fonts based on platform
         if system_platform == "darwin":
-            font_dir = os.path.expanduser("~/Library/Fonts")
+            font_dir = SYSTEM_FONT_DIR["darwin"]
             font_path = os.path.join(font_dir, font_name)
             if os.path.exists(font_path):
                 os.remove(font_path)
@@ -203,13 +203,13 @@ def uninstall_fonts():
                 # Run the AppleScript to remove the font from Font Book (macOS)
                 uninstall_mac_font(font_name)
         elif system_platform == "win32":
-            font_dir = os.path.expandvars("%WINDIR%\\Fonts")
+            font_dir = SYSTEM_FONT_DIR["win32"]
             font_path = os.path.join(font_dir, font_name)
             if os.path.exists(font_path):
                 os.remove(font_path)
                 print(f"Uninstalled font: {font_name}")
         elif system_platform == "linux":
-            font_dir = "/usr/share/fonts"
+            font_dir = SYSTEM_FONT_DIR["linux"]
             font_path = os.path.join(font_dir, font_name)
             if os.path.exists(font_path):
                 os.remove(font_path)
