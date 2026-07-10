@@ -93,7 +93,7 @@ class Sidebar:
         # self.sidebar = ttk.Frame(self.root, width=self.width, height=self.root.winfo_height(), style="dark.TFrame")
         self.sidebar = RoundedFrame(self.root, radius=(0, 0, 0, 25), background=Style.WINDOW_BORDER.value)
         self.sidebar.set_height(self.root.winfo_height())
-        self.sidebar.set_width(self.width + 7 if self.current_page != "onboarding" else 8)
+        self.sidebar.set_width(self.width + 7 if self.current_page != "onboarding" else 8 if sys.platform != "linux" else 0)
         # self.sidebar.pack(side=ttk.LEFT, fill=ttk.BOTH)
         self.sidebar.grid_propagate(False)
         
