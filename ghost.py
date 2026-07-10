@@ -59,7 +59,7 @@ def run_cli():
 
 def main():
     args = parse_args()
-    headless = args.headless or sys.platform == "linux"
+    headless = args.headless
 
     get_application_support()
     startup_check.check()
