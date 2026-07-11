@@ -18,7 +18,8 @@ DEFAULT_CONFIG = {
     "prefix": ".",
     "theme": "ghost",
     "apis": {
-        "serpapi": ""
+        "serpapi": "",
+        "nonecap": ""
     },
     "message_settings": {
         "auto_delete_delay": 15,

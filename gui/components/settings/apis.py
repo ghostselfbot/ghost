@@ -9,7 +9,8 @@ class APIsPanel(SettingsPanel):
         self.cfg = config
         self.api_keys_tk_entries = {}
         self.api_keys_entries = {
-            "serpapi": "SerpAPI Key"
+            "serpapi": "SerpAPI Key",
+            "nonecap": "NoneCap API Key"
         }
         
     def _save_api_keys(self):
