@@ -64,21 +64,60 @@ class NitroSniper(commands.Cog):
         return True, None
     
     async def claim(self, code, validate=False):
+        api_url = f"https://discord.com/api/entitlements/gift-codes/{code}/redeem"
+        
         if validate is True:
             success, error = await self.validate(code)
 
             if success is False:
                 return False, error
+            
+        console.print_nitro("Found nitro code, attempting to claim...")
+        original_resp = requests.post(api_url, headers=self.headers)
 
-        r = requests.post(
-            f"https://discord.com/api/v8/entitlements/gift-codes/{code}/redeem",
-            headers=self.headers
-        )
-
-        if r.status_code == 400:
-            return False, r.json()
-
-        return True, r.json()
+        if "captcha_sitekey" in original_resp.text:
+            if not self.cfg.get('apis.nonecap'):
+                console.print_captcha("Captcha required, missing NoneCap API key. Please set one in settings.")
+                return False, "Captcha detected but missing NoneCap API key."
+            
+            console.print_captcha("Captcha detected, attempting to solve with NoneCap...")
+            # captcha_result = self.solver.hcaptcha(sitekey=original_resp.json()["captcha_sitekey"], url=api_url, invisible=1, data=original_resp.json()["captcha_rqdata"])
+            
+            nonecap_resp = requests.post(
+                "https://api.nonecap.com/v1/solves?wait=30",
+                headers={
+                    "Authorization": f"Bearer {self.cfg.get('apis.nonecap')}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "sitekey": original_resp.json()["captcha_sitekey"],
+                    "url": api_url,
+                    "type": "hcaptcha",
+                    "rqdata": original_resp.json()["captcha_rqdata"]
+                }
+            )
+            
+            if nonecap_resp.status_code == 200:
+                captcha_result = nonecap_resp.json()["token"]
+                
+                new_headers = self.headers.copy()
+                new_headers["X-Captcha-Key"] = captcha_result
+                new_headers["X-Captcha-Rqtoken"] = original_resp.json()["captcha_rqtoken"]
+            
+                new = requests.post(api_url, headers=new_headers)
+                console.print_captcha(f"Captcha solved with NoneCap in {nonecap_resp.elapsed.total_seconds():.2f}s, attempting to claim nitro code")
+                
+                if new.status_code == 200:
+                    return True, new.json()
+                else:
+                    return False, new.json()
+            else:
+                return False, nonecap_resp.json().get("error", "Failed to solve captcha with NoneCap.")
+        else:
+            if original_resp.status_code == 200:
+                return True, original_resp.json()
+            else:
+                return False, original_resp.json()
 
     async def snipe(self, message, sent_time):
         cfg = self.cfg
@@ -115,11 +154,17 @@ class NitroSniper(commands.Cog):
                 else:
                     resp["subscription_plan"] = {"name": "N/A"}
 
-                if "redeemed already" in str(resp).lower() or "unknown gift code" in str(resp).lower():
+                failed_messages = ["redeemed already", "unknown gift code", "cannot redeem"]
+                
+                if any(msg in resp.get("message", "").lower() for msg in failed_messages):
+                    success = False
+
+                if not success:
                     if not sniper.ignore_invalid:                    
                         console.print_sniper("Nitro", "Failed to claim nitro gift", {
                             "Code": code,
                             "Error": resp["message"],
+                            "Time": f"{snipe_delta:.2f}ms",
                             "Hint": "You can hide this message in the settings."
                         }, success=False)
 
