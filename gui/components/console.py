@@ -74,6 +74,8 @@ class Console:
         self.textarea.tag_config("prefix_error",   foreground="red",     font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
         self.textarea.tag_config("prefix_cli",     foreground="pink",    font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
         self.textarea.tag_config("prefix_rpc",     foreground="pink",    font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_captcha", foreground="#eceb18", font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
+        self.textarea.tag_config("prefix_nitro",   foreground="#0b91ff", font=("JetBrainsMono NF", self.non_darwin_font_size if sys.platform != "darwin" else self.darwin_font_size, "bold"))
     
     def _draw_footer(self, parent):
         """ Draw the footer with user info and clear button. """

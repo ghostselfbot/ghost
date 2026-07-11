@@ -89,6 +89,8 @@ print_error   = lambda text: _log_and_print("ERROR", colorama.Fore.LIGHTRED_EX, 
 print_warning = lambda text: _log_and_print("WARNING", colorama.Fore.LIGHTYELLOW_EX, text)
 print_cli     = lambda text: _log_and_print("CLI", colorama.Fore.LIGHTMAGENTA_EX, text)
 print_rpc     = lambda text: _log_and_print("RPC", colorama.Fore.LIGHTMAGENTA_EX, text)
+print_captcha = lambda text: _log_and_print("CAPTCHA", colorama.Fore.LIGHTYELLOW_EX, text)
+print_nitro   = lambda text: _log_and_print("NITRO", colorama.Fore.LIGHTBLUE_EX, text)
 
 cmd     = lambda text: print_cmd(text)
 info    = lambda text: print_info(text)
