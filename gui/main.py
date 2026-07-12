@@ -112,7 +112,7 @@ class GhostGUI:
         self.images.get_majority_color_from_url(avatar_url)
 
     def _pre_load_images(self):
-        print("Pre-loading images...")
+        logging.print_info("Pre-loading images...")
 
         rpc = self.cfg.get_rich_presence()
         if rpc.large_image:
@@ -121,11 +121,14 @@ class GhostGUI:
         try:
             for theme in self.cfg.get_themes():
                 if theme.image:
-                    self.images.load_image_from_url(theme.image, size=70, radius=5)
+                    try:
+                        self.images.load_image_from_url(theme.image, size=70, radius=5)
+                    except Exception as e:
+                        logging.print_error(f"Failed to load thumbnail image for '{theme.name}' theme.")
         except Exception as e:
-            print(f"Error pre-loading theme images: {e}")
+            logging.print_error(f"Error pre-loading theme images: {e}")
         
-        print("Finished pre-loading images.")
+        logging.print_success("Finished pre-loading images.")
 
     def _window_mapped(self):
         self.root.update_idletasks()

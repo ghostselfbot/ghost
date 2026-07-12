@@ -237,41 +237,35 @@ class Images:
         with self._url_lock:
             if cache_key in self._url_image_cache:
                 return self._url_image_cache[cache_key]
-
-        try:
-            # reuse raw bytes if already downloaded
-            with self._url_lock:
-                if image_url in self._url_bytes_cache:
-                    content = self._url_bytes_cache[image_url]
-                else:
-                    response = requests.get(image_url, timeout=5)
-                    response.raise_for_status()
-                    content = response.content
-                    self._url_bytes_cache[image_url] = content
-
-            image = Image.open(BytesIO(content)).convert("RGBA")
-
-            if isinstance(size, int):
-                target_width = size
+            
+        with self._url_lock:
+            if image_url in self._url_bytes_cache:
+                content = self._url_bytes_cache[image_url]
             else:
-                target_width = size[0]
-                
-            w, h = image.size
-            aspect_ratio = h / w
-            new_height = int(target_width * aspect_ratio)
+                response = requests.get(image_url, timeout=5)
+                response.raise_for_status()
+                content = response.content
+                self._url_bytes_cache[image_url] = content
 
-            image = resize_and_sharpen(image, (target_width, new_height))
+        image = Image.open(BytesIO(content)).convert("RGBA")
 
-            if radius > 0:
-                image = imgembed.add_corners(image, radius)
+        if isinstance(size, int):
+            target_width = size
+        else:
+            target_width = size[0]
+            
+        w, h = image.size
+        aspect_ratio = h / w
+        new_height = int(target_width * aspect_ratio)
 
-            photo = ImageTk.PhotoImage(image)
+        image = resize_and_sharpen(image, (target_width, new_height))
 
-            with self._url_lock:
-                self._url_image_cache[cache_key] = photo
+        if radius > 0:
+            image = imgembed.add_corners(image, radius)
 
-            return photo
+        photo = ImageTk.PhotoImage(image)
 
-        except Exception as e:
-            print("Error loading image from URL:", e)
-            return None
+        with self._url_lock:
+            self._url_image_cache[cache_key] = photo
+
+        return photo
