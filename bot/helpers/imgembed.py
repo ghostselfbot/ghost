@@ -82,7 +82,7 @@ def get_wrapped_text(text: str, font: ImageFont, line_length: int):
 
 def hex_to_rgb(hex: str) -> tuple:
     """Convert a hex colour to RGB."""
-    hex = hex.lstrip('#')
+    hex = hex.lstrip('#') if "#" in hex else hex
     return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
 
 

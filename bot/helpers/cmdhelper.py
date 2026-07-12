@@ -212,7 +212,10 @@ async def send_message(ctx, embed_obj: dict, extra_title="", extra_message="", d
             )
 
     elif msg_style == "image":
-        title = remove_emojis(title.replace(theme.emoji, "").lstrip())
+        try:
+            title = remove_emojis(title.replace(theme.emoji, "").lstrip())
+        except:
+            title = remove_emojis(title)
         embed2 = imgembed.Embed(title=title, description=description, colour=colour)
         embed2.set_footer(text=footer)
         embed2.set_thumbnail(url=thumbnail)

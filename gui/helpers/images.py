@@ -146,7 +146,7 @@ class Images:
                 print(f"Warning: Image file '{image_path}' not found.")
 
     def hex_to_rgb(self, hex_colour):
-        hex_colour = hex_colour.lstrip('#')
+        hex_colour = hex_colour.lstrip('#') if "#" in hex_colour else hex_colour
         return tuple(int(hex_colour[i:i+2], 16) for i in (0, 2, 4))
 
     def change_image_colour(self, image, hex_colour, tk_image=False):
