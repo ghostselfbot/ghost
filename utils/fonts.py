@@ -233,3 +233,26 @@ def uninstall_mac_font(font_name):
         print(f"Font '{font_name}' removed from Font Book.")
     except subprocess.CalledProcessError:
         print(f"Failed to remove font '{font_name}' from Font Book.")
+
+def is_admin():
+    if sys.platform != "win32":
+        return True
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except Exception:
+        return False
+
+def run_elevated():
+    if getattr(sys, 'frozen', False):
+        params = " ".join(sys.argv[1:] + ["--install-fonts"])
+    else:
+        params = " ".join([sys.argv[0]] + sys.argv[1:] + ["--install-fonts"])
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, params, os.getcwd(), 1)
+
+def relaunch_normal():
+    if getattr(sys, 'frozen', False):
+        cmd = [sys.executable]
+    else:
+        cmd = [sys.executable, sys.argv[0]]
+    args = [arg for arg in sys.argv[1:] if arg != "--install-fonts"]
+    subprocess.Popen(cmd + args)
