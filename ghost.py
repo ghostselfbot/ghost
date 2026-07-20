@@ -15,7 +15,7 @@ if getattr(sys, 'frozen', False):
 
 from utils.files import get_application_support
 from utils.config import Config
-from utils import startup_check, check_fonts, console, load_fonts
+from utils import startup_check, check_fonts, console, load_fonts, is_admin, run_elevated, relaunch_normal
 from bot.controller import BotController
 
 
@@ -25,6 +25,12 @@ def parse_args():
         "--headless",
         action="store_true",
         help="Force CLI mode instead of the GUI",
+    )
+    parser.add_argument(
+        "--install-fonts",
+        action="store_true",
+        dest="install_fonts",
+        help="Install required fonts and relaunch",
     )
     return parser.parse_args()
 
@@ -78,8 +84,14 @@ def main():
         run_gui()
     elif check_fonts():
         run_gui()
+    elif args.install_fonts:
+        load_fonts()
+        if check_fonts():
+            relaunch_normal()
     else:
-        # FontCheckGUI().run()
+        if sys.platform == "win32" and not is_admin():
+            run_elevated()
+            return
         load_fonts()
         run_gui()
 
