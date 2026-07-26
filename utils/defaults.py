@@ -46,6 +46,7 @@ DEFAULT_CONFIG = {
     },
     "rich_presence": DEFAULT_RPC,
     "gui_theme": "dark",
+    "telemetry": True,
     "install_id": "",
 }
 

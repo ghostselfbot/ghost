@@ -15,7 +15,7 @@ if getattr(sys, 'frozen', False):
 
 from utils.files import get_application_support
 from utils.config import Config
-from utils import startup_check, check_fonts, console, load_fonts, is_admin, run_elevated, relaunch_normal
+from utils import startup_check, check_fonts, console, load_fonts, is_admin, run_elevated, relaunch_normal, send_telemetry_ping
 from bot.controller import BotController
 
 
@@ -71,6 +71,8 @@ def main():
     startup_check.check()
     cfg = Config()
     cfg.check()
+
+    send_telemetry_ping()
 
     if headless:
         console.info("Running in headless (CLI) mode.")
