@@ -77,7 +77,7 @@ class Abuse(commands.Cog):
             await ctx.send(f"> ** **\n> # {message}\n> ** **")
             await asyncio.sleep(.5)
 
-    @commands.command(name="channelping", description="Ping a user in every available channel.", usage=["[user] [ping amount]"])
+    @commands.command(name="channelping", description="Ping a user in every available channel.", usage="[user] [ping amount]")
     async def channelping(self, ctx, users: str, ping_amount: int = 1, threaded: bool = False):
         headers  = {"Authorization": self.cfg.get("token"), "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"}
         base_url = "https://discord.com/api"

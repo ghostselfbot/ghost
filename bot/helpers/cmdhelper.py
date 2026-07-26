@@ -12,7 +12,11 @@ from . import imgembed
 from utils import webhook
 from utils import config
 
-get_command_full_name = lambda cmd: f"{cmd.parent.name} {cmd.name}" if cmd.parent else cmd.name
+def get_command_full_name(cmd, include_usage=False):
+    full_name = f"{cmd.parent.name} {cmd.name}" if cmd.parent else cmd.name
+    if include_usage and cmd.usage:
+        return f"{full_name} {cmd.usage}"
+    return full_name
 
 def remove_markdown(text):
     return re.sub(r'[*_~`]', '', text)
@@ -103,20 +107,21 @@ def generate_help_pages(bot, cog_name):
     for cmd in commands:
         if cmd.name.lower() != cog_name.lower():
             full_name = get_command_full_name(cmd)
-            max_name_length = max(max_name_length, len(full_name))
-            command_details.append((full_name, cmd.description))
+            display_name = f"{full_name} {cmd.usage}".strip()
+            max_name_length = max(max_name_length, len(display_name))
+            command_details.append((display_name, cmd.description))
 
     formatted_commands = []
     formatted_commands_codeblock = []
     formatted_commands_embed = []
 
-    for name, description in command_details:
-        padded_name = name.ljust(max_name_length)
+    for display_name, description in command_details:
+        padded_name = display_name.ljust(max_name_length)
         if description.endswith("."):
             description = description[:-1]
         formatted_commands_codeblock.append(f"{padded_name} :: {description}")
-        formatted_commands.append(f"**{name}** {description}")
-        formatted_commands_embed.append(f"{bot.command_prefix}{name} ~ {description}")
+        formatted_commands.append(f"**{display_name}** {description}")
+        formatted_commands_embed.append(f"{bot.command_prefix}{display_name} ~ {description}")
 
     codeblock_pages = split_into_pages(formatted_commands_codeblock, 1000)
     image_pages = split_into_pages(formatted_commands, 400)

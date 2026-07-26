@@ -89,7 +89,7 @@ class General(commands.Cog):
 
         for cmd in commands:
             if query in cmd.name or query in cmd.description or search_aliases(cmd, query):
-                prefix = cmdhelper.get_command_full_name(cmd)
+                prefix = cmdhelper.get_command_full_name(cmd, include_usage=True)
 
                 if len(prefix) > spacing:
                     spacing = len(prefix)

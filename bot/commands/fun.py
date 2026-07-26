@@ -250,7 +250,7 @@ class Fun(commands.Cog):
                 await message.edit(f"> ```ansi\n> {colour.replace('{TEXT}', text)}```")
                 await asyncio.sleep(.5)
 
-    @commands.command(name="rainbowreact", description="Create a rainbow reaction", usage=["[msg id]"])
+    @commands.command(name="rainbowreact", description="Create a rainbow reaction", usage="[msg id]")
     async def rainbowreact(self, ctx, *, msg_id: int):
         emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪"]
         message = await ctx.fetch_message(msg_id)
@@ -275,7 +275,7 @@ class Fun(commands.Cog):
         today = datetime.date.today()
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
-    @commands.command(name="dox", description="Dox a user.", usage=["[user]"])
+    @commands.command(name="dox", description="Dox a user.", usage="[user]")
     async def dox(self, ctx, *, user: discord.User):
         name = self.fake.name()
         email = name.lower().split(" ")[0][:random.randint(3, 5)] + "." + name.lower().split(" ")[1] + str(random.randint(10, 99)) + random.choice(["@gmail.com", "@yahoo.com", "@hotmail.com", "@outlook.com"])
