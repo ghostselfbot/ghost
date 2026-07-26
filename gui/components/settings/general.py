@@ -44,6 +44,11 @@ class GeneralPanel(SettingsPanel):
             self.cfg.set("message_settings.edit_og", self.edit_og_msg_entry.instate(["selected"]), save=False)
         except Exception as e:
             console.error(f"Failed to set edit original message setting: {e}")
+            
+        try:
+            self.cfg.set("telemetry", self.telemetry_entry.instate(["selected"]), save=False)
+        except Exception as e:
+            console.error(f"Failed to set telemetry setting: {e}")
     
         self.cfg.save(notify=False)
         
@@ -112,6 +117,15 @@ class GeneralPanel(SettingsPanel):
         self.edit_og_msg_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("message_settings.edit_og")))
         self.edit_og_msg_entry.grid(row=len(self.config_entries) + 3, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10), columnspan=3)
         
+        # add a checkbox for telemetry
+        telemetry_label = ttk.Label(self.body, text="Send anonymous telemetry data (helps improve Ghost)")
+        telemetry_label.configure(background=self.root.style.colors.get("dark"))
+        telemetry_label.grid(row=len(self.config_entries) + 4, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
+        
+        self.telemetry_entry = ttk.Checkbutton(self.body, command=self._save_cfg, style="success-round-toggle")
+        self.telemetry_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("telemetry")))
+        self.telemetry_entry.grid(row=len(self.config_entries) + 4, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10), columnspan=3)
+
         return self.wrapper
     
     def save(self):
