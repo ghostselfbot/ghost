@@ -12,6 +12,7 @@ os.environ["SSL_CERT_FILE"] = certifi.where()
 from discord.ext import commands, tasks
 
 from utils import files
+from utils import send_telemetry_ping
 from utils.config import Config
 import utils.console as console
 
@@ -42,6 +43,17 @@ class Ghost(commands.Bot):
         self.files = files
         self.allowed_users = []
         self.allowed_cogs = ["fun", "text", "general", "img", "info"]
+
+    @tasks.loop(minutes=10)
+    async def telemetry_loop(self):
+        try:
+            await asyncio.to_thread(send_telemetry_ping)
+        except Exception as e:
+            console.print_error(f"Telemetry loop error: {e}")
+
+    def start_telemetry_loop(self):
+        if not self.telemetry_loop.is_running():
+            self.telemetry_loop.start()
                 
     async def _setup_scripts(self):
         scripts = self.cfg.get_scripts()
@@ -151,6 +163,8 @@ class Ghost(commands.Bot):
             console.print_info(text)
             console.print_info(f"You can now use commands with {self.cfg.get('prefix')}")
             print()
+
+            self.start_telemetry_loop()
 
             if self.session_spoofing:
                 console.success(f"Spoofing session as {self.session_spoofing_device}")

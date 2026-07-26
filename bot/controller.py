@@ -112,6 +112,8 @@ class BotController:
             print("[BotController] Stopping bot...")
 
             async def shutdown():
+                if hasattr(self.bot, "telemetry_loop") and self.bot.telemetry_loop.is_running():
+                    self.bot.telemetry_loop.cancel()
                 self.bot._stop_rich_presence()
                 await self.bot.close()
                 print("[BotController] Bot has been stopped.")

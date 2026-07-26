@@ -3,8 +3,6 @@ import sys
 import certifi
 import multiprocessing
 import argparse
-import threading
-import time
 
 sys.setrecursionlimit(10000)
 os.environ["SSL_CERT_FILE"] = certifi.where()
@@ -36,26 +34,11 @@ def parse_args():
     )
     return parser.parse_args()
 
-def telemetry_loop():
-    """Send telemetry pings every 10 minutes."""
-    while True:
-        try:
-            time.sleep(600)  # Wait 10 minutes
-            send_telemetry_ping()
-        except Exception as e:
-            console.error(f"Telemetry loop error: {e}")
-            time.sleep(60)  # Wait 1 minute before retrying if there's an error
-
-
 def run_gui():
     from gui.main import GhostGUI
 
     cfg = Config()
     controller = BotController()
-    
-    # Start telemetry loop in background
-    telemetry_thread = threading.Thread(target=telemetry_loop, daemon=True)
-    telemetry_thread.start()
     
     GhostGUI(controller).run()
 
@@ -70,10 +53,6 @@ def run_cli():
         token = input("> ")
         cfg.set("token", token)
         cfg.save()
-
-    # Start telemetry loop in background
-    telemetry_thread = threading.Thread(target=telemetry_loop, daemon=True)
-    telemetry_thread.start()
 
     console.info("Starting bot.")
     controller = BotController()
@@ -94,6 +73,7 @@ def main():
     startup_check.check()
     cfg = Config()
     cfg.check()
+    send_telemetry_ping()
 
     if headless:
         console.info("Running in headless (CLI) mode.")
