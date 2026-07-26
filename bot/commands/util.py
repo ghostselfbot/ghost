@@ -36,12 +36,19 @@ class Util(commands.Cog):
 
     @commands.group(name="config", description="Configure ghost.", usage="", aliases=["cfg"])
     async def config(self, ctx):
+        try:
+            if not self.cfg.get("message_settings")["edit_og"]:
+                await ctx.message.delete()
+        except:
+            pass
+        
         cfg = self.cfg
 
         if ctx.invoked_subcommand is None:
             sanitized_cfg = copy.deepcopy(cfg.config)
             sanitized_cfg.pop("token")
             sanitized_cfg["apis"] = {key: "******" for key in sanitized_cfg.get("apis", {})}
+            sanitized_cfg["install_id"] = "******"
 
             def redact_webhooks(d):
                 for key, value in d.items():
@@ -57,14 +64,18 @@ class Util(commands.Cog):
 
             sorted_cfg = dict(sorted(sanitized_cfg.items(), key=lambda item: key_priority.get(item[0], float('inf'))))
             formatted_cfg = "\n".join(line[4:] for line in json.dumps(sorted_cfg, indent=4)[1:-1].split("\n"))
-
-            await ctx.send(str(codeblock.Codeblock(
+            final_codeblock = codeblock.Codeblock(
                 title="config",
                 description=formatted_cfg,
                 style="json",
                 footer="use 'config set [key] [value]' to edit a value",
                 extra_title="sensitive data has been redacted"
-            )), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            )
+
+            if not cfg.get("message_settings")["edit_og"]:
+                await ctx.send(str(final_codeblock), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            else:
+                await ctx.message.edit(content=str(final_codeblock), delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
     @config.command(name="set", description="Set a config value.", usage="[key] [value]")
     async def set(self, ctx, key, *, value):
@@ -77,21 +88,33 @@ class Util(commands.Cog):
             try:
                 value = int(value)
             except ValueError:
-                await ctx.send(str(codeblock.Codeblock(title="error", extra_title="the value isnt an integer")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+                await cmdhelper.send_message(ctx, {
+                    "title": "Error",
+                    "description": "The value for 'message_settings.auto_delete_delay' must be an integer.",
+                    "colour": "#ff0000"
+                }, extra_title="invalid value")
                 return
 
         try:
             self.cfg.get(key)
         except (KeyError, TypeError):
-            await ctx.send(str(codeblock.Codeblock(title="error", extra_title="invalid key")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+            await cmdhelper.send_message(ctx, {
+                "title": "Error",
+                "description": f"The key '{key}' does not exist in the config.",
+                "colour": "#ff0000"
+            }, extra_title="invalid key")
             return
 
         self.cfg.set(key, value)
 
         if key == "prefix":
             self.bot.command_prefix = value
-
-        await ctx.send(str(codeblock.Codeblock(title="config", extra_title="key updated", description=f"{key} :: {value}")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+            
+        await cmdhelper.send_message(ctx, {
+            "title": "Config",
+            "description": f"Set '{key}' to '{value}'",
+            "colour": "#00ff00"
+        }, extra_title="key updated")
 
     @commands.command(name="restart", description="Restart the bot.", usage="", aliases=["reboot", "reload"])
     async def restart(self, ctx, no_response=False):
@@ -100,8 +123,8 @@ class Util(commands.Cog):
         if not no_response:
             await cmdhelper.send_message(ctx, {
                 "title": cfg.theme.title,
-                "description": "restarting ghost..." if cfg.get("message_settings")["style"] == "image" else ""
-            }, extra_title="restarting ghost...")
+                "description": "Restarting ghost..." if cfg.get("message_settings")["style"] == "image" else ""
+            }, extra_title="Restarting ghost...")
 
         if self.bot_controller.gui:
             self.bot_controller.restart_gui()
@@ -115,8 +138,8 @@ class Util(commands.Cog):
         if output:
             await cmdhelper.send_message(ctx, {
                 "title": cfg.theme.title,
-                "description": "quitting ghost..." if cfg.get("message_settings")["style"] == "image" else ""
-            }, extra_title="quitting ghost...")
+                "description": "Quitting ghost..." if cfg.get("message_settings")["style"] == "image" else ""
+            }, extra_title="Quitting ghost...")
 
         sys.exit()
 
@@ -149,9 +172,17 @@ class Util(commands.Cog):
     async def prefix(self, ctx, prefix):
         cfg = self.cfg
         if self.bot.command_prefix == prefix:
-            await cmdhelper.send_message(ctx, discord.Embed(title="prefix", description=f"{prefix} is already youre prefix").to_dict())
+            await cmdhelper.send_message(ctx, {
+                "title": "prefix",
+                "description": f"{prefix} is already your prefix",
+                "colour": "#ff0000"
+            }, extra_title="Invalid prefix")
         else:
-            await cmdhelper.send_message(ctx, discord.Embed(title="prefix", description=f"Set your prefix to {prefix}").to_dict())
+            await cmdhelper.send_message(ctx, {
+                "title": "prefix",
+                "description": f"Set your prefix to {prefix}",
+                "colour": "#00ff00"
+            }, extra_title="Prefix updated")
             self.bot.command_prefix = prefix
             cfg.set("prefix", prefix)
 
@@ -161,7 +192,8 @@ class Util(commands.Cog):
             await cmdhelper.send_message(ctx, {
                 "title": "Cache",
                 "description": "Cache is already empty",
-            })
+                "colour": "#ff0000"
+            }, extra_title="Cache Empty")
             return
 
         for file in os.listdir("data/cache"):
@@ -170,7 +202,8 @@ class Util(commands.Cog):
         await cmdhelper.send_message(ctx, {
             "title": "Cache",
             "description": "Cache cleared!",
-        })
+            "colour": "#00ff00"
+        }, extra_title="Cache Cleared")
 
     # @commands.command(name="gui", description="Enable the GUI", usage="", aliases=["enablegui"])
     # async def gui(self, ctx):
@@ -209,8 +242,9 @@ class Util(commands.Cog):
 
         await cmdhelper.send_message(ctx, {
             "title": "Rich Presence",
-            "description": "Rich presence has now been reset to defaults.\nRestarting to apply changes..."
-            })
+            "description": "Rich presence has now been reset to defaults.\nRestarting to apply changes...",
+            "colour": "#00ff00"
+        })
 
         await self.restart(ctx, no_response=True)
 
