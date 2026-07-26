@@ -113,23 +113,27 @@ class Config:
         self.save_tokens()
         if notify: self.notify_subscribers()
 
+    def _resolve_path(self, key):
+        parts = key.split(".")
+        current = self.config
+
+        for part in parts[:-1]:
+            current = current[part]
+
+        return current, parts[-1]
+
     def get(self, key):
-        subkey = None
-        if "." in key:
-            key, subkey = key.split(".")
-            
-        value = self.config[key][subkey] if subkey else self.config[key]
+        current = self.config
+
+        for part in key.split("."):
+            current = current[part]
+
+        value = current
         return value.strip() if "token" in key and isinstance(value, str) else value
 
     def set(self, key, value, save=True):
-        subkey = None
-        if "." in key:
-            key, subkey = key.split(".")
-
-        if subkey:
-            self.config[key][subkey] = value
-        else:
-            self.config[key] = value
+        parent, leaf = self._resolve_path(key) if "." in key else (self.config, key)
+        parent[leaf] = value
 
         if save:
             self.save()

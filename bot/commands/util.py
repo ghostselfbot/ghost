@@ -6,6 +6,7 @@ import time
 import psutil
 import platform
 import asyncio
+import copy
 
 from discord.ext import commands
 from utils import config
@@ -38,7 +39,7 @@ class Util(commands.Cog):
         cfg = self.cfg
 
         if ctx.invoked_subcommand is None:
-            sanitized_cfg = cfg.config.copy()
+            sanitized_cfg = copy.deepcopy(cfg.config)
             sanitized_cfg.pop("token")
             sanitized_cfg["apis"] = {key: "******" for key in sanitized_cfg.get("apis", {})}
 
@@ -79,28 +80,17 @@ class Util(commands.Cog):
                 await ctx.send(str(codeblock.Codeblock(title="error", extra_title="the value isnt an integer")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
                 return
 
-        if "." in key:
-            key2 = key.split(".")
-            if key2[0] not in self.cfg.config or key2[1] not in self.cfg.config[key2[0]]:
-                await ctx.send(str(codeblock.Codeblock(title="error", extra_title="invalid key")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
-                return
+        try:
+            self.cfg.get(key)
+        except (KeyError, TypeError):
+            await ctx.send(str(codeblock.Codeblock(title="error", extra_title="invalid key")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+            return
 
-        else:
-            if key not in self.cfg.config:
-                await ctx.send(str(codeblock.Codeblock(title="error", extra_title="invalid key")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
-                return
+        self.cfg.set(key, value)
 
         if key == "prefix":
             self.bot.command_prefix = value
 
-        if "." in key:
-            key2 = key.split(".")
-            self.cfg.config[key2[0]][key2[1]] = value
-
-        else:
-            self.cfg.config[key] = value
-
-        self.cfg.save()
         await ctx.send(str(codeblock.Codeblock(title="config", extra_title="key updated", description=f"{key} :: {value}")), delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
 
     @commands.command(name="restart", description="Restart the bot.", usage="", aliases=["reboot", "reload"])
