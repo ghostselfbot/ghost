@@ -43,13 +43,14 @@ class NitroSniper(commands.Cog):
             
             # embed.add_field(name="Error", value=f"```{resp}```", inline=False)
             embed.description = f"Nitro code found in {message.channel.mention} by {message.author.mention} failed to validate."
-            embed.add_field(name="Reason", value=f"```{resp['message']}```", inline=True)
+            embed.add_field(name="Reason", value=f"```{resp['message']}```", inline=False)
         else:
             embed.description = f"Successfully claimed nitro code found in {message.channel.mention} sent by {message.author.mention}."
-            embed.add_field(name="Time", value=f"```{snipe_delta:.2f}ms```", inline=True)
-            embed.add_field(name="Code", value=f"```{code}```", inline=True)
             embed.add_field(name="Type", value=f"```{resp['subscription_plan']['name']}```", inline=False)
-            embed.add_field(name="Content", value=f"```{message.content}```", inline=False)
+            
+        embed.add_field(name="Time", value=f"```{snipe_delta:.2f}ms```", inline=False)
+        embed.add_field(name="Code", value=f"```{code}```", inline=False)
+        embed.add_field(name="Content", value=f"```{message.content}```", inline=False)
 
         embed.set_thumbnail(url=self.cfg.theme.image)
         webhook.send(embed=embed.to_dict())
