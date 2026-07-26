@@ -44,7 +44,8 @@ Follow [this guide](https://gist.github.com/bennyscripts/49ecc1eade1796ee1d7cad9
 > |---|---|
 
 > [!NOTE]
+> **Platform information**
 > Please note that Ghost is developed on Mac OS which means the Windows build's may have issues. However, Ghost will work on Windows, Linux and Mac OS without issues when run from the source code! Please follow the steps above or this [setup guide](https://github.com/orgs/ghostselfbot/discussions/5) to insure proper installation!
-
-> [!NOTE]
+>  
+> **Anonymous usage statistics**
 > Ghost optionally sends a small anonymous ping to help estimate active installations and version adoption. No Discord tokens, user IDs, guilds, messages or personal data are transmitted. This can be disabled in the settings page of the GUI or in the config file.
