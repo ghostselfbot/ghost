@@ -45,7 +45,8 @@ DEFAULT_CONFIG = {
         }
     },
     "rich_presence": DEFAULT_RPC,
-    "gui_theme": "dark"
+    "gui_theme": "dark",
+    "install_id": "",
 }
 
 DEFAULT_THEME = {

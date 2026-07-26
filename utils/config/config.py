@@ -1,6 +1,7 @@
 import json
 import os
 import threading
+import uuid
 
 from .rich_presence import RichPresence
 from .sniper import Sniper
@@ -51,6 +52,15 @@ class Config:
         self.tokens_file = files.get_data_path() + "/sensitive/tokens.json"
         self._load_tokens()
 
+    def _generate_install_id(self):
+        if not self.config.get("install_id"):
+            self.config["install_id"] = str(uuid.uuid4())
+            self.save()
+    
+    def _check_install_id(self):
+        if not self.config.get("install_id"):
+            self._generate_install_id()
+
     def _load_config(self):
         if os.path.exists(self.config_file):
             with open(self.config_file, "r") as f:
@@ -82,6 +92,7 @@ class Config:
             if key not in theme.to_dict():
                 theme[key] = value
                 
+        self._check_install_id()
         self.save()
 
     def save(self, notify=True):
