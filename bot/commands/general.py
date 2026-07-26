@@ -71,7 +71,7 @@ class General(commands.Cog):
             "description": f"Latency: {round(self.bot.latency * 1000)}ms"
         })
     
-    @commands.command(name="search", description="Search for commands.", usage="[query]")
+    @commands.command(name="search", description="Search for commands.", usage="[query] [page]")
     async def search(self, ctx, query: str, selected_page: int = 1):
         cfg = self.cfg
         commands = self.bot.walk_commands()
