@@ -152,7 +152,7 @@ class Util(commands.Cog):
 
         info = {
             "Prefix": cfg.get("prefix"),
-            "Rich Presence": cfg.get("rich_presence"),
+            "Rich Presence": "Enabled" if cfg.get("rich_presence.enabled") else "Disabled",
             "Theme": cfg.theme.name,
             "Style": cfg.get("message_settings")["style"],
             "Uptime": uptime,
@@ -543,6 +543,23 @@ class Util(commands.Cog):
         await cmdhelper.send_message(ctx, {
             "title": "Latency",
             "description": f"Message latency: {round(latency)}ms\nWebSocket latency: {round(websocket_latency)}ms"
+        })
+        
+    @commands.command(name="telemetry", description="Toggle telemetry", usage="")
+    async def telemetry(self, ctx):
+        self.cfg.set("telemetry", not self.cfg.get("telemetry"))
+        await cmdhelper.send_message(ctx, {
+            "title": "Telemetry",
+            "description": f"Telemetry is now {'enabled' if self.cfg.get('telemetry') else 'disabled'}",
+            "colour": "#00ff00" if self.cfg.get("telemetry") else "#ff0000"
+        })
+        
+    @commands.command(name="telemetryinfo", description="View telemetry info", usage="")
+    async def telemetryinfo(self, ctx):
+        description = "Telemetry is a feature that collects anonymous data about your usage of ghost. This data is used to improve the bot and its features. No personal information is collected. Ghost pings home every 10 minutes to update a list of active users/clients. This is used to improve the bot and its features. You can disable telemetry at any time using the 'telemetry' command.\n\nTelemetry data includes:\n- OS\n- Error reports\n- Python Version\n- Ghost Version\n- Active user count"
+        await cmdhelper.send_message(ctx, {
+            "title": "Telemetry Info",
+            "description": description,
         })
 
 def setup(bot):
