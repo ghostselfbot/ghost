@@ -1,4 +1,5 @@
 import re
+import threading
 import webbrowser
 
 import ttkbootstrap as ttk
@@ -10,6 +11,7 @@ class UpdatePage:
     def __init__(self, root, master):
         self.root = root
         self.master = master
+        self.installing = False
 
     def _build_markdown_tags(self, text_widget):
         base_font = ("Host Grotesk", 12)
@@ -111,6 +113,53 @@ class UpdatePage:
             self._insert_inline_markdown(text_widget, stripped)
             text_widget.insert("end", "\n", ("plain",))
 
+    def _set_install_progress(self, status, progress):
+        if not self.installing:
+            return
+
+        self.install_status.configure(text=status)
+        if progress is None:
+            if self.install_progress.cget("mode") != "indeterminate":
+                self.install_progress.configure(mode="indeterminate")
+                self.install_progress.start(12)
+            return
+
+        if self.install_progress.cget("mode") == "indeterminate":
+            self.install_progress.stop()
+            self.install_progress.configure(mode="determinate")
+        self.install_progress.configure(value=progress)
+
+    def _install_update(self, update_info):
+        self.installing = True
+        self.install_button.set_state("disabled")
+        self.skip_button.set_state("disabled")
+        self._set_install_progress("Starting update", 0)
+
+        def report(status, progress):
+            self.root.after(0, self._set_install_progress, status, progress)
+
+        def install():
+            try:
+                installed = update_info.install(progress_callback=report)
+            except SystemExit:
+                return
+            except Exception as exc:
+                self.root.after(0, self._update_failed, str(exc))
+                return
+
+            if not installed:
+                self.root.after(0, self._update_failed, "Could not install the update. Check the console for details.")
+
+        threading.Thread(target=install, daemon=True).start()
+
+    def _update_failed(self, message):
+        self.installing = False
+        self.install_progress.stop()
+        self.install_progress.configure(mode="determinate", value=0)
+        self.install_status.configure(text=message)
+        self.install_button.set_state("normal")
+        self.skip_button.set_state("normal")
+
     def draw(self, wrapper):
         update_info = getattr(self.master, "update_info", None)
 
@@ -133,13 +182,18 @@ class UpdatePage:
             changelog_frame = RoundedFrame(card, radius=(0, 0, 18, 18), background=self.root.style.colors.get("dark"), parent_background=self.root.style.colors.get("bg"))
             changelog_frame.pack(fill=ttk.BOTH, expand=True)
 
-            changelog = ttk.tk.Text(changelog_frame, height=10, wrap="word", borderwidth=0, highlightthickness=0)
+            changelog = ttk.tk.Text(changelog_frame, height=7, wrap="word", borderwidth=0, highlightthickness=0)
             self._render_markdown(changelog, update_info.changelog.strip())
             changelog.configure(state="disabled", background=self.root.style.colors.get("dark"), foreground=self.root.style.colors.get("text"), borderwidth=0, highlightthickness=0, font=("Host Grotesk", 12))
             changelog.pack(fill=ttk.BOTH, expand=True, padx=10, pady=10)
 
         button_row = ttk.Frame(wrapper)
         button_row.pack(fill=ttk.X, padx=24, pady=(8, 24))
+
+        self.install_status = ttk.Label(button_row, text="", font=("Host Grotesk", 11))
+        self.install_status.pack(side=ttk.TOP, anchor="w", pady=(0, 6))
+        self.install_progress = ttk.Progressbar(button_row, mode="determinate", maximum=100, value=0, bootstyle="primary")
+        self.install_progress.pack(side=ttk.TOP, fill=ttk.X, pady=(0, 12))
 
         full_changelog_button = RoundedButton(
             button_row,
@@ -149,8 +203,8 @@ class UpdatePage:
         )
         full_changelog_button.pack(side=ttk.LEFT)
 
-        install_button = RoundedButton(button_row, text="Install Update", command=lambda e: update_info.install() if update_info else None, bootstyle="primary.TButton")
-        install_button.pack(side=ttk.RIGHT)
+        self.install_button = RoundedButton(button_row, text="Install Update", command=lambda e: self._install_update(update_info) if update_info else None, bootstyle="primary.TButton")
+        self.install_button.pack(side=ttk.RIGHT)
 
-        skip_button = RoundedButton(button_row, text="Skip", command=lambda e: self.master._continue_after_update_prompt(), bootstyle="secondary.TButton")
-        skip_button.pack(side=ttk.RIGHT, padx=(0, 10))
+        self.skip_button = RoundedButton(button_row, text="Skip", command=lambda e: self.master._continue_after_update_prompt(), bootstyle="secondary.TButton")
+        self.skip_button.pack(side=ttk.RIGHT, padx=(0, 10))

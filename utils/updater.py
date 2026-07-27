@@ -32,8 +32,8 @@ class UpdateInfo:
     def has_update(self):
         return _should_update(self.current_version, self.latest_version)
 
-    def install(self):
-        return install_update(self)
+    def install(self, progress_callback=None):
+        return install_update(self, progress_callback=progress_callback)
 
 
 def _normalize_version(version):
@@ -229,7 +229,11 @@ def _start_replacement_handoff(current_path, updated_path, update_dir):
     raise RuntimeError("Unsupported platform for automatic updates.")
 
 
-def install_update(update_info=None):
+def install_update(update_info=None, progress_callback=None):
+    def report(status, progress=None):
+        if progress_callback:
+            progress_callback(status, progress)
+
     try:
         url = _get_update_url()
     except RuntimeError as exc:
@@ -237,20 +241,29 @@ def install_update(update_info=None):
         return False
 
     try:
+        report("Downloading update", 0)
         response = requests.get(url, stream=True, timeout=30)
         response.raise_for_status()
         filename = os.path.basename(url)
         update_dir = os.path.join(files.get_application_support(), ".ghost-updates")
         os.makedirs(update_dir, exist_ok=True)
         archive_path = os.path.join(update_dir, filename)
+        content_length = int(response.headers.get("content-length", 0))
+        downloaded_bytes = 0
+        if not content_length:
+            report("Downloading update", None)
 
         with open(archive_path, "wb") as update_file:
             for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
                     update_file.write(chunk)
+                    downloaded_bytes += len(chunk)
+                    if content_length:
+                        report("Downloading update", downloaded_bytes * 100 / content_length)
 
         console.info(f"Downloaded update archive: {filename}")
 
+        report("Preparing update", None)
         extract_dir = tempfile.mkdtemp(prefix="ghost-update-", dir=update_dir)
         _extract_update_archive(archive_path, extract_dir)
 
@@ -265,8 +278,10 @@ def install_update(update_info=None):
             return False
 
         if sys.platform == "darwin" and executable_path.lower().endswith(".app"):
+            report("Preparing application", None)
             _prepare_macos_app(executable_path)
 
+        report("Restarting Ghost", None)
         _start_replacement_handoff(current_path, executable_path, update_dir)
         console.info(f"Installed update to {current_path}; restarting Ghost.")
         raise SystemExit(0)
