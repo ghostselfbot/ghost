@@ -5,13 +5,14 @@ import colorama
 import pystyle
 
 from . import config
+from . import files
 
 _log_file = None
 
 def _setup_logger():
-    global _log_file
+    global _log_filez
     try:
-        log_path = os.path.join(os.getcwd(), "ghost.log")
+        log_path = os.path.join(files.get_data_path(), "ghost.log")
         _log_file = open(log_path, "a", encoding="utf-8")
     except:
         pass
