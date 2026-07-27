@@ -15,7 +15,7 @@ if getattr(sys, 'frozen', False):
 
 from utils.files import get_application_support
 from utils.config import Config
-from utils import startup_check, check_fonts, console, load_fonts, is_admin, run_elevated, relaunch_normal, send_telemetry_ping
+from utils import startup_check, check_fonts, console, load_fonts, is_admin, run_elevated, relaunch_normal, send_telemetry_ping, get_update_info
 from bot.controller import BotController
 
 
@@ -34,13 +34,13 @@ def parse_args():
     )
     return parser.parse_args()
 
-def run_gui():
+def run_gui(update_info=None):
     from gui.main import GhostGUI
 
     cfg = Config()
     controller = BotController()
     
-    GhostGUI(controller).run()
+    GhostGUI(controller, update_info=update_info).run()
 
 
 def run_cli():
@@ -70,6 +70,7 @@ def main():
     headless = args.headless
 
     get_application_support()
+    update_info = get_update_info()
     startup_check.check()
     cfg = Config()
     cfg.check()
@@ -82,11 +83,15 @@ def main():
 
     console.info("Running in GUI mode.")
 
+    if update_info and update_info.has_update:
+        run_gui(update_info=update_info)
+        return
+
     if cfg.get_skip_fonts():
         cfg.set_skip_fonts(False)
-        run_gui()
+        run_gui(update_info=update_info)
     elif check_fonts():
-        run_gui()
+        run_gui(update_info=update_info)
     elif args.install_fonts:
         load_fonts()
         if check_fonts():
@@ -96,7 +101,7 @@ def main():
             run_elevated()
             return
         load_fonts()
-        run_gui()
+        run_gui(update_info=update_info)
 
 if __name__ == "__main__":
     main()

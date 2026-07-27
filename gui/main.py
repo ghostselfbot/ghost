@@ -11,16 +11,18 @@ from utils.notifier import Notifier
 from utils.config import Config
 import utils.console as logging
 from utils.files import resource_path
+from utils import UpdateInfo
 
-from gui.pages import HomePage, LoadingPage, SettingsPage, OnboardingPage, ScriptsPage, ToolsPage
+from gui.pages import HomePage, LoadingPage, SettingsPage, OnboardingPage, ScriptsPage, ToolsPage, UpdatePage
 from gui.components import Sidebar, Console, Titlebar, RoundedFrame
 from gui.helpers import Images, Layout, Style, apply_theme
 
 class GhostGUI:
-    def __init__(self, bot_controller):
+    def __init__(self, bot_controller, update_info=None):
         self.resize_grip_size = 5
         self.size = (750, 530)
         self.bot_controller = bot_controller
+        self.update_info = update_info
         self.resize_grips = {}
         
         self.root = ttk.tk.Tk()
@@ -84,6 +86,7 @@ class GhostGUI:
         self.settings_page   = SettingsPage(self.root, self.bot_controller, self.draw_settings)
         self.scripts_page    = ScriptsPage(self, self.bot_controller, self.images)
         self.tools_page      = ToolsPage(self.root, self.bot_controller, self.images, self.layout, self._position_resize_grips)
+        self.update_page     = UpdatePage(self.root, self)
         
         logging.set_gui(self)
         
@@ -249,6 +252,33 @@ class GhostGUI:
         main = self.layout.main(scrollable=False)
         self.onboarding_page.draw(main)
         self.root.after(150, self._position_resize_grips)
+        
+    def draw_update(self):
+        self.sidebar.set_current_page("onboarding")
+        self.layout.clear()
+        main = self.layout.main(scrollable=False)
+        self.update_page.draw(main)
+        self.root.after(150, self._position_resize_grips)
+
+    def _continue_after_update_prompt(self):
+        self.update_info = None
+
+        if self.cfg.get("token") == "":
+            self.draw_onboarding()
+            return
+
+        if not self.bot_controller.running:
+            self.bot_controller.start()
+
+        self.root.after(25, self.sidebar.disable)
+        self.draw_home(start=True)
+        self.root.after(100, self._pre_load_images)
+
+        if sys.platform == "win32":
+            self.root.after(50, lambda: hPyT.window_frame.restore(self.root))
+            self.root.after(75, lambda: hPyT.window_frame.center(self.root))
+
+        self.root.after(100, self._check_bot_started)
     
     # def draw_console(self):
     #     self.sidebar.set_current_page("console")
@@ -328,29 +358,11 @@ class GhostGUI:
         if not preserve_position:
             self.layout.center_window(self.size[0], self.size[1])
         
-        if self.cfg.get("token") == "":
-        # if True:
-            self.draw_onboarding()
+        if self.update_info and self.update_info.has_update:
+            self.draw_update()
             self.root.mainloop()
             return
-        
-        if not self.bot_controller.running:
-            self.bot_controller.start()
-        
-        # self.layout.hide_titlebar()
-        # self.layout.stick_window()
-        # self.layout.resize(400, 90)
-        # self.layout.center_window(400, 90)
-        # self.loading_page.draw()
-        self.root.after(25, self.sidebar.disable)
-        self.draw_home(start=True)
-        self.root.after(100, self._pre_load_images)
-        
-        if sys.platform == "win32":
-            self.root.after(50, lambda: hPyT.window_frame.restore(self.root))
-            self.root.after(75, lambda: hPyT.window_frame.center(self.root))
-
-        self.root.after(100, self._check_bot_started)
+        self._continue_after_update_prompt()
         self.root.mainloop()
         
     def quit(self):
