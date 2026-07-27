@@ -1,4 +1,5 @@
 import os
+import sys
 import platform
 import subprocess
 import plistlib
@@ -25,7 +26,7 @@ def build():
     icon = "data/icon-win.png" if system == "Windows" else "data/icon.png"
 
     args = [
-        "pyinstaller",
+        sys.executable, "-m", "PyInstaller",
         f"--name={name}",
         "--onefile",
         "--clean",
