@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -184,6 +185,50 @@ def _current_install_path():
     return None
 
 
+def _start_replacement_handoff(current_path, updated_path, update_dir):
+    current_pid = str(os.getpid())
+
+    if sys.platform == "darwin":
+        script_path = os.path.join(update_dir, "install-update.sh")
+        log_path = os.path.join(update_dir, "install-update.log")
+        updated_executable = os.path.join(updated_path, "Contents", "MacOS", os.path.basename(sys.executable))
+        current_executable = os.path.join(current_path, os.path.relpath(updated_executable, updated_path))
+        script = "\n".join([
+            "#!/bin/sh",
+            f"exec >> {shlex.quote(log_path)} 2>&1",
+            f"while kill -0 {current_pid} 2>/dev/null; do sleep 1; done",
+            f"rm -rf {shlex.quote(current_path)}",
+            f"mv {shlex.quote(updated_path)} {shlex.quote(current_path)}",
+            "unset _PYI_APPLICATION_HOME_DIR _PYI_PARENT_PROCESS_LEVEL _PYI_SPLASH_IPC",
+            "export PYINSTALLER_RESET_ENVIRONMENT=1",
+            f"{shlex.quote(current_executable)} &",
+            f"rm -rf {shlex.quote(update_dir)}",
+            "exit 0",
+        ])
+        with open(script_path, "w", encoding="utf-8") as script_file:
+            script_file.write(f"{script}\n")
+        os.chmod(script_path, 0o700)
+        subprocess.Popen(["/bin/sh", script_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return
+
+    if sys.platform == "win32":
+        script_path = os.path.join(update_dir, "install-update.cmd")
+        powershell_update_dir = update_dir.replace("'", "''")
+        script = "\r\n".join([
+            "@echo off",
+            f"powershell -NoProfile -Command \"Wait-Process -Id {current_pid} -ErrorAction SilentlyContinue\"",
+            f"move /Y \"{updated_path}\" \"{current_path}\" >nul",
+            f"start \"\" \"{current_path}\"",
+            f"start \"\" /b powershell -NoProfile -WindowStyle Hidden -Command \"Start-Sleep -Seconds 2; Remove-Item -LiteralPath '{powershell_update_dir}' -Recurse -Force\"",
+        ])
+        with open(script_path, "w", encoding="utf-8") as script_file:
+            script_file.write(f"{script}\r\n")
+        subprocess.Popen(["cmd", "/c", script_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return
+
+    raise RuntimeError("Unsupported platform for automatic updates.")
+
+
 def install_update(update_info=None):
     try:
         url = _get_update_url()
@@ -214,13 +259,16 @@ def install_update(update_info=None):
             console.error("Could not find an executable inside the downloaded update archive.")
             return False
 
+        current_path = _current_install_path()
+        if not current_path:
+            console.error("Automatic updates are only available from an installed Ghost application.")
+            return False
+
         if sys.platform == "darwin" and executable_path.lower().endswith(".app"):
             _prepare_macos_app(executable_path)
-            subprocess.Popen(["open", "-n", executable_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        else:
-            subprocess.Popen([executable_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-        console.info(f"Launched updated application from {executable_path}.")
+        _start_replacement_handoff(current_path, executable_path, update_dir)
+        console.info(f"Installed update to {current_path}; restarting Ghost.")
         raise SystemExit(0)
     except requests.exceptions.RequestException as exc:
         console.error(f"Failed to download update: {exc}")
