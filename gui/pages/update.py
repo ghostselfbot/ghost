@@ -145,11 +145,12 @@ class UpdatePage:
             button_row,
             text="Full Changelog",
             command=lambda e: webbrowser.open(update_info.full_changelog_url) if update_info else None,
+            bootstyle="secondary.TButton",
         )
         full_changelog_button.pack(side=ttk.LEFT)
 
-        install_button = RoundedButton(button_row, text="Install Update", command=lambda e: update_info.install() if update_info else None)
+        install_button = RoundedButton(button_row, text="Install Update", command=lambda e: update_info.install() if update_info else None, bootstyle="primary.TButton")
         install_button.pack(side=ttk.RIGHT)
 
-        skip_button = RoundedButton(button_row, text="Skip", command=lambda e: self.master._continue_after_update_prompt())
+        skip_button = RoundedButton(button_row, text="Skip", command=lambda e: self.master._continue_after_update_prompt(), bootstyle="secondary.TButton")
         skip_button.pack(side=ttk.RIGHT, padx=(0, 10))
