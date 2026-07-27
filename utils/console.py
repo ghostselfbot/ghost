@@ -1,13 +1,31 @@
 import os
 import sys
-import logging
 import datetime
 import colorama
 import pystyle
 
 from . import config
 
-# handler = logging.FileHandler(filename='ghost.log', encoding='utf-8', mode='w')
+_log_file = None
+
+def _setup_logger():
+    global _log_file
+    try:
+        log_path = os.path.join(os.getcwd(), "ghost.log")
+        _log_file = open(log_path, "a", encoding="utf-8")
+    except:
+        pass
+
+def _file_log(text):
+    if _log_file is None:
+        _setup_logger()
+    if _log_file:
+        try:
+            _log_file.write(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {text}\n")
+            _log_file.flush()
+        except:
+            pass
+
 gui = None
 banner = f"""  ▄████  ██░ ██  ▒█████    ██████ ▄▄▄█████▓
  ██▒ ▀█▒▓██░ ██▒▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒
@@ -75,7 +93,9 @@ print_colour       = lambda colour, text: print(colour + text + colorama.Style.R
 
 def _log_and_print(prefix, colour, text, gui_log=True):
     # print(f"[{prefix}] {text}")
+    line = f"[{get_formatted_time()}] [{prefix}] {text}"
     print(f"{colorama.Style.NORMAL}{colorama.Fore.WHITE}[{get_formatted_time()}] {colour}{colorama.Style.BRIGHT}[{prefix}]{colorama.Style.RESET_ALL} {text}")
+    _file_log(line)
     if gui_log:
         try:
             log_to_gui(prefix, text)

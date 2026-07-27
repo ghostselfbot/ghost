@@ -246,6 +246,7 @@ def install_update(update_info=None, progress_callback=None, exit_on_success=Tru
 
     try:
         report("Downloading update", 0)
+        console.info(f"Starting download from {url}")
         response = requests.get(url, stream=True, timeout=30)
         response.raise_for_status()
         filename = os.path.basename(url)
@@ -265,27 +266,38 @@ def install_update(update_info=None, progress_callback=None, exit_on_success=Tru
                     if content_length:
                         report("Downloading update", downloaded_bytes * 100 / content_length)
 
-        console.info(f"Downloaded update archive: {filename}")
+        console.info(f"Downloaded update archive ({downloaded_bytes} bytes): {filename}")
+        console.info(f"Saving archive to: {archive_path}")
 
         report("Preparing update", None)
         extract_dir = tempfile.mkdtemp(prefix="ghost-update-", dir=update_dir)
+        console.info(f"Extracting update to: {extract_dir}")
         _extract_update_archive(archive_path, extract_dir)
+
+        console.info(f"Archive extracted to: {extract_dir}")
 
         executable_path = _find_executable(extract_dir)
         if not executable_path:
             console.error("Could not find an executable inside the downloaded update archive.")
             return False
 
+        console.info(f"Found updated executable: {executable_path}")
+
         current_path = _current_install_path()
         if not current_path:
             console.error("Automatic updates are only available from an installed Ghost application.")
             return False
 
+        console.info(f"Current install path: {current_path}")
+
         if sys.platform == "darwin" and executable_path.lower().endswith(".app"):
             report("Preparing application", None)
+            console.info("Preparing macOS app bundle")
             _prepare_macos_app(executable_path)
+            console.info("macOS app bundle prepared")
 
         report("Restarting Ghost", None)
+        console.info(f"Starting replacement handoff: {current_path} <- {executable_path}")
         _start_replacement_handoff(current_path, executable_path, update_dir)
         console.info(f"Installed update to {current_path}; restarting Ghost.")
         if exit_on_success:
