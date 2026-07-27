@@ -359,6 +359,8 @@ class GhostGUI:
             self.layout.center_window(self.size[0], self.size[1])
         
         if self.update_info and self.update_info.has_update:
+            self.layout.resize(self.size[0], self.size[1] + 50)
+            self.layout.center_window(self.size[0], self.size[1] + 50)
             self.draw_update()
             self.root.mainloop()
             return
