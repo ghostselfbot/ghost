@@ -218,6 +218,10 @@ def _start_replacement_handoff(current_path, updated_path, update_dir):
             "@echo off",
             f"powershell -NoProfile -Command \"Wait-Process -Id {current_pid} -ErrorAction SilentlyContinue\"",
             f"move /Y \"{updated_path}\" \"{current_path}\" >nul",
+            "set \"_PYI_APPLICATION_HOME_DIR=\"",
+            "set \"_PYI_PARENT_PROCESS_LEVEL=\"",
+            "set \"_PYI_SPLASH_IPC=\"",
+            "set \"PYINSTALLER_RESET_ENVIRONMENT=1\"",
             f"start \"\" \"{current_path}\"",
             f"start \"\" /b powershell -NoProfile -WindowStyle Hidden -Command \"Start-Sleep -Seconds 2; Remove-Item -LiteralPath '{powershell_update_dir}' -Recurse -Force\"",
         ])
