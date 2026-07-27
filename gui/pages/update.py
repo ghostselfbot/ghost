@@ -140,17 +140,21 @@ class UpdatePage:
 
         def install():
             try:
-                installed = update_info.install(progress_callback=report)
-            except SystemExit:
-                return
+                installed = update_info.install(progress_callback=report, exit_on_success=False)
             except Exception as exc:
                 self.root.after(0, self._update_failed, str(exc))
                 return
 
-            if not installed:
+            if installed:
+                self.root.after(0, self._finish_install)
+            else:
                 self.root.after(0, self._update_failed, "Could not install the update. Check the console for details.")
 
         threading.Thread(target=install, daemon=True).start()
+
+    def _finish_install(self):
+        self.install_status.configure(text="Closing Ghost")
+        self.root.after(100, self.master.quit)
 
     def _update_failed(self, message):
         self.installing = False

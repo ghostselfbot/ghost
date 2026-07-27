@@ -32,8 +32,8 @@ class UpdateInfo:
     def has_update(self):
         return _should_update(self.current_version, self.latest_version)
 
-    def install(self, progress_callback=None):
-        return install_update(self, progress_callback=progress_callback)
+    def install(self, progress_callback=None, exit_on_success=True):
+        return install_update(self, progress_callback=progress_callback, exit_on_success=exit_on_success)
 
 
 def _normalize_version(version):
@@ -229,7 +229,7 @@ def _start_replacement_handoff(current_path, updated_path, update_dir):
     raise RuntimeError("Unsupported platform for automatic updates.")
 
 
-def install_update(update_info=None, progress_callback=None):
+def install_update(update_info=None, progress_callback=None, exit_on_success=True):
     def report(status, progress=None):
         if progress_callback:
             progress_callback(status, progress)
@@ -284,7 +284,9 @@ def install_update(update_info=None, progress_callback=None):
         report("Restarting Ghost", None)
         _start_replacement_handoff(current_path, executable_path, update_dir)
         console.info(f"Installed update to {current_path}; restarting Ghost.")
-        raise SystemExit(0)
+        if exit_on_success:
+            raise SystemExit(0)
+        return True
     except requests.exceptions.RequestException as exc:
         console.error(f"Failed to download update: {exc}")
         return False
