@@ -31,7 +31,7 @@ def build():
         "--onefile",
         "--clean",
         "--noconfirm",
-        "--windowed",
+        # "--windowed",
         "--noconsole",
         f"--icon={icon}",
         "--hidden-import=discord",
