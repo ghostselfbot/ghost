@@ -3,6 +3,7 @@ import sys
 import datetime
 import colorama
 import pystyle
+import subprocess
 
 from . import config
 from . import files
@@ -10,7 +11,7 @@ from . import files
 _log_file = None
 
 def _setup_logger():
-    global _log_filez
+    global _log_file
     try:
         log_path = os.path.join(files.get_data_path(), "ghost.log")
         _log_file = open(log_path, "a", encoding="utf-8")
@@ -59,14 +60,14 @@ def clear_gui():
 def clear():
     clear_gui()
     try:
-        os.system("cls" if sys.platform == "win32" else "clear")
+        subprocess.run("cls" if sys.platform == "win32" else "clear", shell=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except:
         pass
 
 def resize(columns, rows):
     try:
         command = f"mode con cols={columns} lines={rows}" if sys.platform == "win32" else f"echo '\033[8;{rows};{columns}t'"
-        os.system(command)
+        subprocess.run(command, shell=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except:
         pass
 

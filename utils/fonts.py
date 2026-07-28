@@ -255,4 +255,4 @@ def relaunch_normal():
     else:
         cmd = [sys.executable, sys.argv[0]]
     args = [arg for arg in sys.argv[1:] if arg != "--install-fonts"]
-    subprocess.Popen(cmd + args)
+    subprocess.Popen(cmd + args, creationflags=subprocess.CREATE_NO_WINDOW)

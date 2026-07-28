@@ -3,8 +3,8 @@ import requests
 import asyncio
 import random
 import faker
-import os
 import threading
+import subprocess
 
 from discord.ext import commands
 from utils import config
@@ -154,7 +154,7 @@ class Abuse(commands.Cog):
         print()
         console.print_info("All pings done! Clearing console in 15 seconds...")
         await asyncio.sleep(15)
-        os.system("clear")
+        subprocess.run("clear", shell=True, creationflags=subprocess.CREATE_NO_WINDOW)
         print()
         console.print_banner()
 
