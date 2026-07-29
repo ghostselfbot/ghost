@@ -15,6 +15,7 @@ class Config:
     _instance = None
     _lock = threading.Lock()
     _temp_state = {}
+    _headless = False
 
     def __new__(cls):
         with cls._lock:
@@ -22,6 +23,12 @@ class Config:
                 cls._instance = super().__new__(cls)
                 cls._instance._init()
         return cls._instance
+
+    def get_headless(self):
+        return self._headless
+    
+    def set_headless(self, value):
+        self._headless = value
 
     def get_temp(self, key, default=None):
         """Retrieve a temporary in-memory value (not saved to file)."""

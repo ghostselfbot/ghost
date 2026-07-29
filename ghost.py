@@ -74,6 +74,7 @@ def main():
     startup_check.check()
     cfg = Config()
     cfg.check()
+    cfg.set_headless(headless)
     send_telemetry_ping()
 
     if headless:
