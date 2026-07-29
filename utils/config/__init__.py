@@ -4,8 +4,8 @@ from .theme import Theme
 from .config import Config
 from .token import Token
 
-VERSION = "4.2.3-dev"
-PRODUCTION = False
-MOTD = "lil hotfix cuz i forgor bugs"
+VERSION = "4.2.3"
+PRODUCTION = True
+MOTD = "cool beans"
 CHANGELOG = """"""
 REPO = "https://github.com/ghostselfbot/ghost"
