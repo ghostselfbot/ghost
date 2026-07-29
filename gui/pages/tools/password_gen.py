@@ -127,7 +127,7 @@ class PasswordGenPage(ToolPage):
         
         self.strength_label = ttk.Label(strength_wrapper, text="Strong", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
         self.strength_label.grid(row=0, column=1, sticky=ttk.W, padx=(15, 0))
-        self.strength_bar = RoundedProgressbar(strength_wrapper, bootstyle="success", maximum=100, value=80, radius=5)
+        self.strength_bar = RoundedProgressbar(strength_wrapper, bootstyle="success", maximum=100, value=80)
         self.strength_bar.grid(row=0, column=0, sticky=ttk.EW)
         
         # password length
