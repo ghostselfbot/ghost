@@ -207,7 +207,7 @@ class UpdatePage:
         )
         full_changelog_button.pack(side=ttk.LEFT)
 
-        self.install_button = RoundedButton(button_row, text="Install Update", command=lambda e: self._install_update(update_info) if update_info else None, bootstyle="primary.TButton")
+        self.install_button = RoundedButton(button_row, text="Install & Restart", command=lambda e: self._install_update(update_info) if update_info else None, bootstyle="primary.TButton")
         self.install_button.pack(side=ttk.RIGHT)
 
         self.skip_button = RoundedButton(button_row, text="Skip", command=lambda e: self.master._continue_after_update_prompt(), bootstyle="secondary.TButton")
