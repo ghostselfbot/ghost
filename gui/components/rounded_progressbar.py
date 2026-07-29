@@ -4,7 +4,7 @@ from gui.components.rounded_frame import RoundedFrame
 
 
 class RoundedProgressbar(ttk.Canvas):
-    def __init__(self, parent, radius=8, **kwargs):
+    def __init__(self, parent, radius=4, **kwargs):
         self.parent = parent
         self.root = parent.winfo_toplevel()
         self.style = self.root.style
@@ -64,6 +64,9 @@ class RoundedProgressbar(ttk.Canvas):
         height = self.winfo_height()
         if width < 2 or height < 2:
             return
+        
+        width -= 1
+        height -= 1
 
         self._rounded_rectangle(0, 0, width, height, self.track_color)
         if self.mode == "indeterminate":
