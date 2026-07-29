@@ -1,7 +1,7 @@
 import sys
 import ttkbootstrap as ttk
 import utils.console as console
-from gui.components import SettingsPanel, RoundedFrame, DropdownMenu
+from gui.components import SettingsPanel, RoundedFrame, DropdownMenu, RoundedSwitch
 
 class SessionSpoofingPanel(SettingsPanel):
     def __init__(self, root, parent, images, config, width=None):
@@ -36,7 +36,7 @@ class SessionSpoofingPanel(SettingsPanel):
         toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=(15, 5))
         toggle_label.bind("<Button-1>", lambda e: self.checkbox.invoke())
         
-        self.checkbox = ttk.Checkbutton(self.body, text="", style="success-round-toggle")
+        self.checkbox = RoundedSwitch(self.body, parent_background=self.root.style.colors.get("dark"))
         # self.checkbox.grid(row=0, column=0, columnspan=2, sticky=ttk.W, padx=(13, 0), pady=(15, 0))
         self.checkbox.grid(row=0, column=1, sticky=ttk.E, padx=(0, 10), pady=(10, 5))
         self.checkbox.configure(command=self._save_session_spoofing)

@@ -2,7 +2,7 @@ import sys
 import ttkbootstrap as ttk
 from gui.helpers.style import get_current_theme_str
 import utils.console as console
-from gui.components import SettingsPanel, RoundedButton, RoundedFrame
+from gui.components import SettingsPanel, RoundedButton, RoundedFrame, RoundedSwitch
 from gui.helpers import Style
 
 class RichPresencePanel(SettingsPanel):
@@ -207,7 +207,7 @@ class RichPresencePanel(SettingsPanel):
         toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
         toggle_label.bind("<Button-1>", lambda e: self.toggle_checkbox.invoke())
         
-        self.toggle_checkbox = ttk.Checkbutton(toggle_wrapper, text="", style="success-round-toggle")
+        self.toggle_checkbox = RoundedSwitch(toggle_wrapper, parent_background=self.root.style.colors.get("dark"))
         self.toggle_checkbox.grid(row=0, column=1, sticky=ttk.E, padx=(0, 10), pady=10)
         self.toggle_checkbox.configure(command=self._save_rpc)
         
