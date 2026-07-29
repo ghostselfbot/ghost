@@ -1,5 +1,6 @@
 from .rounded_frame import RoundedFrame
 from .rounded_button import RoundedButton
+from .rounded_progressbar import RoundedProgressbar
 from .sidebar import Sidebar
 from .console import Console
 from .settings_frame import SettingsFrame

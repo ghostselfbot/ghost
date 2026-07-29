@@ -4,7 +4,7 @@ import webbrowser
 
 import ttkbootstrap as ttk
 
-from gui.components import RoundedFrame, RoundedButton
+from gui.components import RoundedFrame, RoundedButton, RoundedProgressbar
 from gui.helpers import Style
 
 class UpdatePage:
@@ -196,7 +196,7 @@ class UpdatePage:
 
         self.install_status = ttk.Label(button_row, text="", font=("Host Grotesk", 11))
         self.install_status.pack(side=ttk.TOP, anchor="w", pady=(0, 6))
-        self.install_progress = ttk.Progressbar(button_row, mode="determinate", maximum=100, value=0, bootstyle="primary")
+        self.install_progress = RoundedProgressbar(button_row, mode="determinate", maximum=100, value=0, bootstyle="primary", radius=5)
         self.install_progress.pack(side=ttk.TOP, fill=ttk.X, pady=(0, 12))
 
         full_changelog_button = RoundedButton(
