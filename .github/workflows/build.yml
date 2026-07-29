@@ -49,6 +49,8 @@ jobs:
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
+        env:
+          PYTHONIOENCODING: utf-8
         run: .venv\Scripts\python compile.py
 
       - uses: actions/upload-artifact@v4
