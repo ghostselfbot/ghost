@@ -24,6 +24,12 @@ def send_telemetry_ping():
     try:
         response = requests.post(API_URL, headers={"Content-Type": "application/json", "User-Agent": f"Ghost/{VERSION}"}, json=payload, timeout=5)
         response.raise_for_status()
-        print("[TELEMETRY] Telemetry ping sent successfully.")
+        if not cfg.get_headless():
+            print("[TELEMETRY] Telemetry ping sent successfully.")
+        else:
+            console.info("Telemetry ping sent successfully.")
     except requests.exceptions.RequestException as e:
-        print(f"[TELEMETRY] Failed to send telemetry ping: {e}")
+        if not cfg.get_headless():
+            print(f"[TELEMETRY] Failed to send telemetry ping: {e}")
+        else:
+            console.error(f"Failed to send telemetry ping: {e}")
