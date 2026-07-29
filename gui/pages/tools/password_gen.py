@@ -2,7 +2,7 @@ import sys
 import string
 import random
 import ttkbootstrap as ttk
-from gui.components import RoundedFrame, ToolPage, RoundedProgressbar, RoundedSlider
+from gui.components import RoundedFrame, ToolPage, RoundedProgressbar, RoundedSlider, RoundedSwitch
 from gui.helpers import Style
 
 class PasswordGenPage(ToolPage):
@@ -149,28 +149,28 @@ class PasswordGenPage(ToolPage):
         self.uppercase_var.trace_add("write", self.on_option_change)
         uppercase_label = ttk.Label(options_wrapper, text="Include Uppercase Letters", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
         uppercase_label.grid(row=2, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
-        uppercase_check = ttk.Checkbutton(options_wrapper, variable=self.uppercase_var, bootstyle="success-round-toggle", command=self.on_option_change)
+        uppercase_check = RoundedSwitch(options_wrapper, variable=self.uppercase_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         uppercase_check.grid(row=2, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
         
         self.lowercase_var = ttk.BooleanVar(value=self.include_lowercase)
         self.lowercase_var.trace_add("write", self.on_option_change)
         lowercase_label = ttk.Label(options_wrapper, text="Include Lowercase Letters", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
         lowercase_label.grid(row=3, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
-        lowercase_check = ttk.Checkbutton(options_wrapper, variable=self.lowercase_var, bootstyle="success-round-toggle", command=self.on_option_change)
+        lowercase_check = RoundedSwitch(options_wrapper, variable=self.lowercase_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         lowercase_check.grid(row=3, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
         
         self.numbers_var = ttk.BooleanVar(value=self.include_numbers)
         self.numbers_var.trace_add("write", self.on_option_change)
         numbers_label = ttk.Label(options_wrapper, text="Include Numbers", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
         numbers_label.grid(row=4, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
-        numbers_check = ttk.Checkbutton(options_wrapper, variable=self.numbers_var, bootstyle="success-round-toggle", command=self.on_option_change)
+        numbers_check = RoundedSwitch(options_wrapper, variable=self.numbers_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         numbers_check.grid(row=4, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
         
         self.symbols_var = ttk.BooleanVar(value=self.include_symbols)
         self.symbols_var.trace_add("write", self.on_option_change)
         symbols_label = ttk.Label(options_wrapper, text="Include Symbols", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
         symbols_label.grid(row=5, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 15))
-        symbols_check = ttk.Checkbutton(options_wrapper, variable=self.symbols_var, bootstyle="success-round-toggle", command=self.on_option_change)
+        symbols_check = RoundedSwitch(options_wrapper, variable=self.symbols_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         symbols_check.grid(row=5, column=1, sticky=ttk.E, padx=18, pady=(5, 15))
         
         # generate_button = RoundedButton(options_wrapper, text="Generate", bootstyle="success.TButton", command=self.generate_password)

@@ -1,7 +1,7 @@
 import sys
 import ttkbootstrap as ttk
 import utils.console as console
-from gui.components import SettingsPanel, RoundedFrame
+from gui.components import SettingsPanel, RoundedFrame, RoundedSwitch
 
 class SnipersPanel(SettingsPanel):
     def __init__(self, root, parent, images, config, width=None):
@@ -69,12 +69,11 @@ class SnipersPanel(SettingsPanel):
 
                 var = ttk.BooleanVar(value=entry["value"])
                 
-                checkbox = ttk.Checkbutton(
+                checkbox = RoundedSwitch(
                     checkbox_wrapper,
-                    style="success-round-toggle",
                     variable=var,
                     command=lambda sniper_name=sniper.name: self._save_sniper(sniper_name),
-                    tristatevalue=None
+                    parent_background=self.root.style.colors.get("secondary"),
                 )
                 checkbox.grid(row=0, column=1, sticky=ttk.E, pady=10, padx=(0, 10))
                 checkbox_wrapper.grid_columnconfigure(0, weight=1)
