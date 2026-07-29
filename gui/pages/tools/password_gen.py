@@ -2,7 +2,7 @@ import sys
 import string
 import random
 import ttkbootstrap as ttk
-from gui.components import RoundedFrame, ToolPage, RoundedProgressbar
+from gui.components import RoundedFrame, ToolPage, RoundedProgressbar, RoundedSlider
 from gui.helpers import Style
 
 class PasswordGenPage(ToolPage):
@@ -133,7 +133,13 @@ class PasswordGenPage(ToolPage):
         # password length
         self.length_label = ttk.Label(options_wrapper, text=f"Password Length {self.password_length}", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
         self.length_label.grid(row=1, column=0, sticky=ttk.W, padx=18, pady=(5, 5))
-        length_slider = ttk.Scale(options_wrapper, from_=4, to=48, orient=ttk.HORIZONTAL, command=self.update_password_length)
+        length_slider = RoundedSlider(
+            options_wrapper,
+            from_=4,
+            to=48,
+            command=self.update_password_length,
+            parent_background=self.root.style.colors.get("dark"),
+        )
         length_slider.bind("<ButtonRelease-1>", self.on_slider_release)
         length_slider.set(self.password_length)
         length_slider.grid(row=1, column=1, sticky=ttk.EW, padx=18, pady=(5, 5))
