@@ -46,16 +46,25 @@ def set_gui(ghost_gui):
     gui = ghost_gui
 
 def log_to_gui(prefix, text):
-    if gui and gui.console:
-        gui.run_on_main_thread(gui.console.add_log, prefix, text)
+    try:
+        if gui and gui.console:
+            gui.run_on_main_thread(gui.console.add_log, prefix, text)
+    except:
+        pass
 
 def log_sniper_to_gui(sniper_obj):
-    if gui and gui.console:
-        gui.run_on_main_thread(gui.console.add_sniper, sniper_obj)
+    try:
+        if gui and gui.console:
+            gui.run_on_main_thread(gui.console.add_sniper, sniper_obj)
+    except:
+        pass
 
 def clear_gui():
-    if gui and gui.console:
-        gui.run_on_main_thread(gui.console.clear)
+    try:
+        if gui and gui.console:
+            gui.run_on_main_thread(gui.console.clear)
+    except:
+        pass
 
 def clear():
     clear_gui()
