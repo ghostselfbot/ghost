@@ -3,7 +3,7 @@ import ttkbootstrap as ttk
 from gui.components import RoundedFrame
 
 class RoundedButton(ttk.Canvas):
-    def __init__(self, parent, radius=(8, 8, 8, 8), text=None, image=None, command=None, **kwargs):
+    def __init__(self, parent, radius=10, text=None, image=None, command=None, **kwargs):
         canvas_kwargs = {}
         for key in kwargs:
             if key not in ["padx", "pady", "bootstyle", "style", "foreground", "font"]:

@@ -116,7 +116,7 @@ class HomePage:
             if get_current_theme_str() == "light":
                 self.restart_image = self.images.change_image_colour("restart", "#ffffff", tk_image=True)
                 
-            restart_btn = RoundedButton(wrapper, radius=8, bootstyle="primary.TButton", command=lambda _: self._restart_bot(), image=self.restart_image, padx=15, pady=6)
+            restart_btn = RoundedButton(wrapper, radius=20, bootstyle="primary.TButton", command=lambda _: self._restart_bot(), image=self.restart_image, padx=15, pady=6)
             restart_btn.grid(row=0, column=3, rowspan=2, sticky=ttk.EW, padx=(10, 16), pady=(10, 10))
             
             wrapper.grid_columnconfigure(2, weight=1)
