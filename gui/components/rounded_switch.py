@@ -1,4 +1,5 @@
 import ttkbootstrap as ttk
+from PIL import Image, ImageDraw, ImageTk
 
 from gui.components.rounded_frame import RoundedFrame
 from gui.helpers.style import Style
@@ -51,26 +52,34 @@ class RoundedSwitch(ttk.Canvas):
         if width < 2 or height < 2:
             return
 
-        width -= 1
-        height -= 1
-
-        radius = height / 2
         selected = bool(self.variable.get())
         color = self.disabled_color if self._disabled else (self.on_color if selected else self.off_color)
-        self.create_rectangle(radius, 0, width - radius, height, fill=color, outline=color)
-        self.create_oval(0, 0, radius * 2, height, fill=color, outline=color)
-        self.create_oval(width - radius * 2, 0, width, height, fill=color, outline=color)
+        supersample = 4
+        image_size = (width * supersample, height * supersample)
+        image = Image.new("RGBA", image_size, (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
 
-        thumb_radius = max(radius - (3 * self.scale), 1)
-        thumb_x = width - radius if selected else radius
-        self.create_oval(
-            thumb_x - thumb_radius,
-            radius - thumb_radius,
-            thumb_x + thumb_radius,
-            radius + thumb_radius,
+        track_radius = image_size[1] // 2
+        draw.rounded_rectangle((0, 0, *image_size), radius=track_radius, fill=color)
+
+        thumb_diameter = max(height - round(6 * self.scale), 2)
+        thumb_x = width - (height / 2) if selected else height / 2
+        thumb_radius = (thumb_diameter * supersample) / 2
+        thumb_center_x = thumb_x * supersample
+        thumb_center_y = (height / 2) * supersample
+        draw.ellipse(
+            (
+                round(thumb_center_x - thumb_radius),
+                round(thumb_center_y - thumb_radius),
+                round(thumb_center_x + thumb_radius),
+                round(thumb_center_y + thumb_radius),
+            ),
             fill=self.thumb_color,
-            outline=self.thumb_color,
         )
+
+        image = image.resize((width, height), Image.Resampling.LANCZOS)
+        self._switch_image = ImageTk.PhotoImage(image)
+        self.create_image(0, 0, anchor="nw", image=self._switch_image)
 
     def invoke(self, event=None):
         if self._disabled:
