@@ -4,7 +4,7 @@ from .theme import Theme
 from .config import Config
 from .token import Token
 
-VERSION = "4.2.3"
+VERSION = "4.2.4-dev"
 PRODUCTION = True
 MOTD = "cool beans"
 CHANGELOG = """"""
