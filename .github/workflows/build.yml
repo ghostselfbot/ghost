@@ -6,20 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            artifact_name: Ghost-Linux
-          - os: macos-latest
-            artifact_name: Ghost-Mac
-          - os: windows-latest
-            artifact_name: Ghost-Windows
-
-    runs-on: ${{ matrix.os }}
+  build-windows:
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -28,32 +16,19 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install system deps (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y python3-tk
-
       - name: Create venv
         run: python -m venv .venv
 
-      - name: Install deps (Unix)
-        if: runner.os != 'Windows'
-        run: .venv/bin/pip install -r requirements.txt
-
-      - name: Install deps (Windows)
-        if: runner.os == 'Windows'
+      - name: Install dependencies
         run: .venv\Scripts\pip install -r requirements.txt
 
-      - name: Build (Unix)
-        if: runner.os != 'Windows'
-        run: .venv/bin/python compile.py
-
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
+      - name: Build
         env:
           PYTHONIOENCODING: utf-8
         run: .venv\Scripts\python compile.py
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
+          name: Ghost-Windows
           path: dist/*
