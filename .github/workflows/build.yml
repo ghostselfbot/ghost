@@ -1,0 +1,34 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Create venv
+        run: python -m venv .venv
+
+      - name: Install dependencies
+        run: .venv\Scripts\pip install -r requirements.txt
+
+      - name: Build
+        env:
+          PYTHONIOENCODING: utf-8
+        run: .venv\Scripts\python compile.py
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ghost-Windows
+          path: dist/*
