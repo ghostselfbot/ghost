@@ -84,7 +84,7 @@ class Images:
         ICON_CONFIG = {
             "bigger": ["scripts"],
             "small": ["trash", "github", "restart", "checkmark", "left-chevron", "file-signature", "trash-white", "titlebar-ico", "right-chevron-small"],
-            "tiny": ["submit", "max", "min", "search", "right-chevron-tiny"],
+            "tiny": ["submit", "max", "min", "search", "right-chevron-tiny", "copy-tiny"],
             "smaller": ["folder-open", "plus", "reset", "play", "stop", "right-chevron", "download", "copy"],
             "logo": ["ghost-logo"],
         }
@@ -124,6 +124,7 @@ class Images:
             "titlebar-ico": "data/icon-win.png",
             "download": "data/icons/download-solid.png",
             "copy": "data/icons/copy-solid.png",
+            "copy-tiny": "data/icons/copy-solid.png",
         }
 
         for key, path in ICON_PATHS.items():
