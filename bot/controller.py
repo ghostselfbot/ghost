@@ -294,15 +294,41 @@ class BotController:
 
 
     async def get_user_from_id_async(self, user_id):
-        print(f"[BotController] Getting user from ID: {user_id}")
+        user = None
+        
         try:
-            return await self.bot.fetch_user(user_id) if self.bot else None
+            user = await self.bot.fetch_user(user_id) if self.bot else None
         except Exception as e:
             console.print_error(f"Error getting user from ID {user_id}: {e}")
             return None
+        
+        mutual_guilds = [guild for guild in self.get_guilds() if guild.get_member(user.id)] if self.get_guilds() else []
+        mutual_guilds_member_objects = []
+        
+        if mutual_guilds:
+            for guild in mutual_guilds:
+                try:
+                    member = await guild.fetch_member(user.id)
+                    if member:
+                        mutual_guilds_member_objects.append((guild, member))
+                except Exception as e:
+                    console.print_error(f"Error fetching member from guild {guild.name}: {e}")
+            
+            return user, mutual_guilds_member_objects
+        
+        return user, []
 
     def get_user_from_id(self, user_id):
         return asyncio.run_coroutine_threadsafe(self.get_user_from_id_async(user_id), self.loop).result()
+
+    def is_friend(self, user_id):
+        return any(friend.id == user_id for friend in self.get_friends()) if self.get_friends() else False
+    
+    def get_mutual_guilds(self, user_id):
+        user, _ = self.get_user_from_id(user_id)
+        if not user:
+            return []
+        return [guild for guild in self.get_guilds() if guild.get_member(user.id)] if self.get_guilds() else []
 
     get_user    = lambda self: self.bot.user if self.bot else None
     get_friends = lambda self: self.bot.friends if self.bot else None
@@ -319,3 +345,11 @@ class BotController:
             return cmdhelper.format_time(time.time() - self.bot.start_time, short_form=True)
         except:
             return "0s"
+        
+    def snowflake_to_timestamp(self, snowflake):
+        try:
+            timestamp = ((int(snowflake) >> 22) + 1420070400000) / 1000
+            return time.strftime('%d/%m/%Y', time.localtime(timestamp)) + " at " + time.strftime('%H:%M:%S', time.localtime(timestamp))
+        except Exception as e:
+            console.print_error(f"Error converting snowflake to timestamp: {e}")
+            return "Invalid Snowflake"
