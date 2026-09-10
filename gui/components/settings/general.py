@@ -127,27 +127,29 @@ class GeneralPanel(SettingsPanel):
         edit_og_msg_label = ttk.Label(checkboxes_frame, text="Edit original message")
         edit_og_msg_label.configure(background=self.root.style.colors.get("dark"))
         edit_og_msg_label.grid(row=0, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
+        edit_og_msg_label.bind("<Button-1>", lambda e: self.edit_og_msg_entry.invoke())
         
         self.edit_og_msg_entry = RoundedSwitch(checkboxes_frame, command=self._save_cfg, parent_background=self.root.style.colors.get("dark"))
         self.edit_og_msg_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("message_settings.edit_og")))
         self.edit_og_msg_entry.grid(row=0, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10))
         
-        # add a checkbox for telemetry
-        telemetry_label = ttk.Label(checkboxes_frame, text="Send anonymous telemetry data (helps improve Ghost)")
-        telemetry_label.configure(background=self.root.style.colors.get("dark"))
-        telemetry_label.grid(row=1, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
-        
-        self.telemetry_entry = RoundedSwitch(checkboxes_frame, command=self._save_cfg, parent_background=self.root.style.colors.get("dark"))
-        self.telemetry_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("telemetry")))
-        self.telemetry_entry.grid(row=1, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10))
-
         startup_label = ttk.Label(checkboxes_frame, text="Launch Ghost on startup")
         startup_label.configure(background=self.root.style.colors.get("dark"))
-        startup_label.grid(row=2, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
+        startup_label.grid(row=1, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
+        startup_label.bind("<Button-1>", lambda e: self.startup_entry.invoke())
 
         self.startup_entry = RoundedSwitch(checkboxes_frame, command=self._save_cfg, parent_background=self.root.style.colors.get("dark"))
         self.startup_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("launch_on_startup")))
-        self.startup_entry.grid(row=2, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10))
+        self.startup_entry.grid(row=1, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10))
+        
+        telemetry_label = ttk.Label(checkboxes_frame, text="Send anonymous telemetry data (helps improve Ghost)")
+        telemetry_label.configure(background=self.root.style.colors.get("dark"))
+        telemetry_label.grid(row=2, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
+        telemetry_label.bind("<Button-1>", lambda e: self.telemetry_entry.invoke())
+
+        self.telemetry_entry = RoundedSwitch(checkboxes_frame, command=self._save_cfg, parent_background=self.root.style.colors.get("dark"))
+        self.telemetry_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("telemetry")))
+        self.telemetry_entry.grid(row=2, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10))
 
         return self.wrapper
     
