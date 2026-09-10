@@ -1,4 +1,5 @@
 import os, sys
+import webbrowser
 import ttkbootstrap as ttk
 
 from gui.components import RoundedFrame
@@ -56,6 +57,12 @@ class ToolsPage:
                 "description": "Create and restore backups of your Discord account, friends, and servers",
                 "page": self.backups_page,
                 "command": self.draw_backups
+            },
+            {
+                "name": "Telemetry Stats",
+                "description": "View anonymous telemetry data collected from Ghost users",
+                "page": None,
+                "command": self.open_telemetry_stats
             }
             # {
             #     "name": "User Lookup",
@@ -112,6 +119,9 @@ class ToolsPage:
         self.backups_page.draw(main)
         self.layout.sidebar.set_button_command("tools", self.draw_backups)
         self.position_resize_grips() 
+        
+    def open_telemetry_stats(self):
+        webbrowser.open("https://www.ghostt.cc/stats/")
         
     def _bind_hover_effects(self, widget, targets, hover_bg, normal_bg):
         def on_enter(_):
