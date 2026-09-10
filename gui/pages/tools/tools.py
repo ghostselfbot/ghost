@@ -63,13 +63,13 @@ class ToolsPage:
                 "description": "View anonymous telemetry data collected from Ghost users",
                 "page": None,
                 "command": self.open_telemetry_stats
+            },
+            {
+                "name": "User Lookup",
+                "description": "Look up information about a user by their ID",
+                "page": self.user_lookup_page,
+                "command": self.draw_user_lookup
             }
-            # {
-            #     "name": "User Lookup",
-            #     "description": "Look up information about a user by their ID",
-            #     "page": self.user_lookup_page,
-            #     "command": self.draw_user_lookup
-            # }
         ]
         
     def draw_password_gen(self):
