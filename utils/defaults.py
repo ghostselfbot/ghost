@@ -54,7 +54,8 @@ DEFAULT_CONFIG = {
     "gui_theme": "dark",
     "telemetry": True,
     "install_id": "",
-    "afk": DEFAULT_AFK
+    "afk": DEFAULT_AFK,
+    "launch_on_startup": False,
 }
 
 DEFAULT_THEME = {

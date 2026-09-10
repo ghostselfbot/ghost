@@ -3,6 +3,7 @@ import ttkbootstrap as ttk
 import utils.console as console
 from gui.components import SettingsPanel, DropdownMenu, RoundedButton, RoundedSwitch
 from gui.helpers import apply_theme, get_themes
+from utils.files import set_launch_on_startup
 
 class GeneralPanel(SettingsPanel):
     def __init__(self, root, parent, bot_controller, images, config, draw_settings, width=None):
@@ -49,6 +50,15 @@ class GeneralPanel(SettingsPanel):
             self.cfg.set("telemetry", self.telemetry_entry.instate(["selected"]), save=False)
         except Exception as e:
             console.error(f"Failed to set telemetry setting: {e}")
+            
+        try:
+            startup_enabled = self.startup_entry.instate(["selected"])
+            self.cfg.set("launch_on_startup", startup_enabled, save=False)
+            success, err = set_launch_on_startup(startup_enabled)
+            if not success:
+                console.warning(f"Could not update startup setting: {err}")
+        except Exception as e:
+            console.error(f"Failed to set startup setting: {e}")
     
         self.cfg.save(notify=False)
         
@@ -130,6 +140,14 @@ class GeneralPanel(SettingsPanel):
         self.telemetry_entry = RoundedSwitch(checkboxes_frame, command=self._save_cfg, parent_background=self.root.style.colors.get("dark"))
         self.telemetry_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("telemetry")))
         self.telemetry_entry.grid(row=1, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10))
+
+        startup_label = ttk.Label(checkboxes_frame, text="Launch Ghost on startup")
+        startup_label.configure(background=self.root.style.colors.get("dark"))
+        startup_label.grid(row=2, column=0, sticky=ttk.NW, padx=(10, 0), pady=(2, 10))
+
+        self.startup_entry = RoundedSwitch(checkboxes_frame, command=self._save_cfg, parent_background=self.root.style.colors.get("dark"))
+        self.startup_entry.configure(variable=ttk.BooleanVar(value=self.cfg.get("launch_on_startup")))
+        self.startup_entry.grid(row=2, column=1, sticky=ttk.E, padx=(10, 10), pady=(2, 10))
 
         return self.wrapper
     
