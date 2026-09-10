@@ -125,6 +125,13 @@ class Images:
             "download": "data/icons/download-solid.png",
             "copy": "data/icons/copy-solid.png",
             "copy-tiny": "data/icons/copy-solid.png",
+            "surveillance": "data/icons/eye-solid.png",
+            "message_logger": "data/icons/log-solid.png",
+            "auto_afk_reply": "data/icons/reply-all-solid.png",
+            "backups": "data/icons/archive-solid.png",
+            "user_lookup": "data/icons/magnifying-glass-solid.png",
+            "password_gen": "data/icons/key-solid.png",
+            "telemetry": "data/icons/chart-solid.png",
         }
 
         for key, path in ICON_PATHS.items():
