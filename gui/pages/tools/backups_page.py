@@ -52,7 +52,7 @@ class BackupsPage(ToolPage):
 
     def _format_time(self, timestamp):
         if timestamp:
-            return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
+            return time.strftime("%H:%M:%S %d/%m/%Y", time.localtime(timestamp))
         return "Unknown"
 
     def _set_status(self, text):
@@ -321,16 +321,16 @@ class BackupsPage(ToolPage):
 
             btype = backup.get("type", "unknown")
             color = type_colors.get(btype, Style.LIGHT_GREY.value)
-            type_label = ttk.Label(name_frame, text=btype.upper(), font=("Host Grotesk", 9, "bold"), foreground=color)
+            type_label = ttk.Label(name_frame, text=btype.upper(), font=("Host Grotesk", 12, "bold"), foreground=color)
             type_label.configure(background=Style.SETTINGS_PILL_HOVER.value)
             type_label.pack(side=ttk.LEFT, padx=(0, 5))
 
-            name_label = ttk.Label(name_frame, text=backup["name"], font=("Host Grotesk", 11, "bold"))
-            name_label.configure(background=Style.SETTINGS_PILL_HOVER.value)
-            name_label.pack(side=ttk.LEFT)
+            # name_label = ttk.Label(name_frame, text=backup["name"], font=("Host Grotesk", 11, "bold"))
+            # name_label.configure(background=Style.SETTINGS_PILL_HOVER.value)
+            # name_label.pack(side=ttk.LEFT)
 
             info_text = self._format_time(backup["created_at"])
-            info_label = ttk.Label(inner, text=info_text, font=("Host Grotesk", 9))
+            info_label = ttk.Label(inner, text=f"Last updated {info_text}", font=("Host Grotesk", 10))
             info_label.configure(background=Style.SETTINGS_PILL_HOVER.value, foreground=Style.LIGHT_GREY.value)
             info_label.grid(row=1, column=0, sticky=ttk.W)
 
