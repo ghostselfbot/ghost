@@ -64,7 +64,7 @@ class AutoAFKReplyPage(ToolPage):
         return 8, 18
 
     def _draw_time_selector(self, parent, selected_hour, selected_period):
-        wrapper = RoundedFrame(parent, radius=(10, 10, 10, 10), bootstyle="secondary.TFrame")
+        wrapper = RoundedFrame(parent, radius=(10, 10, 10, 10), background=Style.ENTRY_BG.value, parent_background=self.root.style.colors.get("dark"))
         wrapper.grid_columnconfigure(1, weight=1, minsize=82)
         validate_command = (self.root.register(self._validate_afk_hour), "%P")
 
