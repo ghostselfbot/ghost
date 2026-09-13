@@ -2,7 +2,7 @@ import webbrowser, discord, sys, time
 import ttkbootstrap as ttk
 import tkinter.font as tkFont
 from ttkbootstrap.scrolled import ScrolledFrame
-from gui.components import RoundedFrame, ToolPage
+from gui.components import RoundedFrame, ToolPage, RoundedButton
 from gui.components.tools.message_log_entry import MessageLogEntry
 from gui.helpers import Images
 from gui.helpers.style import Style
@@ -36,11 +36,16 @@ class MessageLoggerPage(ToolPage):
         page_name.grid(row=0, column=2, sticky=ttk.W)
         page_name.bind("<Button-1>", lambda e: self.go_back())
 
-        clear_btn = ttk.Label(wrapper, image=self.images.get("trash"))
-        clear_btn.configure(foreground="white")
-        clear_btn.bind("<Button-1>", lambda e: self._clear_discord_logs())
-        clear_btn.bind("<Enter>", lambda e: clear_btn.configure(foreground=Style.LIGHT_GREY.value))
-        clear_btn.bind("<Leave>", lambda e: clear_btn.configure(foreground="white"))
+        # clear_btn_wrapper = RoundedFrame(wrapper, radius=5)
+        # clear_btn_wrapper.bind("<Button-1>", lambda e: self._clear_discord_logs())
+        # clear_btn_wrapper.grid(row=0, column=3, sticky=ttk.E, padx=(20, 0))
+
+        # clear_btn = ttk.Label(clear_btn_wrapper, image=self.images.get("trash-white"))
+        # clear_btn.configure(background=self.root.style.colors.get("danger"))
+        # clear_btn.bind("<Button-1>", lambda e: self._clear_discord_logs())
+        # clear_btn.pack(padx=5, pady=5)
+        
+        clear_btn = RoundedButton(wrapper, image=self.images.get("trash-white"), bootstyle="danger.TButton", command=self._clear_discord_logs, pady=5, padx=1)
         clear_btn.grid(row=0, column=3, sticky=ttk.E, padx=(20, 0))
 
         wrapper.grid_columnconfigure(2, weight=1)
