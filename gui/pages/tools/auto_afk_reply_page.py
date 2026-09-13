@@ -64,7 +64,7 @@ class AutoAFKReplyPage(ToolPage):
         return 8, 18
 
     def _draw_time_selector(self, parent, selected_hour, selected_period):
-        wrapper = RoundedFrame(parent, radius=(10, 10, 10, 10), background=Style.SETTINGS_PILL_HOVER.value, parent_background=self.root.style.colors.get("secondary"))
+        wrapper = RoundedFrame(parent, radius=(10, 10, 10, 10), bootstyle="secondary.TFrame")
         wrapper.grid_columnconfigure(1, weight=1, minsize=82)
         validate_command = (self.root.register(self._validate_afk_hour), "%P")
 
@@ -114,8 +114,8 @@ class AutoAFKReplyPage(ToolPage):
         self.cfg.save()
     
     def draw_content(self, wrapper):
-        content_wrapper = RoundedFrame(wrapper, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
-        content_wrapper.pack(fill=ttk.BOTH, expand=True, padx=20, pady=20)
+        content_wrapper = RoundedFrame(wrapper, radius=(15, 15, 15, 15), background=self.root.style.colors.get("bg"))
+        content_wrapper.pack(fill=ttk.BOTH, expand=True)
         
         # indefinite_toggle_wrapper = RoundedFrame(content_wrapper, radius=(10, 10, 10, 10), bootstyle="secondary.TFrame")
         # indefinite_toggle_wrapper.pack(fill=ttk.X, pady=(0, 10))
@@ -131,13 +131,13 @@ class AutoAFKReplyPage(ToolPage):
         # self.indefinite_toggle_switch.grid(row=0, column=1, sticky=ttk.E, padx=(0, 10), pady=10)
         # self.indefinite_toggle_switch.configure(command=self._save_cfg)
         
-        auto_toggle_wrapper = RoundedFrame(content_wrapper, radius=(10, 10, 10, 10), bootstyle="secondary.TFrame")
+        auto_toggle_wrapper = RoundedFrame(content_wrapper, radius=(10, 10, 10, 10), bootstyle="dark.TFrame")
         auto_toggle_wrapper.pack(fill=ttk.X, pady=(0, 10))
         auto_toggle_wrapper.bind("<Button-1>", lambda e: self.auto_toggle_switch.invoke())
         auto_toggle_wrapper.grid_columnconfigure(0, weight=1)
         
         auto_toggle_label = ttk.Label(auto_toggle_wrapper, text="Enable automatic AFK replies", font=("Host Grotesk", 16, "bold"))
-        auto_toggle_label.configure(background=self.root.style.colors.get("secondary"))
+        auto_toggle_label.configure(background=self.root.style.colors.get("dark"))
         auto_toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
         auto_toggle_label.bind("<Button-1>", lambda e: self.auto_toggle_switch.invoke())
         
@@ -150,16 +150,16 @@ class AutoAFKReplyPage(ToolPage):
         else:
             self.auto_toggle_switch.state(["!alternate", "!selected"])
             
-        afk_response_wrapper = RoundedFrame(content_wrapper, style="secondary.TFrame", radius=(10, 10, 10, 10))
+        afk_response_wrapper = RoundedFrame(content_wrapper, style="dark.TFrame", radius=(10, 10, 10, 10))
         afk_response_wrapper.pack(fill=ttk.X, pady=(0, 10))
         afk_response_wrapper.grid_columnconfigure(0, weight=1)
 
         response_label = ttk.Label(afk_response_wrapper, text="AFK Response Message", font=("Host Grotesk", 16, "bold"))
-        response_label.configure(background=self.root.style.colors.get("secondary"))
+        response_label.configure(background=self.root.style.colors.get("dark"))
         response_label.grid(row=0, column=0, sticky=ttk.W, padx=10, pady=(10, 5))
         
         response_desc = ttk.Label(afk_response_wrapper, text="This message will be sent automatically when someone DMs you while you're away.")
-        response_desc.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
+        response_desc.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         response_desc.grid(row=1, column=0, sticky=ttk.W, padx=10, pady=(0, 5))
         
         self.afk_response_entry = ttk.Entry(afk_response_wrapper, font=("Host Grotesk", 12))
@@ -169,17 +169,17 @@ class AutoAFKReplyPage(ToolPage):
         self.afk_response_entry.bind("<Return>", lambda event: self._save_cfg())
 
 
-        afk_time_wrapper = RoundedFrame(content_wrapper, style="secondary.TFrame", radius=(10, 10, 10, 10))
+        afk_time_wrapper = RoundedFrame(content_wrapper, style="dark.TFrame", radius=(10, 10, 10, 10))
         afk_time_wrapper.pack(fill=ttk.X, pady=(0, 10))
         afk_time_wrapper.grid_columnconfigure(0, weight=1)
         afk_time_wrapper.grid_columnconfigure(2, weight=1)
         
         afk_time_label = ttk.Label(afk_time_wrapper, text="AFK Time Range", font=("Host Grotesk", 16, "bold"))
-        afk_time_label.configure(background=self.root.style.colors.get("secondary"))
+        afk_time_label.configure(background=self.root.style.colors.get("dark"))
         afk_time_label.grid(row=0, column=0, columnspan=3, sticky=ttk.W, padx=10, pady=(10, 5))
         
         afk_time_desc = ttk.Label(afk_time_wrapper, text="Set your start and end times for when you're usually AFK.")
-        afk_time_desc.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
+        afk_time_desc.configure(background=self.root.style.colors.get("dark"), foreground=Style.LIGHT_GREY.value)
         afk_time_desc.grid(row=1, column=0, columnspan=3, sticky=ttk.W, padx=10, pady=(0, 5))
 
         start_hour, end_hour = self._get_afk_times()
@@ -194,7 +194,7 @@ class AutoAFKReplyPage(ToolPage):
         start_wrapper.grid(row=2, column=0, sticky=ttk.W, padx=10, pady=10)
 
         to_label = ttk.Label(afk_time_wrapper, text="to")
-        to_label.configure(background=self.root.style.colors.get("secondary"))
+        to_label.configure(background=self.root.style.colors.get("dark"))
         to_label.grid(row=2, column=1, sticky=ttk.NS, pady=10)
 
         end_wrapper, self.afk_end_entry, self.afk_end_period_menu = self._draw_time_selector(
