@@ -45,7 +45,7 @@ class MessageLoggerPage(ToolPage):
         # clear_btn.bind("<Button-1>", lambda e: self._clear_discord_logs())
         # clear_btn.pack(padx=5, pady=5)
         
-        clear_btn = RoundedButton(wrapper, image=self.images.get("trash-white"), bootstyle="danger.TButton", command=self._clear_discord_logs, pady=5, padx=1)
+        clear_btn = RoundedButton(wrapper, image=self.images.get("trash-white"), bootstyle="danger.TButton", command=lambda _: self._clear_discord_logs(), pady=5, padx=1)
         clear_btn.grid(row=0, column=3, sticky=ttk.E, padx=(20, 0))
 
         wrapper.grid_columnconfigure(2, weight=1)
