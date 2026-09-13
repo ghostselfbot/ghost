@@ -32,7 +32,7 @@ class PasswordGenPage(ToolPage):
         entry_wrapper = RoundedFrame(parent, radius=(15, 15, 15, 15), bootstyle="dark.TFrame")
         entry_wrapper.pack(fill=ttk.BOTH, pady=(0, 10))
         
-        self.generated_password = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13))
+        self.generated_password = ttk.Entry(entry_wrapper, bootstyle="dark.TFrame")
         self.generated_password.grid(row=0, column=0, sticky=ttk.EW, padx=(18, 0), pady=10, columnspan=2, ipady=10)
         self.generated_password.insert(0, "Click 'Generate' to create a password")
         self.generated_password.configure(state="readonly")
@@ -125,13 +125,13 @@ class PasswordGenPage(ToolPage):
         strength_wrapper.grid(row=0, column=0, sticky=ttk.EW, padx=18, pady=(15, 5), columnspan=2)
         strength_wrapper.columnconfigure(0, weight=1)
         
-        self.strength_label = ttk.Label(strength_wrapper, text="Strong", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
+        self.strength_label = ttk.Label(strength_wrapper, text="Strong", background=self.root.style.colors.get("dark"))
         self.strength_label.grid(row=0, column=1, sticky=ttk.W, padx=(15, 0))
         self.strength_bar = RoundedProgressbar(strength_wrapper, bootstyle="success", maximum=100, value=80)
         self.strength_bar.grid(row=0, column=0, sticky=ttk.EW)
         
         # password length
-        self.length_label = ttk.Label(options_wrapper, text=f"Password Length {self.password_length}", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
+        self.length_label = ttk.Label(options_wrapper, text=f"Password Length {self.password_length}", background=self.root.style.colors.get("dark"))
         self.length_label.grid(row=1, column=0, sticky=ttk.W, padx=18, pady=(5, 5))
         length_slider = RoundedSlider(
             options_wrapper,
@@ -147,28 +147,28 @@ class PasswordGenPage(ToolPage):
         # uppercase, lowercase, numbers, symbols
         self.uppercase_var = ttk.BooleanVar(value=self.include_uppercase)
         self.uppercase_var.trace_add("write", self.on_option_change)
-        uppercase_label = ttk.Label(options_wrapper, text="Include Uppercase Letters", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
+        uppercase_label = ttk.Label(options_wrapper, text="Include Uppercase Letters", background=self.root.style.colors.get("dark"))
         uppercase_label.grid(row=2, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
         uppercase_check = RoundedSwitch(options_wrapper, variable=self.uppercase_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         uppercase_check.grid(row=2, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
         
         self.lowercase_var = ttk.BooleanVar(value=self.include_lowercase)
         self.lowercase_var.trace_add("write", self.on_option_change)
-        lowercase_label = ttk.Label(options_wrapper, text="Include Lowercase Letters", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
+        lowercase_label = ttk.Label(options_wrapper, text="Include Lowercase Letters", background=self.root.style.colors.get("dark"))
         lowercase_label.grid(row=3, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
         lowercase_check = RoundedSwitch(options_wrapper, variable=self.lowercase_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         lowercase_check.grid(row=3, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
         
         self.numbers_var = ttk.BooleanVar(value=self.include_numbers)
         self.numbers_var.trace_add("write", self.on_option_change)
-        numbers_label = ttk.Label(options_wrapper, text="Include Numbers", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
+        numbers_label = ttk.Label(options_wrapper, text="Include Numbers", background=self.root.style.colors.get("dark"))
         numbers_label.grid(row=4, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 5))
         numbers_check = RoundedSwitch(options_wrapper, variable=self.numbers_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         numbers_check.grid(row=4, column=1, sticky=ttk.E, padx=18, pady=(5, 5))
         
         self.symbols_var = ttk.BooleanVar(value=self.include_symbols)
         self.symbols_var.trace_add("write", self.on_option_change)
-        symbols_label = ttk.Label(options_wrapper, text="Include Symbols", font=("Host Grotesk", 12), background=self.root.style.colors.get("dark"))
+        symbols_label = ttk.Label(options_wrapper, text="Include Symbols", background=self.root.style.colors.get("dark"))
         symbols_label.grid(row=5, column=0, sticky=ttk.W, padx=(18, 0), pady=(5, 15))
         symbols_check = RoundedSwitch(options_wrapper, variable=self.symbols_var, command=self.on_option_change, parent_background=self.root.style.colors.get("dark"))
         symbols_check.grid(row=5, column=1, sticky=ttk.E, padx=18, pady=(5, 15))

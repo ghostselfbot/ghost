@@ -159,10 +159,10 @@ class ToolsPage:
         text_wrapper = RoundedFrame(page_wrapper, radius=0, bootstyle="dark.TFrame")
         text_wrapper.pack(side=ttk.LEFT, fill=ttk.BOTH, expand=True, padx=(0, 10), pady=(10, 10))
         
-        title = ttk.Label(text_wrapper, text=page["name"], font=("Host Grotesk", 14, "bold"), background=self.root.style.colors.get("dark"))
+        title = ttk.Label(text_wrapper, text=page["name"], font=("Host Grotesk", 16, "bold"), background=self.root.style.colors.get("dark"))
         title.pack(anchor=ttk.W)
         
-        description = ttk.Label(text_wrapper, text=page["description"], font=("Host Grotesk", 11), background=self.root.style.colors.get("dark"))
+        description = ttk.Label(text_wrapper, text=page["description"], background=self.root.style.colors.get("dark"))
         description.pack(anchor=ttk.W, pady=(2, 0))
         
         page_wrapper.bind("<Button-1>", lambda e: page["command"]())

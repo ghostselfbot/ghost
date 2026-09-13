@@ -283,11 +283,11 @@ class UserLookupPage(ToolPage):
                 info_frame = RoundedFrame(scrolled_wrapper.container, radius=5, bootstyle="secondary.TFrame")
                 info_frame.pack(side=ttk.TOP, fill=ttk.X, pady=(0, 5))
                 
-                key_label = ttk.Label(info_frame, text=f"{key}:", font=("Host Grotesk", 12, "bold"))
+                key_label = ttk.Label(info_frame, text=f"{key}:", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13, "bold"))
                 key_label.configure(background=self.root.style.colors.get("secondary"), foreground="white")
                 key_label.pack(side=ttk.LEFT, padx=(5, 0), pady=(5, 5))
                 
-                value_label = ttk.Label(info_frame, text=f"{value}", font=("Host Grotesk", 12))
+                value_label = ttk.Label(info_frame, text=f"{value}")
                 value_label.configure(background=self.root.style.colors.get("secondary"), foreground=Style.LIGHT_GREY.value)
                 value_label.pack(side=ttk.LEFT, padx=(5, 0), pady=(5, 5))
                 
@@ -299,11 +299,11 @@ class UserLookupPage(ToolPage):
             avatar_frame = RoundedFrame(scrolled_wrapper.container, radius=5, bootstyle="secondary.TFrame")
             avatar_frame.pack(side=ttk.TOP, fill=ttk.X, pady=(0, 5))
             
-            avatar_label = ttk.Label(avatar_frame, text="Avatar:", font=("Host Grotesk", 12, "bold"))
+            avatar_label = ttk.Label(avatar_frame, text="Avatar:", font=("Host Grotesk", 12 if sys.platform != "darwin" else 13, "bold"))
             avatar_label.configure(background=self.root.style.colors.get("secondary"), foreground="white")
             avatar_label.pack(side=ttk.LEFT, padx=(5, 0), pady=(5, 5))
             
-            avatar_button = RoundedButton(avatar_frame, text="Open Avatar", command=lambda _: webbrowser.open(self.user.avatar.url if self.user and self.user.avatar else "https://ia600305.us.archive.org/31/items/discordprofilepictures/discordblue.png"), bootstyle="primary.TButton", radius=8, padx=2, pady=1, font=("Host Grotesk", 10))
+            avatar_button = RoundedButton(avatar_frame, text="Open Avatar", command=lambda _: webbrowser.open(self.user.avatar.url if self.user and self.user.avatar else "https://ia600305.us.archive.org/31/items/discordprofilepictures/discordblue.png"), bootstyle="primary.TButton")
             avatar_button.pack(side=ttk.LEFT, padx=(5, 0), pady=(5, 5))
             
             copy_avatar_button = ttk.Label(avatar_frame, image=self.images.get("copy-tiny"), style="secondary.TButton")
