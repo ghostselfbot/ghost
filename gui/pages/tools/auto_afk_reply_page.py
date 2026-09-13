@@ -117,13 +117,13 @@ class AutoAFKReplyPage(ToolPage):
         content_wrapper = RoundedFrame(wrapper, radius=(15, 15, 15, 15), background=self.root.style.colors.get("bg"))
         content_wrapper.pack(fill=ttk.BOTH, expand=True)
         
-        # indefinite_toggle_wrapper = RoundedFrame(content_wrapper, radius=(10, 10, 10, 10), bootstyle="secondary.TFrame")
+        # indefinite_toggle_wrapper = RoundedFrame(content_wrapper, radius=(10, 10, 10, 10), bootstyle="dark.TFrame")
         # indefinite_toggle_wrapper.pack(fill=ttk.X, pady=(0, 10))
         # indefinite_toggle_wrapper.bind("<Button-1>", lambda e: self.indefinite_toggle_switch.invoke())
         # indefinite_toggle_wrapper.grid_columnconfigure(0, weight=1)
 
         # indefinite_toggle_label = ttk.Label(indefinite_toggle_wrapper, text="Enable AFK replies indefinitely", font=("Host Grotesk", 16, "bold"))
-        # indefinite_toggle_label.configure(background=self.root.style.colors.get("secondary"))
+        # indefinite_toggle_label.configure(background=self.root.style.colors.get("dark"))
         # indefinite_toggle_label.grid(row=0, column=0, sticky=ttk.W, padx=(10, 0), pady=10)
         # indefinite_toggle_label.bind("<Button-1>", lambda e: self.indefinite_toggle_switch.invoke())
         
