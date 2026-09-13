@@ -18,7 +18,6 @@ class ToolsPage:
         self.images = images
         self.layout = layout
         self.position_resize_grips = position_resize_grips
-        self.hover_colour = self.root.style.colors.get("secondary")
         
         self.surveillance_page = SurveillancePage(self, root, bot_controller, images, layout)
         self.message_logger_page = MessageLoggerPage(self, root, bot_controller, images, layout)
@@ -174,11 +173,11 @@ class ToolsPage:
         page_icon_wrapper.bind("<Button-1>", lambda e: page["command"]())
         
         # Bind hover effects to the entire page card
-        self._bind_hover_effects(page_wrapper, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.hover_colour, normal_bg=self.root.style.colors.get("dark"))
-        self._bind_hover_effects(title, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.hover_colour, normal_bg=self.root.style.colors.get("dark"))
-        self._bind_hover_effects(description, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.hover_colour, normal_bg=self.root.style.colors.get("dark"))
-        self._bind_hover_effects(text_wrapper, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.hover_colour, normal_bg=self.root.style.colors.get("dark"))
-        self._bind_hover_effects(page_icon_wrapper, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.hover_colour, normal_bg=self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_wrapper, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.root.style.colors.get("secondary"), normal_bg=self.root.style.colors.get("dark"))
+        self._bind_hover_effects(title, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.root.style.colors.get("secondary"), normal_bg=self.root.style.colors.get("dark"))
+        self._bind_hover_effects(description, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.root.style.colors.get("secondary"), normal_bg=self.root.style.colors.get("dark"))
+        self._bind_hover_effects(text_wrapper, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.root.style.colors.get("secondary"), normal_bg=self.root.style.colors.get("dark"))
+        self._bind_hover_effects(page_icon_wrapper, targets=[page_wrapper, title, description, text_wrapper], hover_bg=self.root.style.colors.get("secondary"), normal_bg=self.root.style.colors.get("dark"))
         return page_wrapper
         
     def draw(self, parent):
