@@ -4,6 +4,7 @@ import os
 import random
 import mimetypes
 import shutil
+from io import BytesIO
 
 from discord.ext import commands
 from utils import config, files
@@ -58,6 +59,15 @@ class Img(commands.Cog):
         image = resp.json()["image"]
 
         await ctx.send(image)
+
+    @commands.command(name="raccoon", description="Get a random raccoon picture.", aliases=["rac","racc","racpic","raccpic"], usage="")
+    async def raccoon(self, ctx):
+        cfg = self.cfg
+        resp = requests.get("https://api.racc.lol/raccoon", timeout=15)
+        resp.raise_for_status()
+        extension = mimetypes.guess_extension(resp.headers.get("content-type", "image/jpeg").split(";")[0]) or ".jpg"
+
+        await ctx.send(file=discord.File(BytesIO(resp.content), filename=f"raccoon{extension}"))
 
     @commands.command(name="minion", description="Get a random minion meme.", aliases=["minionmeme"], usage="")
     async def minion(self, ctx):
