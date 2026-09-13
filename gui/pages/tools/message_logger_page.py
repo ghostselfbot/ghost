@@ -49,7 +49,7 @@ class MessageLoggerPage(ToolPage):
 
     def add_discord_log(self, author, message, delete_time):
         log_entry = (author, message, delete_time)
-        self.discord_logs.append(log_entry)
+        self.discord_logs.insert(0, log_entry)
         
         if self.discord_logs_frame and self.discord_logs_canvas:
             self._display_log(log_entry)
@@ -69,7 +69,7 @@ class MessageLoggerPage(ToolPage):
                 if self.discord_logs_wrapper:
                     self._update_canvas_width(self.discord_logs_canvas, self.discord_logs_wrapper)
                     
-                self.discord_logs_canvas.yview_moveto(1)
+                self.discord_logs_canvas.yview_moveto(0)
         except:
             pass
         
@@ -79,7 +79,7 @@ class MessageLoggerPage(ToolPage):
             
         try:
             self._update_canvas_width(self.discord_logs_canvas, self.discord_logs_wrapper)
-            self.discord_logs_canvas.yview_moveto(1)
+            self.discord_logs_canvas.yview_moveto(0)
         except:
             pass
             
@@ -137,7 +137,8 @@ class MessageLoggerPage(ToolPage):
             avatars=self.avatars,
             log_entry=log_entry
         )
-        self.logs.append(entry)  # keep track of all logs
+        self.logs.append(entry)
+        self.logs.reverse()
 
     def draw_content(self, wrapper):
         self.root.bind("<Configure>", self._update_wraplength)
