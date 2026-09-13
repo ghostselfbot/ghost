@@ -301,22 +301,8 @@ class BotController:
         except Exception as e:
             console.print_error(f"Error getting user from ID {user_id}: {e}")
             return None
-        
-        mutual_guilds = [guild for guild in self.get_guilds() if guild.get_member(user.id)] if self.get_guilds() else []
-        mutual_guilds_member_objects = []
-        
-        if mutual_guilds:
-            for guild in mutual_guilds:
-                try:
-                    member = await guild.fetch_member(user.id)
-                    if member:
-                        mutual_guilds_member_objects.append((guild, member))
-                except Exception as e:
-                    console.print_error(f"Error fetching member from guild {guild.name}: {e}")
-            
-            return user, mutual_guilds_member_objects
-        
-        return user, []
+
+        return user
 
     def get_user_from_id(self, user_id):
         return asyncio.run_coroutine_threadsafe(self.get_user_from_id_async(user_id), self.loop).result()
@@ -325,7 +311,7 @@ class BotController:
         return any(friend.id == user_id for friend in self.get_friends()) if self.get_friends() else False
     
     def get_mutual_guilds(self, user_id):
-        user, _ = self.get_user_from_id(user_id)
+        user = self.get_user_from_id(user_id)
         if not user:
             return []
         return [guild for guild in self.get_guilds() if guild.get_member(user.id)] if self.get_guilds() else []

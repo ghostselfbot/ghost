@@ -18,7 +18,6 @@ class UserLookupPage(ToolPage):
         self.wrapper = None  # Initialize wrapper to None
         self.is_friend = False
         self.mutual_guilds = []
-        self.mutual_guilds_member_objects = []
         self.created_at = None
         
     def _search_user(self, user_id):
@@ -29,7 +28,7 @@ class UserLookupPage(ToolPage):
         self.mutual_guilds = self.bot_controller.get_mutual_guilds(user_id_int)
         self.created_at = self.bot_controller.snowflake_to_timestamp(user_id_int)
         user = self.bot_controller.get_user_from_id(user_id_int)
-        self.user, self.mutual_guilds_member_objects = user
+        self.user = user
 
         accent_value = getattr(getattr(self.user, "accent_colour", None), "value", None)
         if accent_value is not None:
