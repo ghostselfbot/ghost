@@ -60,19 +60,19 @@ class MessageLogEntry:
             author_frame.pack(fill=ttk.X, pady=(0, 8))
 
             # Avatar
-            if self.author.avatar:
-                if self.author.id not in self.avatars:
-                    try:
-                        self.avatars[self.author.id] = self.bot_controller.get_avatar_from_url(
-                            str(self.author.avatar.url), size=28, radius=14
-                        )
-                    except Exception:
-                        self.avatars[self.author.id] = None
+            # if self.author.avatar:
+            #     if self.author.id not in self.avatars:
+            #         try:
+            #             self.avatars[self.author.id] = self.bot_controller.get_avatar_from_url(
+            #                 str(self.author.avatar.url), size=28, radius=14
+            #             )
+            #         except Exception:
+            #             self.avatars[self.author.id] = None
 
-                if self.avatars[self.author.id]:
-                    avatar_label = ttk.Label(author_frame, image=self.avatars[self.author.id])
-                    avatar_label.configure(background=self.root.style.colors.get("secondary"))
-                    avatar_label.pack(side=ttk.LEFT, padx=(0, 5))
+            #     if self.avatars[self.author.id]:
+            #         avatar_label = ttk.Label(author_frame, image=self.avatars[self.author.id])
+            #         avatar_label.configure(background=self.root.style.colors.get("secondary"))
+            #         avatar_label.pack(side=ttk.LEFT, padx=(0, 5))
 
             # Author name
             author_label = ttk.Label(
