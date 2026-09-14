@@ -1,10 +1,17 @@
+import base64
 import threading
 import time
+import urllib.parse
+import webbrowser
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import requests
 
 
 class SpotifyLyricsService:
+    redirect_uri = "http://127.0.0.1:8999/callback"
+    auth_scopes = "user-read-currently-playing user-read-playback-state"
+
     def __init__(self, credentials, show_timestamp=True, show_label=True, status_callback=None):
         self.credentials = credentials
         self.show_timestamp = show_timestamp
@@ -28,6 +35,91 @@ class SpotifyLyricsService:
         self.thread = threading.Thread(target=self._run, name="spotify-lyrics", daemon=True)
         self.thread.start()
         return True
+
+    def authenticate(self, callback=None):
+        client_id = self.credentials.get("clientID", "").strip()
+        if not client_id:
+            raise ValueError("Spotify Client ID is required")
+
+        auth_url = "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode({
+            "client_id": client_id,
+            "response_type": "code",
+            "redirect_uri": self.redirect_uri,
+            "scope": self.auth_scopes,
+        })
+
+        service = self
+        callback_result = callback or (lambda success, message: None)
+
+        class CallbackHandler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                if query.get("error"):
+                    message = query["error"][0]
+                    self._respond("Spotify authentication was cancelled.")
+                    callback_result(False, message)
+                    return
+
+                code = query.get("code", [None])[0]
+                if not code:
+                    self._respond("Spotify authentication failed. You can close this window.")
+                    callback_result(False, "Authorization code is missing")
+                    return
+
+                try:
+                    service._exchange_code(code)
+                    self._respond("Spotify authentication successful. You can close this window.")
+                    callback_result(True, "Spotify authentication successful.")
+                except (requests.RequestException, KeyError, ValueError) as error:
+                    self._respond("Spotify authentication failed. You can close this window.")
+                    callback_result(False, str(error))
+
+            def log_message(self, format, *args):
+                return
+
+            def _respond(self, message):
+                body = f"<html><body><h2>{message}</h2></body></html>".encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+        def wait_for_callback():
+            try:
+                server = HTTPServer(("127.0.0.1", 8999), CallbackHandler)
+                server.handle_request()
+                server.server_close()
+            except OSError as error:
+                callback_result(False, f"Could not start Spotify callback server: {error}")
+
+        threading.Thread(target=wait_for_callback, name="spotify-oauth", daemon=True).start()
+        webbrowser.open(auth_url)
+
+    def _exchange_code(self, code):
+        client_id = self.credentials.get("clientID", "").strip()
+        client_secret = self.credentials.get("clientSecret", "").strip()
+        if not client_id or not client_secret:
+            raise ValueError("Spotify Client ID and client secret are required")
+
+        response = self.session.post(
+            "https://accounts.spotify.com/api/token",
+            headers={
+                "Authorization": "Basic " + base64.b64encode(f"{client_id}:{client_secret}".encode()).decode(),
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            data={
+                "grant_type": "authorization_code",
+                "code": code,
+                "redirect_uri": self.redirect_uri,
+            },
+            timeout=15,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        self.credentials["refreshToken"] = payload["refresh_token"]
+        self.spotify_token = payload["access_token"]
+        self.spotify_token_expires_at = time.time() + payload.get("expires_in", 3600) - 60
 
     def stop(self):
         self.stop_event.set()

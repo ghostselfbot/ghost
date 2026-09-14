@@ -14,6 +14,7 @@ class SpotifyLyricsPanel(SettingsPanel):
         self.cfg = config
         self.service = None
         self.entries = {}
+        self.auth_button = None
         self.settings_path = os.path.join(get_application_support(), "lyrics", "settings.json")
         self.lyrics_settings = self._load_settings()
 
@@ -60,6 +61,21 @@ class SpotifyLyricsPanel(SettingsPanel):
         )
         self.service.start()
 
+    def _authenticate(self):
+        self._save_settings()
+        credentials = self.lyrics_settings.setdefault("credentials", {})
+        self.service = SpotifyLyricsService(credentials, status_callback=self._set_status)
+        self._set_status("Opening Spotify authentication ...")
+        self.service.authenticate(self._authentication_finished)
+
+    def _set_status(self, message):
+        self.root.after(0, lambda: self.status_label.configure(text=message))
+
+    def _authentication_finished(self, success, message):
+        if success:
+            self.root.after(0, self._save_settings)
+        self._set_status(message)
+
     def stop(self):
         if not self.service:
             return
@@ -73,10 +89,8 @@ class SpotifyLyricsPanel(SettingsPanel):
     def draw(self):
         fields = [
             ("token", "Discord Token", self.cfg.get("token") or self._credential("token"), True),
-            ("cookies", "Spotify Cookies", self._credential("cookies"), True),
             ("clientID", "Spotify Client ID", self._credential("clientID"), False),
             ("clientSecret", "Spotify Client Secret", self._credential("clientSecret"), True),
-            ("refreshToken", "Spotify Refresh Token", self._credential("refreshToken"), True),
         ]
 
         for row, (key, label_text, value, secret) in enumerate(fields):
@@ -113,6 +127,8 @@ class SpotifyLyricsPanel(SettingsPanel):
         actions = ttk.Frame(self.body, style="dark.TFrame")
         actions.grid(row=len(fields) + 2, column=0, columnspan=2, sticky=ttk.EW, padx=10, pady=(10, 5))
         RoundedButton(actions, text="Save", command=self._save_settings).pack(side=ttk.LEFT, padx=(0, 5))
+        self.auth_button = RoundedButton(actions, text="Authenticate with Spotify", command=self._authenticate)
+        self.auth_button.pack(side=ttk.LEFT, padx=5)
         RoundedButton(actions, text="Start", command=self._start).pack(side=ttk.LEFT, padx=5)
         RoundedButton(actions, text="Stop", command=self._stop).pack(side=ttk.LEFT, padx=5)
 
