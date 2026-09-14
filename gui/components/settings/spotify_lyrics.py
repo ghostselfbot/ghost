@@ -47,7 +47,7 @@ class SpotifyLyricsPanel(SettingsPanel):
             json.dump(self.lyrics_settings, settings_file, indent=4)
         self.status_label.configure(text="Lyrics settings saved.")
 
-    def _start(self):
+    def _start(self, _event=None):
         self._save_settings()
         if self.service and self.service.thread and self.service.thread.is_alive():
             self.status_label.configure(text="Spotify Lyrics is already running.")
@@ -87,7 +87,7 @@ class SpotifyLyricsPanel(SettingsPanel):
         self.service.stop()
         self.service = None
 
-    def _stop(self):
+    def _stop(self, _event=None):
         self.stop()
         self.status_label.configure(text="Spotify Lyrics stopped.")
 
