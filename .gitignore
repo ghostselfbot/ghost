@@ -10,3 +10,7 @@ build/
 dist/
 Ghost.spec
 changelog.py
+lyrics
+*.env
+.env
+env.
