@@ -177,26 +177,54 @@ class SpotifyLyricsService:
         if not payload.get("is_playing") or not item:
             return None
 
+        track_id = item.get("id")
+        if not track_id:
+            return None
+
         return {
-            "id": item.get("id"),
+            "id": track_id,
             "name": item.get("name", ""),
             "artist": ", ".join(artist.get("name", "") for artist in item.get("artists", [])),
             "progress_ms": payload.get("progress_ms", 0),
         }
 
-    def _get_lyrics(self, track_id):
-        response = self._spotify_request(
-            f"https://spclient.wg.spotify.com/color-lyrics/v2/track/{track_id}"
-            "?format=json&vocalRemoval=false&market=from_token"
-        )
-        lyrics = response.json().get("lyrics", {})
-        if lyrics.get("showUpsell") or lyrics.get("syncType") == "UNSYNCED":
-            return []
+    def _get_lyrics(self, playback):
+        try:
+            response = self._spotify_request(
+                f"https://spclient.wg.spotify.com/color-lyrics/v2/track/{playback['id']}"
+                "?format=json&vocalRemoval=false&market=from_token"
+            )
+            lyrics = response.json().get("lyrics", {})
+            if not lyrics.get("showUpsell") and lyrics.get("syncType") != "UNSYNCED":
+                return [
+                    {"time": int(line.get("startTimeMs", 0)), "text": line.get("words", "")}
+                    for line in lyrics.get("lines", [])
+                ]
+        except requests.RequestException:
+            pass
 
-        return [
-            {"time": int(line.get("startTimeMs", 0)), "text": line.get("words", "")}
-            for line in lyrics.get("lines", [])
-        ]
+        response = self.session.get(
+            "https://lrclib.net/api/get",
+            params={"track_name": playback["name"], "artist_name": playback["artist"]},
+            timeout=15,
+        )
+        response.raise_for_status()
+        synced_lyrics = response.json().get("syncedLyrics") or ""
+        return self._parse_lrc(synced_lyrics)
+
+    def _parse_lrc(self, synced_lyrics):
+        lines = []
+        for raw_line in synced_lyrics.splitlines():
+            if not raw_line.startswith("[") or "]" not in raw_line:
+                continue
+            timestamp, text = raw_line.split("]", 1)
+            try:
+                minutes, seconds = timestamp[1:].split(":", 1)
+                time_ms = round((int(minutes) * 60 + float(seconds)) * 1000)
+            except ValueError:
+                continue
+            lines.append({"time": time_ms, "text": text.strip()})
+        return lines
 
     def _current_line(self, lines, progress_ms):
         current = None
@@ -252,7 +280,7 @@ class SpotifyLyricsService:
                     continue
 
                 if playback["id"] != last_track_id:
-                    lyrics = self._get_lyrics(playback["id"])
+                    lyrics = self._get_lyrics(playback)
                     last_track_id = playback["id"]
                     last_line_time = None
 
