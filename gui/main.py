@@ -376,6 +376,9 @@ class GhostGUI:
         #     #     os._exit(0)
         #     self.root.destroy()
         #     sys.exit(0)
+        spotify_lyrics_panel = getattr(self.settings_page, "spotify_lyrics_panel", None)
+        if spotify_lyrics_panel:
+            spotify_lyrics_panel.stop()
         self.root.destroy()
         sys.exit(0)
                 

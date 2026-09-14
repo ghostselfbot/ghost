@@ -1,6 +1,6 @@
 import sys
 import ttkbootstrap as ttk
-from gui.components.settings import GeneralPanel, ThemingPanel, APIsPanel, SessionSpoofingPanel, RichPresencePanel, SnipersPanel
+from gui.components.settings import GeneralPanel, ThemingPanel, APIsPanel, SessionSpoofingPanel, RichPresencePanel, SnipersPanel, SpotifyLyricsPanel
 from gui.components import RoundedFrame, DropdownMenu
 from gui.helpers import Images, Style
 from utils.config import Config
@@ -25,6 +25,7 @@ class SettingsPage:
             # "session_spoofing": None,
             "rich_presence": None,
             "snipers": None,
+            "spotify_lyrics": None,
         }
         self.pills = {}
         
@@ -33,6 +34,9 @@ class SettingsPage:
             return
         
         try:
+            if getattr(self, "spotify_lyrics_panel", None):
+                self.spotify_lyrics_panel.stop()
+
             for widget in self.parent.winfo_children():
                 widget.destroy()
                 
@@ -50,6 +54,8 @@ class SettingsPage:
         self.session_spoofing = SessionSpoofingPanel(self.root, general_wrapper, self.images, self.cfg).draw()
         self.snipers = SnipersPanel(self.root, wrapper, self.images, self.cfg).draw()
         self.rpc = RichPresencePanel(self.root, wrapper, self.images, self.cfg, bot_controller=self.bot_controller).draw()
+        self.spotify_lyrics_panel = SpotifyLyricsPanel(self.root, wrapper, self.images, self.cfg)
+        self.spotify_lyrics = self.spotify_lyrics_panel.draw()
         self.apis = APIsPanel(self.root, general_wrapper, self.images, self.cfg).draw()
         self.theming = ThemingPanel(self.root, wrapper, self.images, self.cfg, bot_controller=self.bot_controller).draw()
         
@@ -63,6 +69,7 @@ class SettingsPage:
         # self.pages["session_spoofing"] = self.session_spoofing
         self.pages["rich_presence"] = self.rpc
         self.pages["snipers"] = self.snipers
+        self.pages["spotify_lyrics"] = self.spotify_lyrics
     
     def _create_pill(self, parent, text, row, command):
         def _hover_enter(_, pill, label):
@@ -121,6 +128,7 @@ class SettingsPage:
         # self._create_pill(self.pages_wrapper, "Session Spoofing", 3, lambda: self.toggle("session_spoofing"))
         self._create_pill(self.pages_wrapper, "Rich Presence", 4, lambda: self.toggle("rich_presence"))
         self._create_pill(self.pages_wrapper, "Snipers", 5, lambda: self.toggle("snipers"))
+        self._create_pill(self.pages_wrapper, "Spotify Lyrics", 6, lambda: self.toggle("spotify_lyrics"))
         
         # -------
         
