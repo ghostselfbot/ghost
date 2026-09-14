@@ -40,7 +40,7 @@ class SpotifyLyricsService:
         client_secret = self.credentials.get("clientSecret", "").strip()
         refresh_token = self.credentials.get("refreshToken", "").strip()
         if not client_id or not client_secret or not refresh_token:
-            raise ValueError("Spotify Client ID, Client Secret und Refresh Token werden benötigt")
+            raise ValueError("Spotify Client ID, client secret and refresh token are required")
 
         response = self.session.post(
             "https://accounts.spotify.com/api/token",
@@ -128,7 +128,7 @@ class SpotifyLyricsService:
     def _change_discord_status(self, text):
         token = self.credentials.get("token", "").strip()
         if not token:
-            raise ValueError("Discord Token fehlt")
+            raise ValueError("Discord token is missing")
 
         response = self.session.patch(
             "https://discord.com/api/v9/users/@me/settings",
@@ -146,7 +146,7 @@ class SpotifyLyricsService:
         response.raise_for_status()
 
     def _run(self):
-        self._set_status("Spotify Lyrics wird gestartet ...")
+        self._set_status("Starting Spotify Lyrics ...")
         last_track_id = None
         last_line_time = None
         lyrics = []
@@ -155,7 +155,7 @@ class SpotifyLyricsService:
             try:
                 playback = self._get_current_playback()
                 if not playback:
-                    self._set_status("Kein Spotify-Song läuft.")
+                    self._set_status("No Spotify track is playing.")
                     self.stop_event.wait(5)
                     continue
 
@@ -175,4 +175,4 @@ class SpotifyLyricsService:
                 self._set_status(f"Spotify Lyrics: {error}")
                 self.stop_event.wait(10)
 
-        self._set_status("Spotify Lyrics gestoppt.")
+        self._set_status("Spotify Lyrics stopped.")

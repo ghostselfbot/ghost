@@ -44,12 +44,12 @@ class SpotifyLyricsPanel(SettingsPanel):
         os.makedirs(os.path.dirname(self.settings_path), exist_ok=True)
         with open(self.settings_path, "w") as settings_file:
             json.dump(self.lyrics_settings, settings_file, indent=4)
-        self.status_label.configure(text="Lyrics-Einstellungen gespeichert.")
+        self.status_label.configure(text="Lyrics settings saved.")
 
     def _start(self):
         self._save_settings()
         if self.service and self.service.thread and self.service.thread.is_alive():
-            self.status_label.configure(text="Spotify Lyrics läuft bereits.")
+            self.status_label.configure(text="Spotify Lyrics is already running.")
             return
 
         self.service = SpotifyLyricsService(
@@ -68,7 +68,7 @@ class SpotifyLyricsPanel(SettingsPanel):
 
     def _stop(self):
         self.stop()
-        self.status_label.configure(text="Spotify Lyrics gestoppt.")
+        self.status_label.configure(text="Spotify Lyrics stopped.")
 
     def draw(self):
         fields = [
@@ -100,7 +100,7 @@ class SpotifyLyricsPanel(SettingsPanel):
             parent_background=self.root.style.colors.get("dark"),
         )
         self.timestamp_entry.grid(row=0, column=1, sticky=ttk.E, padx=10, pady=5)
-        ttk.Label(view, text="Zeitstempel anzeigen").grid(row=0, column=0, sticky=ttk.W, pady=5)
+        ttk.Label(view, text="Show timestamps").grid(row=0, column=0, sticky=ttk.W, pady=5)
 
         self.label_entry = RoundedSwitch(
             view,
@@ -108,15 +108,15 @@ class SpotifyLyricsPanel(SettingsPanel):
             parent_background=self.root.style.colors.get("dark"),
         )
         self.label_entry.grid(row=1, column=1, sticky=ttk.E, padx=10, pady=5)
-        ttk.Label(view, text="Lyrics-Label anzeigen").grid(row=1, column=0, sticky=ttk.W, pady=5)
+        ttk.Label(view, text="Show lyrics label").grid(row=1, column=0, sticky=ttk.W, pady=5)
 
         actions = ttk.Frame(self.body, style="dark.TFrame")
         actions.grid(row=len(fields) + 2, column=0, columnspan=2, sticky=ttk.EW, padx=10, pady=(10, 5))
-        RoundedButton(actions, text="Speichern", command=self._save_settings).pack(side=ttk.LEFT, padx=(0, 5))
-        RoundedButton(actions, text="Starten", command=self._start).pack(side=ttk.LEFT, padx=5)
-        RoundedButton(actions, text="Stoppen", command=self._stop).pack(side=ttk.LEFT, padx=5)
+        RoundedButton(actions, text="Save", command=self._save_settings).pack(side=ttk.LEFT, padx=(0, 5))
+        RoundedButton(actions, text="Start", command=self._start).pack(side=ttk.LEFT, padx=5)
+        RoundedButton(actions, text="Stop", command=self._stop).pack(side=ttk.LEFT, padx=5)
 
-        self.status_label = ttk.Label(self.body, text="Bereit")
+        self.status_label = ttk.Label(self.body, text="Ready")
         self.status_label.configure(background=self.root.style.colors.get("dark"))
         self.status_label.grid(row=len(fields) + 3, column=0, columnspan=2, sticky=ttk.W, padx=10, pady=(5, 10))
 
