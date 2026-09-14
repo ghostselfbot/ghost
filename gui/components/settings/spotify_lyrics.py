@@ -33,7 +33,7 @@ class SpotifyLyricsPanel(SettingsPanel):
     def _credential(self, key, default=""):
         return self.lyrics_settings.get("credentials", {}).get(key, default)
 
-    def _save_settings(self):
+    def _save_settings(self, _event=None):
         credentials = self.lyrics_settings.setdefault("credentials", {})
         for key, entry in self.entries.items():
             credentials[key] = entry.get()
@@ -57,11 +57,11 @@ class SpotifyLyricsPanel(SettingsPanel):
             self.lyrics_settings.get("credentials", {}),
             show_timestamp=self.lyrics_settings.get("view", {}).get("timestamp", True),
             show_label=self.lyrics_settings.get("view", {}).get("label", True),
-            status_callback=lambda message: self.root.after(0, lambda: self.status_label.configure(text=message)),
+            status_callback=self._set_status,
         )
         self.service.start()
 
-    def _authenticate(self):
+    def _authenticate(self, _event=None):
         self._save_settings()
         credentials = self.lyrics_settings.setdefault("credentials", {})
         self.service = SpotifyLyricsService(credentials, status_callback=self._set_status)
@@ -69,7 +69,12 @@ class SpotifyLyricsPanel(SettingsPanel):
         self.service.authenticate(self._authentication_finished)
 
     def _set_status(self, message):
-        self.root.after(0, lambda: self.status_label.configure(text=message))
+        try:
+            if not self.status_label.winfo_exists():
+                return
+            self.root.after(0, lambda: self.status_label.configure(text=message) if self.status_label.winfo_exists() else None)
+        except Exception:
+            return
 
     def _authentication_finished(self, success, message):
         if success:
